@@ -1,12 +1,12 @@
 import React from 'react'
 
-export const menuBar = () => {
+export const MenuBar = () => {
   return (
     <nav>menuBar
 
 
 
-        
+     
     </nav>
   )
 }
