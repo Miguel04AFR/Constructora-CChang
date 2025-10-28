@@ -1,27 +1,256 @@
-import React from 'react'
-import {roboto} from '@/src/config/font'
+"use client";
 
-interface HeroCProps {
-    title: string;
-    subtitle: string;
-    className: string;
-}
+import { useRef, useEffect, useState } from 'react';
 
-export const HeroC = ({title, subtitle,className} : HeroCProps) => {
-  return (
-    <div className={'mt-3 ${className}'}>
-    <h1 className={'text-4xl font-semibold antialiased ${roboto.className}  my-10'}>
-        {title}
-        </h1>
-    { subtitle && (
-        <h2 className={'text-2xl font-light antialiased ${roboto.className} mb-10'}>
+export const HeroC = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [estaCargado, setEstaCargado] = useState(false);
 
-        {subtitle}
-        </h2>
-    )
-
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.8;
+      video.play().catch(error => {
+        console.log("Error reproduciendo video:", error);
+      });
     }
+    setEstaCargado(true);
+  }, []);
 
-    </div>
-  )
-}
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+   if (element !== null) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+  };
+
+  return (
+    <section className="hero-section">
+      
+      {/* Contenedor del video */}
+      <div className="video-container">
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="background-video"
+          onLoadedData={() => setEstaCargado(true)}
+        >
+          <source src="/1197802-hd_1920_1080_25fps.mp4" type="video/mp4" />
+          Tu navegador no soporta videos HTML5.
+        </video>
+        
+        <div className="video-overlay"></div>
+      </div>
+
+      {/* Contenido */}
+      <div className={`hero-content ${estaCargado ? 'loaded' : ''}`}>
+        <h1 className="hero-title">
+          <span>CChang</span>
+          <span className="hero-subtitle">
+            Transformamos tus espacios con calidad y confianza
+          </span>
+        </h1>
+
+        <p className="hero-description">
+          Más de 10 años construyendo sueños y proyectos duraderos
+        </p>
+
+        <div className="hero-buttons">
+          <button 
+            onClick={() => scrollToSection('contacto')}
+            className="btn-primary"
+          >
+            Contáctanos
+          </button>
+          
+          <button 
+            onClick={() => scrollToSection('proyectos')}
+            className="btn-secondary"
+          >
+            Ver nuestros proyectos
+          </button>
+        </div>
+      </div>
+
+
+      {/* Con Tailwind no me salia  */}
+      <style jsx>{`
+        .hero-section {
+          position: relative;
+          height: 100vh;
+          width: 100%;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .video-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 0;
+        }
+
+        .background-video {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .video-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1;
+        }
+
+        .hero-content {
+          position: relative;
+          z-index: 2;
+          text-align: center;
+          color: white;
+          max-width: 1200px;
+          padding: 0 20px;
+          transform: translateY(20px);
+          opacity: 0;
+          transition: all 1s ease 0.3s;
+        }
+
+        .hero-content.loaded {
+          transform: translateY(0);
+          opacity: 1;
+        }
+
+        .hero-title {
+          font-size: 3rem;
+          font-weight: bold;
+          margin-bottom: 1.5rem;
+          line-height: 1.2;
+        }
+
+        .hero-subtitle {
+          display: block;
+          font-size: 1.5rem;
+          font-weight: normal;
+          margin-top: 1rem;
+          opacity: 0.9;
+        }
+
+        .hero-description {
+          font-size: 1.25rem;
+          margin-bottom: 2rem;
+          opacity: 0.9;
+          line-height: 1.6;
+        }
+
+        .hero-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .btn-primary {
+          background: white;
+          color: #003153;
+          padding: 1rem 2rem;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          font-size: 1.125rem;
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          display: inline-block;
+        }
+
+        .btn-primary:hover {
+          background: #f3f4f6;
+          transform: scale(1.05);
+        }
+
+        .btn-secondary {
+          background: transparent;
+          border: 2px solid white;
+          color: white;
+          padding: 1rem 2rem;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          font-size: 1.125rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+          background: white;
+          color: #003153;
+          transform: scale(1.05);
+        }
+
+        .scroll-indicator {
+          position: absolute;
+          bottom: 2rem;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 2;
+          opacity: 0;
+          transition: opacity 1s ease 1s;
+        }
+
+        .scroll-indicator.visible {
+          opacity: 1;
+        }
+
+        .arrow-icon {
+          width: 1.5rem;
+          height: 1.5rem;
+          color: white;
+          animation: bounce 2s infinite;
+        }
+
+
+        /* Responsive */
+        @media (min-width: 640px) {
+          .hero-buttons {
+            flex-direction: row;
+          }
+          
+          .hero-title {
+            font-size: 4rem;
+          }
+          
+          .hero-subtitle {
+            font-size: 1.75rem;
+          }
+          
+          .hero-description {
+            font-size: 1.5rem;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .hero-title {
+            font-size: 5rem;
+          }
+          
+          .hero-subtitle {
+            font-size: 2rem;
+          }
+        }
+      `}</style>
+    </section>
+  );
+};

@@ -7,25 +7,25 @@ import type { Proyecto } from './index';
 const proyectosEjemplo: Proyecto[] = [ 
   {
     id: 1,
-    imagenUrl: "/img/"
+    imagenUrl: "/modelo-3d-de-edificio-residencial.jpg"
   },
   {
     id: 2,
-    imagenUrl: "/imag/modelo-3d-de-edificio-residencial.jpg"  
+    imagenUrl: "/vista-3d-del-modelo-de-casa.jpg"  
   },
   {
     id: 3,
-    imagenUrl: "/imag/proyectos/proyecto3.jpg" 
+    imagenUrl: "/vista-del-modelo-de-casa-3d.jpg" 
   }
 ];
 
-export const Proyectos = () => {  // ← "Proyectos" con P mayúscula
+export const Proyectos = () => {
   const [indiceActual, setIndiceActual] = useState(0);
 
   const proyectoActual = proyectosEjemplo[indiceActual];
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div id="proyectos" className="p-8 bg-gray-50 min-h-screen">
       <h1 className="text-4xl font-bold text-center text-[#003153] mb-8">
         Nuestros Proyectos
       </h1>
@@ -33,7 +33,7 @@ export const Proyectos = () => {  // ← "Proyectos" con P mayúscula
       <div className="max-w-4xl mx-auto">
     
         <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
-          <div className="h-80 bg-gray-100 flex items-center justify-center">
+           <div className="h-[500px] bg-gray-100 flex items-center justify-center">
             <img 
               src={proyectoActual.imagenUrl} 
               alt={`Proyecto ${proyectoActual.id}`}
@@ -43,14 +43,14 @@ export const Proyectos = () => {  // ← "Proyectos" con P mayúscula
         </div>
 
         <div className="flex justify-between items-center">
-          <button 
+          <button
             onClick={() => setIndiceActual(prev => (prev - 1 + proyectosEjemplo.length) % proyectosEjemplo.length)}
             className="bg-[#003153] text-white px-6 py-3 rounded-lg hover:bg-blue-800"
           >
-          {/*  ← Anterior*/}
+           ← Anterior
           </button>
           
-          <div className="text-lg font-medium">
+          <div className="text-lg font-medium">{/*indicador 1/3 cosas asi */}
             {indiceActual + 1} / {proyectosEjemplo.length}
           </div>
           
@@ -58,7 +58,7 @@ export const Proyectos = () => {  // ← "Proyectos" con P mayúscula
             onClick={() => setIndiceActual(prev => (prev + 1) % proyectosEjemplo.length)}
             className="bg-[#003153] text-white px-6 py-3 rounded-lg hover:bg-blue-800"
           >
-            {/* Siguiente →*/}
+             Siguiente →
           </button>
         </div>
       </div>
