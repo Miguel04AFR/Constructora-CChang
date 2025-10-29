@@ -7,8 +7,8 @@ export interface Proyecto {
 
 export interface Servicio {
     id: number;
-    titulo: string;
-    descripcion: string;
+    titulo?: string;
+    descripcion?: string;
     iconoUrl: string;
 }
 

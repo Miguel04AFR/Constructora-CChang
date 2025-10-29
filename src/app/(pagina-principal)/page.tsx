@@ -7,12 +7,12 @@ import { Nosotros } from "@/src/components/Nosotros";
 
 export default function PaginaPrincipal() {
   return (
-    <div> 
+    <React.Fragment> {/* hace que no se genere un div innecesario */}
       <HeroC/>
       <Proyectos/>
       <Servicios/>
       <Nosotros/>
       <Footer/>
-    </div>
+    </React.Fragment>
   );
 }
