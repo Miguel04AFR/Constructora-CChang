@@ -76,7 +76,7 @@ export const Nosotros = () => {
             
             <div className="space-y-4 text-gray-700 leading-relaxed">
               <p>
-                <strong>CChang Constructora</strong>, empresa cubana con más de 10 años de experiencia, 
+                <strong>CChang Constructora</strong>, empresa cubana con más de 10 anos de experiencia, 
                 se especializa en proyectos para instituciones estatales y clientes privados.
               </p>
               
@@ -99,7 +99,7 @@ export const Nosotros = () => {
                 <div className="text-sm text-gray-600">Años de Experiencia</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-[#003153]">Múltiples</div>
+                <div className="text-3xl font-bold text-[#003153]">Multiples</div>
                 <div className="text-sm text-gray-600">Provincias</div>
               </div>
             </div>
@@ -110,7 +110,7 @@ export const Nosotros = () => {
         {/* contactar */}
         <div className="text-center mt-12">
           <button className="bg-[#003153] text-white px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-semibold">
-            Contáctanos para tu Proyecto
+            Contactanos para tu Proyecto
           </button>
         </div>
 

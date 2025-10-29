@@ -4,6 +4,7 @@ import { Proyectos } from "@/src/components/Proyectos";
 import { Servicios } from "@/src/components/Servicios";
 import { Footer } from "@/src/components/Footer";
 import { Nosotros } from "@/src/components/Nosotros";
+import { Contactanos } from "@/src/components/Contactanos";
 
 export default function PaginaPrincipal() {
   return (
@@ -12,6 +13,7 @@ export default function PaginaPrincipal() {
       <Proyectos/>
       <Servicios/>
       <Nosotros/>
+      <Contactanos/>
       <Footer/>
     </React.Fragment>
   );
