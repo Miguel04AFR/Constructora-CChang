@@ -12,3 +12,10 @@ export interface Servicio {
     iconoUrl: string;
 }
 
+export interface FormularioContacto {
+    nombre: string;
+    telefono: string;
+    email: string;
+    mensaje: string;
+}
+

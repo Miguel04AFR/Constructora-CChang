@@ -61,12 +61,12 @@ export const MenuBar = () => {
       </div>
 
       {/* Botón de login destacado */}
-      <div className='hidden sm:flex items-center'>
-        <Link href="/login" className='flex items-center gap-2 bg-[#6B21A8] text-[#FBBF24] px-6 py-3 rounded-lg hover:bg-blue-800 transition-all shadow-md'>
-          <IoPersonOutline size={20} />
-          <span className="font-medium">Iniciar Sesión</span>
-        </Link>
-      </div>
+     <div className='flex items-center'>
+  <Link href="/login" className='flex items-center gap-2 bg-[#6B21A8] text-[#FBBF24] px-4 py-2 rounded-lg hover:bg-purple-800 transition-all shadow-md'>
+    <IoPersonOutline size={20} />
+    <span className="font-medium">Iniciar Sesión</span>
+  </Link>
+  </div>
     </nav>
   )
 }
