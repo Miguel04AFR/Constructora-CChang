@@ -22,4 +22,5 @@ export interface FormularioContacto {
 export interface ModalLoginProps {
   isOpen: boolean;
   onClose: () => void;
+   usuario?: (usuario: string) => void;
 }
