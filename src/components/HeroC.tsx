@@ -62,7 +62,7 @@ export const HeroC = () => {
 
         <div className="hero-buttons">
           <button 
-            onClick={() => scrollToSection('contacto')}
+            onClick={() => scrollToSection('contactanos')}
             className="btn-primary"
           >
             Contáctanos

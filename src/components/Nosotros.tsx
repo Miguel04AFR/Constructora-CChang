@@ -26,6 +26,13 @@ export const Nosotros = () => {
     }
   ];
 
+   const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+   if (element !== null) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+  };
+
   return (
     <div id="nosotros" className="py-16 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4">
@@ -109,7 +116,7 @@ export const Nosotros = () => {
 
         {/* contactar */}
         <div className="text-center mt-12">
-          <button className="bg-[#003153] text-white px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-semibold">
+          <button onClick={ () => scrollToSection("contactanos")} className="bg-[#003153] text-white px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-semibold">
             Contactanos para tu Proyecto
           </button>
         </div>

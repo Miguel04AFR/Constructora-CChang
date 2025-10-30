@@ -19,9 +19,9 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
           
           {/* Logo */}
-          <div className="flex shrink-0">
+          <div className="flex shrink-0 bg-white p-2 rounded-lg">
             <img 
-              src="/logo-constructora-cchang-footer.png" 
+              src="/constructora-removebg-preview.png" 
               alt="Logo Constructora CChang"
               className="w-32 h-auto object-contain"
             />
@@ -52,7 +52,7 @@ export const Footer = () => {
                    </button>
                    
                    <button 
-                   onClick={() => scrollToSection('contacto')}
+                   onClick={() => scrollToSection('contactanos')}
                    className='flex items-center gap-2 p-3 rounded-lg transition-all hover:bg-blue-50 hover:text-[#003153]'>
                      <IoCall size={20}  />
                      <span className="font-medium">Contacto</span>
@@ -61,13 +61,16 @@ export const Footer = () => {
 
           {/* Redes Sociales */}
           <div className="flex gap-4">
-            <a href="#" className="p-2 rounded-full bg-gray-800 hover:bg-blue-600 transition-colors">
+            <a href="https://www.facebook.com/p/Empresa-Constructora-CChang-100091466821578" className="p-2 rounded-full bg-gray-800 hover:bg-blue-600 transition-colors"
+            target="_blank" rel="noopener noreferrer">
               <FaFacebook size={20} />
             </a>
-            <a href="#" className="p-2 rounded-full bg-gray-800 hover:bg-pink-600 transition-colors">
+            <a href="https://www.instagram.com/p/CxlsEg4ps6w/?hl=bg" className="p-2 rounded-full bg-gray-800 hover:bg-pink-600 transition-colors"
+            target="_blank" rel="noopener noreferrer">
               <FaInstagram size={20} />
             </a>
-            <a href="#" className="p-2 rounded-full bg-gray-800 hover:bg-blue-500 transition-colors">
+            <a href="https://www.linkedin.com/company/chang-construction-consulting" className="p-2 rounded-full bg-gray-800 hover:bg-blue-500 transition-colors"
+            target="_blank" rel="noopener noreferrer">
               <FaLinkedinIn size={20} />
             </a>
           </div>

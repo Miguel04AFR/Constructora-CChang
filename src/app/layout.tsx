@@ -5,6 +5,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "CChang Constructora",
   description: "Constructura de alta calidad",
+  icons: "/constructora-removebg-preview.png",
+  
 };
 
 export default function RootLayout({

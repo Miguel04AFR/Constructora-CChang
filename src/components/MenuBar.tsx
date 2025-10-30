@@ -8,7 +8,7 @@ import { ModalLoginIni } from './ModalLoginIni'
 
 export const MenuBar = () => {
   
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [estaLoginModalOpen, setEstaLoginModalOpen] = useState(false);
   const [usuarioLogueado, setUsuarioLogueado] = useState('');
 
   const scrollToSection = (sectionId: string) => {
@@ -27,18 +27,18 @@ export const MenuBar = () => {
 
   return (
     <>
-      <nav className='flex px-5 justify-between items-center w-full bg-white shadow-lg py-4'>
+      <nav className='flex px-5 justify-between items-center w-full bg-white shadow-lg'>
         {/* Logo destacado */}
         <div>
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="bg-[#6B21A8] text-[#FBBF24] px-4 py-2 rounded-lg flex items-center gap-2">
-              <IoConstruct size={24} className="text-[#FBBF24]" />
-              <span className="text-2xl font-bold">CChang</span>
-            </div>
+         <img 
+              src="/constructora-removebg-preview.png" 
+              alt="Logo Constructora CChang"
+              className="w-20 h-auto object-contain"
+            />
             <span className="text-sm text-gray-600 hidden md:block">
               Construcción, Calidad, Confianza
             </span>
-          </Link>
+
         </div>
 
         {/* Navegación */}
@@ -66,7 +66,7 @@ export const MenuBar = () => {
           </button>
           
           <button 
-            onClick={() => scrollToSection('contacto')}
+            onClick={() => scrollToSection('contactanos')}
             className='flex items-center gap-2 p-3 rounded-lg transition-all hover:bg-blue-50 hover:text-[#003153]'>
             <IoCall size={20} className="text-[#003153]" />
             <span className="font-medium">Contacto</span>
@@ -77,7 +77,7 @@ export const MenuBar = () => {
         {!usuarioLogueado ? (
           <div className='flex items-center'>
             <button 
-              onClick={() => setIsLoginModalOpen(true)}
+              onClick={() => setEstaLoginModalOpen(true)}
               className='flex items-center gap-2 bg-[#003153] text-[#FBBF24] px-4 py-2 rounded-lg hover:bg-blue-800 transition-all shadow-md'
             >
               <IoPersonOutline size={20} />
@@ -86,14 +86,15 @@ export const MenuBar = () => {
           </div>
         ) : (
          
-          <div className='flex items-center gap-3'>
-            <div className='flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg border border-green-200'>
+          <div className='flex items-center gap-3 flex-col sm:flex-row'>
+            <div className='flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg border border-green-200 text-sm sm:text-base'>
               <IoPersonOutline size={20} />
               <span className="font-medium">Bienvenido, {usuarioLogueado}</span>
             </div>
             <button 
               onClick={handleCerrarSesion}
-              className='flex items-center gap-2 bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-all'
+              className='flex items-center gap-2 bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-all
+              text-sm sm:text-base w-full sm:w-auto justify-center'
             >
               <IoLogOutOutline size={18} />
               <span>Salir</span>
@@ -104,8 +105,8 @@ export const MenuBar = () => {
 
       {/* Modal de Login */}
       <ModalLoginIni 
-        isOpen={isLoginModalOpen} 
-        onClose={() => setIsLoginModalOpen(false)} 
+        isOpen={estaLoginModalOpen} 
+        onClose={() => setEstaLoginModalOpen(false)} 
         usuario={handleLoginU} 
       />
     </>
