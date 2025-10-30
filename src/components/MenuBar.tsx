@@ -2,9 +2,15 @@
 
 import React from 'react'
 import Link from 'next/link';
+import { useState } from 'react';
 import { IoBuild, IoPersonOutline, IoBusiness, IoCall, IoInformation, IoConstruct } from 'react-icons/io5';
+import  { ModalLoginIni } from './ModalLoginIni'
+
 
 export const MenuBar = () => {
+  
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if(element)
@@ -13,6 +19,7 @@ export const MenuBar = () => {
 
 
   return (
+    <>{/*sin esto no me deja poner el modal fuera del nav */} 
     <nav className='flex px-5 justify-between items-center w-full bg-white shadow-lg py-4'>
       {/* Logo destacado */}
       <div>
@@ -61,12 +68,24 @@ export const MenuBar = () => {
       </div>
 
       {/* Botón de login destacado */}
-     <div className='flex items-center'>
-  <Link href="/login" className='flex items-center gap-2 bg-[#6B21A8] text-[#FBBF24] px-4 py-2 rounded-lg hover:bg-purple-800 transition-all shadow-md'>
-    <IoPersonOutline size={20} />
-    <span className="font-medium">Iniciar Sesión</span>
-  </Link>
-  </div>
+      <div className='flex items-center'>
+          <button 
+            onClick={() => setIsLoginModalOpen(true)}
+            className='flex items-center gap-2 bg-[#003153] text-[#FBBF24] px-4 py-2 rounded-lg hover:bg-purple-800 transition-all shadow-md'
+          >
+            <IoPersonOutline size={20} />
+            <span className="font-medium">Iniciar Sesión</span>
+          </button>
+        </div>
+
     </nav>
+
+        {/* Modal de Login */}
+      <ModalLoginIni 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+      />
+    </>
+     
   )
 }

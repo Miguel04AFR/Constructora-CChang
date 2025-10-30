@@ -14,6 +14,7 @@ const [contacto, setContacto] = useState<FormularioContacto>({
 });
 
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
+  
   const [errores, setErrores] = useState<{ [key: string]: string }>({}); {/* para validar */}
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => { {/* el evento puede venir de un input o un textarea */}
     const { name, value } = e.target;{/* extraemos el nombre y el valor del campo cuando el evento aparece*/}

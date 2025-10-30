@@ -19,3 +19,7 @@ export interface FormularioContacto {
     mensaje: string;
 }
 
+export interface ModalLoginProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
