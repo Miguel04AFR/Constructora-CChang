@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import type { Proyecto } from './index';
+import React, { useState, useEffect } from 'react';
+import type { Proyecto } from '@/src/components/index';
 
 
 const proyectosEjemplo: Proyecto[] = [ 
@@ -19,10 +19,18 @@ const proyectosEjemplo: Proyecto[] = [
   }
 ];
 
-export const Proyectos = () => {
+  export const Proyectos = () => {
   const [indiceActual, setIndiceActual] = useState(0);
 
   const proyectoActual = proyectosEjemplo[indiceActual];
+
+ useEffect(() => {
+    const intervalo = setInterval(() => {
+      setIndiceActual(prev => (prev + 1) % proyectosEjemplo.length);
+    }, 5000);
+
+    return () => clearInterval(intervalo);
+  }, []);
 
   return (
     <div id="proyectos" className="p-8 bg-gray-50 min-h-screen">

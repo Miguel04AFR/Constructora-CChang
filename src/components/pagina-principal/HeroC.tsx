@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from 'react';
-import '../module/moduloHeroC.css'; 
+import '../../module/moduloHeroC.css';
 
 
 export const HeroC = () => {

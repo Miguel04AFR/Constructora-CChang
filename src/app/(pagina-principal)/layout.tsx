@@ -1,5 +1,5 @@
-import { MenuBar } from '../../components/MenuBar'
-import { Footer } from '../../components/Footer'
+import { MenuBar } from '../../components/ui/MenuBar'
+import { Footer } from '../../components/ui/Footer'
 
 export default function RootLayout({
   children,

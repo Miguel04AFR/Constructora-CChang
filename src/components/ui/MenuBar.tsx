@@ -27,18 +27,17 @@ export const MenuBar = () => {
 
   return (
     <>
-      <nav className='flex px-5 justify-between items-center w-full bg-white shadow-lg'>
+      <nav className='fixed top-0 left-0 right-0 z-50 flex px-4 py-2 justify-between items-center w-full bg-white shadow-lg'>
         {/* Logo destacado */}
-        <div>
-         <img 
-              src="/constructora-removebg-preview.png" 
-              alt="Logo Constructora CChang"
-              className="w-20 h-auto object-contain"
-            />
-            <span className="text-sm text-gray-600 hidden md:block">
-              Construcción, Calidad, Confianza
-            </span>
-
+        <div className="flex items-center gap-2">
+          <img 
+            src="/constructora-removebg-preview.png" 
+            alt="Logo Constructora CChang"
+            className="w-16 h-auto object-contain" 
+          />
+          <span className="text-xs text-gray-600 hidden md:block ">
+            Construcción, Calidad, Confianza
+          </span>
         </div>
 
         {/* Navegación */}

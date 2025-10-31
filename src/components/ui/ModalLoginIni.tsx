@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react'
-import type { ModalLoginProps } from './index';
+import type { ModalLoginProps } from '../index';
 import { IoClose, IoMail, IoPerson, IoLockClosed, IoEye, IoEyeOff, IoCheckmarkCircle } from 'react-icons/io5';
 
 export const ModalLoginIni = ({isOpen, onClose,usuario }: ModalLoginProps) => {

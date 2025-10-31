@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react'
-import type { Servicio } from './index';
+import type { Servicio } from '@/src/components/index';
 import Link from 'next/link'; // ← Agrega esta importación
 
 const servicios: Servicio[] = [

@@ -1,4 +1,4 @@
-export * from './MenuBar';
+export * from './ui/MenuBar';
 
 export interface Proyecto {
     id: number;

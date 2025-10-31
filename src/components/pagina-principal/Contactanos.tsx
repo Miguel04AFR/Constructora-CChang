@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { FormularioContacto } from './index';
+import type { FormularioContacto } from '../index';
+import { IoCall, IoLocation, IoLogoWhatsapp, IoMail } from 'react-icons/io5';
 
 
 export const Contactanos = () => {
@@ -114,27 +115,73 @@ const existeError = Object.keys(errores).length > 0;
 
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* informacion */}
-          <div>
-            <h2 className='text-2xl font-bold text-[#003153] mb-6'>
-              Información de contacto:
+         <div className="bg-gray-50 rounded-2xl p-8 shadow-lg">
+            <h2 className='text-2xl font-bold text-[#003153] mb-8 text-center'>
+              Información de Contacto
             </h2>
-            <div className='space-y-4 text-[#003153]'>
-              <p className='text-lg'>
-                📞 Teléfono: <a href="tel:+5358475772" className='underline hover:text-blue-800'>+53 58475772</a>
-              </p>
-              <p className='text-lg'>
-                📱 WhatsApp: <a href="https://wa.me/5358475772" className='underline hover:text-blue-800'>+53 58475772</a>
-              </p>
-              <p className='text-lg'>
-                📧 Email: <a href="mailto:cchangconstrucciones@gmail.com" className='underline hover:text-blue-800'>cchangconstrucciones@gmail.com</a>
-              </p>
-              <p className='text-lg'>
-                📍 Dirección: Calle 50 entre 35 y 37 #3508, Playa
-              </p>
+            
+            <div className='space-y-6'>
+              
+              <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-blue-100 p-3 rounded-full">
+                  <IoCall className="text-blue-600 text-xl" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">Teléfono</h3>
+                  <a href="tel:+5358475772" className='text-[#003153] hover:text-blue-700 transition-colors text-lg font-medium'>
+                    +53 58475772
+                  </a>
+                  <p className="text-gray-600 text-sm mt-1">Lunes a Viernes: 8:00 AM - 5:00 PM</p>
+                </div>
+              </div>
+
+             
+              <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-green-100 p-3 rounded-full">
+                  <IoLogoWhatsapp className="text-green-600 text-xl" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">WhatsApp</h3>
+                  <a href="https://wa.me/5358475772" 
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     className='text-[#003153] hover:text-green-700 transition-colors text-lg font-medium'>
+                    +53 58475772
+                  </a>
+                  <p className="text-gray-600 text-sm mt-1">Chat disponible 24/7</p>
+                </div>
+              </div>
+
+             
+              <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-red-100 p-3 rounded-full">
+                  <IoMail className="text-red-600 text-xl" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">Email</h3>
+                  <a href="mailto:cchangconstrucciones@gmail.com" 
+                     className='text-[#003153] hover:text-red-700 transition-colors text-lg font-medium break-all'>
+                    cchangconstrucciones@gmail.com
+                  </a>
+                  <p className="text-gray-600 text-sm mt-1">Respondemos en menos de 24 horas</p>
+                </div>
+              </div>
+
+            
+              <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-purple-100 p-3 rounded-full">
+                  <IoLocation className="text-purple-600 text-xl" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">Dirección</h3>
+                  <p className="text-[#003153] text-lg font-medium">
+                    Calle 50 entre 35 y 37 #3508, Playa
+                  </p>
+                  <p className="text-gray-600 text-sm mt-1">La Habana, Cuba</p>
+                </div>
+              </div>
             </div>
           </div>
-        
 
         <div>
             <form className='mt-12 lg:mt-0' onSubmit={handleSumit}>
