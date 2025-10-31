@@ -14,7 +14,6 @@ export default function PaginaPrincipal() {
       <Servicios/>
       <Nosotros/>
       <Contactanos/>
-      <Footer/>
     </React.Fragment>
   );
 }

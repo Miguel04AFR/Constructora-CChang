@@ -71,24 +71,18 @@ export const Servicios = () => {
                                     <p className="text-gray-600 leading-relaxed">
                                         {servicio.descripcion}
                                     </p>
-                                    <div className="flex items-center gap-6 mt-4">
-                                     <p className="mt-4 text-[#003153] font-medium hover:text-blue-800 transition-colors">
-                                        Más información y precios →
-                                    </p>
-                                    
-                                    {servicio.id === 1 ? (
-                                        <Link 
-                                            href="/catalogo"
-                                            className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10 inline-block"
-                                        >
-                                            Vista
-                                        </Link>
-                                    ) : (
-                                        <button className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
-                                            Vista
-                                        </button>
-                                    )}
-                                    </div>
+                            <div className="flex items-center gap-6 mt-4">
+                                <p className="mt-4 text-[#003153] font-medium hover:text-blue-800 transition-colors">
+                                    Más información y precios →
+                                </p>
+
+                                <Link href="/catalogo">
+                                    <button className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
+                                        Vista
+                                    </button>
+                                </Link>
+
+                            </div>
                                 </div>
                             </div>
                         </div>

@@ -80,7 +80,7 @@ export const CatalogoContainer = () => {
 
     if (totalCasas === 0) {
         return (
-            <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center " >
                 <p className="text-xl text-gray-600">No hay casas disponibles en el catálogo.</p>
             </div>
         );
@@ -137,7 +137,7 @@ export const CatalogoContainer = () => {
                           {/* Tarjeta - AQUÍ ESTÁ EL CAMBIO PRINCIPAL */}
                           <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow w-full h-full flex flex-col">
                             {/* Imagen */}
-                            <div className="h-64 bg-gray-100 overflow-hidden flex-shrink-0"> 
+                            <div className="h-64 bg-gray-100 overflow-hidden flex shrink-0"> 
                               <img 
                                 src={casa.imagenUrl} 
                                 alt={casa.nombre}
@@ -146,7 +146,7 @@ export const CatalogoContainer = () => {
                             </div>
                             
                             {/* Contenedor de datos - CAMBIO CLAVE: flex-grow para que ocupe el espacio disponible */}
-                            <div className="p-6 flex-grow flex flex-col"> 
+                            <div className="p-6  grow flex flex-col"> 
                               <h3 className="text-xl font-bold text-[#003153] mb-3"> 
                                 {casa.nombre}
                               </h3>
@@ -177,12 +177,12 @@ export const CatalogoContainer = () => {
                               {/* Precio y Botón - CAMBIO: mt-4 para espacio consistente */}
                               <div className="mt-4 pt-4 border-t border-gray-200">
                                 <div className="flex justify-between items-center gap-2">
-                                  <span className="text-2xl font-bold text-[#6B21A8] flex-shrink-0"> 
+                                  <span className="text-2xl font-bold text-[#6B21A8] flex shrink-0"> 
                                     ${casa.precio.toLocaleString()}
                                   </span>
                                   <Link 
                                     href={`/catalogo/${casa.id}`}
-                                    className="bg-[#003153] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm whitespace-nowrap flex-shrink-0" 
+                                    className="bg-[#003153] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm whitespace-nowrap flex shrink-0" 
                                     aria-label={`Ver detalles de ${casa.nombre}`}
                                     title={`Más información sobre ${casa.nombre}`}
                                   >

@@ -7,7 +7,6 @@ export default function CatalogoPage() {
     return(
         <React.Fragment>
             <CatalogoContainer/>
-            <Footer/>
         </React.Fragment>
     );
 }
