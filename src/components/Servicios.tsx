@@ -2,6 +2,7 @@
 
 import React from 'react'
 import type { Servicio } from './index';
+import Link from 'next/link'; // ← Agrega esta importación
 
 const servicios: Servicio[] = [
     {
@@ -74,9 +75,19 @@ export const Servicios = () => {
                                      <p className="mt-4 text-[#003153] font-medium hover:text-blue-800 transition-colors">
                                         Más información y precios →
                                     </p>
-                                    <button className="mt-4 text-[#FBBF24] font-medium bg-[#6B21A8] hover:bg-blue-800  rounded-lg transition-all py-3 px-10">
-                                        Vista
-                                    </button>
+                                    
+                                    {servicio.id === 1 ? (
+                                        <Link 
+                                            href="/catalogo"
+                                            className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10 inline-block"
+                                        >
+                                            Vista
+                                        </Link>
+                                    ) : (
+                                        <button className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
+                                            Vista
+                                        </button>
+                                    )}
                                     </div>
                                 </div>
                             </div>
