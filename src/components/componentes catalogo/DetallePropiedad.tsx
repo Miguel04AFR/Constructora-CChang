@@ -1,11 +1,11 @@
 import React from 'react';
 import type { Casa } from '@/src/components/index';
-import { EncabezadoPropiedad } from '@/src/components/HeaderPropiedad';
-import { GaleriaImagenes } from '@/src/components/GaleriaImagenes';
-import { EspecificacionesPropiedad } from '@/src/components/EspecificacionesPropiedad';
-import { DescripcionPropiedad } from '@/src/components/DescripcionPropiedad';
-import { CaracteristicasPropiedad } from '@/src/components/OtrasCaracteristicasPropiedad';
-import { FormularioContacto } from '@/src/components/FormularioDeContactoPropietario';
+import { EncabezadoPropiedad } from '@/src/components/componentes catalogo/HeaderPropiedad';
+import { GaleriaImagenes } from '@/src/components/componentes catalogo/GaleriaImagenes';
+import { EspecificacionesPropiedad } from '@/src/components/componentes catalogo/EspecificacionesPropiedad';
+import { DescripcionPropiedad } from '@/src/components/componentes catalogo/DescripcionPropiedad';
+import { CaracteristicasPropiedad } from '@/src/components/componentes catalogo/OtrasCaracteristicasPropiedad';
+import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContactoPropietario';
 
 interface DetallePropiedadProps {
     propiedad: Casa;

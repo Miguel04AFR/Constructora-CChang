@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Casa } from '@/src/components/index';
-import {casasAnadidas} from '@/src/components/index';
+import {casasAnadidas} from '@/src/data/propiedades-casas';
 import Link from 'next/link';
 
 

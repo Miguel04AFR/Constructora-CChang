@@ -1,6 +1,6 @@
 import React from 'react';
-import { DetallePropiedad } from '@/src/components/DetallePropiedad';
-import { casasAnadidas } from '@/src/components/index';
+import { DetallePropiedad } from '@/src/components/componentes catalogo/DetallePropiedad';
+import { casasAnadidas } from '@/src/data/propiedades-casas';
 
 function encontrarCasaPorId(id: string) {
     return casasAnadidas.find(casa => casa.id === id);

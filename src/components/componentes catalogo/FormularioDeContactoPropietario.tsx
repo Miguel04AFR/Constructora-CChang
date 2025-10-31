@@ -77,7 +77,7 @@ const handleSubmit = (e: React.FormEvent) => {
                         value={formData.telefono}
                         onChange={handleChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#003153] focus:border-transparent"
-                        placeholder="+1 234 567 890"
+                        placeholder="+53 5622 6278"
                     />
                     </div>
 
