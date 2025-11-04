@@ -9,7 +9,6 @@ interface EncabezadoPropiedadProps {
 export const EncabezadoPropiedad: React.FC<EncabezadoPropiedadProps> = ({ propiedad }) => {
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
-            {/* Navegación */}
             <div className="flex justify-between items-center mb-4">
                 <Link 
                     href="/catalogo"
@@ -22,7 +21,6 @@ export const EncabezadoPropiedad: React.FC<EncabezadoPropiedadProps> = ({ propie
                 </Link>
             </div>
 
-            {/* Título y ubicación */}
             <div className="text-center">
                 <h1 className="text-3xl font-bold text-[#003153] mb-2">
                     {propiedad.nombre}

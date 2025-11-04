@@ -33,7 +33,7 @@ export const MenuBar = () => {
           <img 
             src="/constructora-removebg-preview.png" 
             alt="Logo Constructora CChang"
-            className="w-16 h-auto object-contain" 
+            className="w-12 h-auto object-contain" 
           />
           <span className="text-xs text-gray-600 hidden md:block ">
             Construcción, Calidad, Confianza

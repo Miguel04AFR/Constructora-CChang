@@ -44,7 +44,6 @@ export const GaleriaImagenes: React.FC<GaleriaImagenesProps> = ({ propiedad }) =
 
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
-            {/* Imagen principal */}
             <div className="mb-4">
                 <img
                     src={imagenPrincipal}
@@ -53,7 +52,6 @@ export const GaleriaImagenes: React.FC<GaleriaImagenesProps> = ({ propiedad }) =
                 />
             </div>
 
-            {/* Miniaturas */}
             <div className="grid grid-cols-4 gap-2">
                 {imagenes.map((imagen, index) => (
                     <button

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { FormularioContacto } from '../index';
+import type { FormularioContacto } from '@/src/Services/FormularioContacto';
 import { IoCall, IoLocation, IoLogoWhatsapp, IoMail } from 'react-icons/io5';
 
 
@@ -90,6 +90,8 @@ const handleSumit = (e: React.FormEvent<HTMLFormElement>) => {
 
 
 const existeError = Object.keys(errores).length > 0;
+
+
   return (
     <div className='py-16 bg-white min-h-screen' id='contactanos'>
       <div className='max-w-7xl mx-auto px-4'>

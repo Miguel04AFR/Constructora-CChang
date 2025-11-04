@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import type { Casa } from '@/src/components/index';
+import type { Casa } from '@/src/Services/Casa';
 import {casasAnadidas} from '@/src/data/propiedades-casas';
 import Link from 'next/link';
 
@@ -12,7 +12,6 @@ export const CatalogoContainer = () => {
 
     const totalCasas = casasAnadidas.length;
 
-    // Función para limitar caracteres
     const limitarDescripcion = (descripcion: string, maxCaracteres: number = 100) => {
         if (descripcion.length <= maxCaracteres) {
             return descripcion;
@@ -89,7 +88,7 @@ export const CatalogoContainer = () => {
     return (
         <div className="min-h-screen bg-gray-50 py-12">
           <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-4xl font-bold text-[#003153] mb-4 text-center">
+            <h1 className="text-4xl font-bold text-[#003153] mb-4 text-center mt-5">
               Nuestras Viviendas
             </h1>
             <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">
@@ -134,7 +133,7 @@ export const CatalogoContainer = () => {
                             ${posicion === 2 && totalCasas > 2 ? 'translate-x-2' : ''}
                           `}
                         >
-                          {/* Tarjeta - AQUÍ ESTÁ EL CAMBIO PRINCIPAL */}
+                          {/* Tarjeta */}
                           <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow w-full h-full flex flex-col">
                             {/* Imagen */}
                             <div className="h-64 bg-gray-100 overflow-hidden flex shrink-0"> 
@@ -145,20 +144,20 @@ export const CatalogoContainer = () => {
                               />
                             </div>
                             
-                            {/* Contenedor de datos - CAMBIO CLAVE: flex-grow para que ocupe el espacio disponible */}
+                           
                             <div className="p-6  grow flex flex-col"> 
                               <h3 className="text-xl font-bold text-[#003153] mb-3"> 
                                 {casa.nombre}
                               </h3>
                         
-                              {/* Descripción - CAMBIO: min-h fijo para consistencia */}
+                            
                               <div className="mb-3 min-h-[60px]"> 
                                 <p className="text-sm text-gray-600"> 
                                   {descripcionLimitada}
                                 </p>
                               </div>
                         
-                              {/* Especificaciones - CAMBIO: mb-auto para empujar el contenido hacia abajo */}
+                              {/* Especificaciones */}
                               <div className="grid grid-cols-2 gap-4 mb-auto text-[12px] text-gray-600"> 
                                 <div className="flex items-center gap-1">
                                   <span>📍 {casa.ubicacion}</span>
@@ -174,7 +173,7 @@ export const CatalogoContainer = () => {
                                 </div>
                               </div>
                         
-                              {/* Precio y Botón - CAMBIO: mt-4 para espacio consistente */}
+                              {/* Precio y Botón */}
                               <div className="mt-4 pt-4 border-t border-gray-200">
                                 <div className="flex justify-between items-center gap-2">
                                   <span className="text-2xl font-bold text-[#6B21A8] flex shrink-0"> 

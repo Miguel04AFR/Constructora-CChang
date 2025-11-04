@@ -16,30 +16,22 @@ export const DetallePropiedad: React.FC<DetallePropiedadProps> = ({ propiedad })
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-6xl mx-auto px-4">
         
-                {/* Encabezado con navegación */}
                 <EncabezadoPropiedad propiedad={propiedad} />
         
-                {/* Contenido principal */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
 
-                    {/* Columna izquierda - Contenido principal */}
                     <div className="lg:col-span-2 space-y-8">
             
-                        {/* Galería de imágenes */}
                         <GaleriaImagenes propiedad={propiedad} />
             
-                        {/* Especificaciones básicas */}
                         <EspecificacionesPropiedad propiedad={propiedad} />
             
-                        {/* Descripción */}
                         <DescripcionPropiedad propiedad={propiedad} />
             
-                        {/* Características */}
                         <CaracteristicasPropiedad propiedad={propiedad} />
             
                     </div>
 
-                    {/* Columna derecha - Formulario de contacto */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-8">
                             <FormularioContacto propiedad={propiedad} />
