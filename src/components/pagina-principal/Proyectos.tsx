@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import type { Proyecto } from '@/src/components/index';
+import type { Proyecto } from '@/src/Services/Proyecto';
 
 
 const proyectosEjemplo: Proyecto[] = [ 
