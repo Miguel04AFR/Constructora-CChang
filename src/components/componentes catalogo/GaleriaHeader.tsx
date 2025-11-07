@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import type { Casa } from '@/src/Services/Casa';
+import type { Casa } from '@/src/components/index';
 
 interface GaleriaHeaderProps {
     propiedad: Casa;
