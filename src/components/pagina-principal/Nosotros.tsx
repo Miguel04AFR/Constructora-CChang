@@ -1,27 +1,31 @@
 "use client";
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const Nosotros = () => {
+  const { t } = useTranslation();
+
+
   const desenpeno = [
     {
-      titulo: "Calidad",
-      descripcion: "Materiales de primera y mano de obra especializada",
+      titulo: t('about.values.quality.title'),
+      descripcion: t('about.values.quality.description'),
       icono: "✓"
     },
     {
-      titulo: "Confianza", 
-      descripcion: "Cumplimos plazos y presupuestos acordados",
+      titulo: t('about.values.trust.title'), 
+      descripcion: t('about.values.trust.description'),
       icono: "🤝"
     },
     {
-      titulo: "Experiencia",
-      descripcion: "Más de 10 años en el sector de la construcción", 
+      titulo: t('about.values.experience.title'),
+      descripcion: t('about.values.experience.description'), 
       icono: "🏗️"
     },
     {
-      titulo: "Garantía",
-      descripcion: "Respaldamos todos nuestros trabajos",
+      titulo: t('about.values.guarantee.title'),
+      descripcion: t('about.values.guarantee.description'),
       icono: "🔒"
     }
   ];
@@ -40,7 +44,7 @@ export const Nosotros = () => {
         {/* Título Principal */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-[#003153] mb-4">
-            ¿Por qué elegir CChang?
+            {t('about.whyChoose')}
           </h1>
           <div className="w-24 h-1 bg-[#003153] mx-auto"></div>
         </div>
@@ -50,7 +54,7 @@ export const Nosotros = () => {
           {/* Columna izquierda - Valores */}
           <div>
             <h2 className="text-2xl font-bold text-[#003153] mb-6">
-              Nuestros Valores
+              {t('about.ourValues')}
             </h2>
             
             <div className="space-y-6">
@@ -78,36 +82,26 @@ export const Nosotros = () => {
           {/* Columna derecha - Texto descriptivo */}
           <div className="bg-gray-50 rounded-xl p-8">
             <h2 className="text-2xl font-bold text-[#003153] mb-6">
-              Sobre Nosotros
+              {t('about.aboutUs')}
             </h2>
             
             <div className="space-y-4 text-gray-700 leading-relaxed">
-              <p>
-                <strong>CChang Constructora</strong>, empresa cubana con más de 10 anos de experiencia, 
-                se especializa en proyectos para instituciones estatales y clientes privados.
-              </p>
               
-              <p>
-                Con presencia en múltiples provincias. Contamos con un equipo altamente calificado 
-                que garantiza ejecuciones eficientes y soluciones constructivas duraderas.
-              </p>
+              <p>{t('about.description1')}</p>
+              <p>{t('about.description2')}</p>
+              <p>{t('about.description3')}</p>
               
-              <p>
-                Nuestra cartera refleja el compromiso con el desarrollo nacional y la excelencia 
-                en cada proyecto, edificando no solo estructuras sino también relaciones sólidas 
-                con nuestros clientes.
-              </p>
             </div>
 
             {/* Estadísticas*/}
             <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-gray-200">
               <div className="text-center">
                 <div className="text-3xl font-bold text-[#003153]">10+</div>
-                <div className="text-sm text-gray-600">Años de Experiencia</div>
+                <div className="text-sm text-gray-600">{t('about.yearsExperience')}</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-[#003153]">Multiples</div>
-                <div className="text-sm text-gray-600">Provincias</div>
+                <div className="text-3xl font-bold text-[#003153]">{t('about.multiple')}</div>
+                <div className="text-sm text-gray-600">{t('about.provinces')}</div>
               </div>
             </div>
           </div>
@@ -117,7 +111,7 @@ export const Nosotros = () => {
         {/* contactar */}
         <div className="text-center mt-12">
           <button onClick={ () => scrollToSection("contactanos")} className="bg-[#003153] text-white px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-semibold">
-            Contactanos para tu Proyecto
+            {t('about.contactProject')}
           </button>
         </div>
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Proyecto } from '@/src/Services/Proyecto';
-
+import { useTranslation } from 'react-i18next';
 
 const proyectosEjemplo: Proyecto[] = [ 
   {
@@ -21,6 +21,7 @@ const proyectosEjemplo: Proyecto[] = [
 
   export const Proyectos = () => {
   const [indiceActual, setIndiceActual] = useState(0);
+  const { t } = useTranslation();
 
   const proyectoActual = proyectosEjemplo[indiceActual];
 
@@ -35,7 +36,7 @@ const proyectosEjemplo: Proyecto[] = [
   return (
     <div id="proyectos" className="p-8 bg-gray-50 min-h-screen">
       <h1 className="text-4xl font-bold text-center text-[#003153] mb-8">
-        Nuestros Proyectos
+        {t('navigation.projects')}
       </h1>
       
       <div className="max-w-4xl mx-auto">
@@ -55,7 +56,7 @@ const proyectosEjemplo: Proyecto[] = [
             onClick={() => setIndiceActual(prev => (prev - 1 + proyectosEjemplo.length) % proyectosEjemplo.length)}
             className="bg-[#003153] text-white px-6 py-3 rounded-lg hover:bg-blue-800"
           >
-           ← Anterior
+           {t('projects.previous')}
           </button>
           
           <div className="text-lg font-medium">{/*indicador 1/3 cosas asi */}
@@ -66,7 +67,7 @@ const proyectosEjemplo: Proyecto[] = [
             onClick={() => setIndiceActual(prev => (prev + 1) % proyectosEjemplo.length)}
             className="bg-[#003153] text-white px-6 py-3 rounded-lg hover:bg-blue-800"
           >
-             Siguiente →
+             {t('projects.next')}
           </button>
         </div>
       </div>
