@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { FormularioContacto } from '@/src/Services/FormularioContacto';
 import { IoCall, IoLocation, IoLogoWhatsapp, IoMail } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next'; 
@@ -17,13 +17,92 @@ export const Contactanos = () => {
 
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
   const [errores, setErrores] = useState<{ [key: string]: string }>({});
+  const [mostrarMensajeErrores, setMostrarMensajeErrores] = useState(false);
+  const [formularioValido, setFormularioValido] = useState(false);
+  const [camposTocados, setCamposTocados] = useState<{ [key: string]: boolean }>({});
+
+  // Efecto para verificar la validez del formulario cuando cambien los errores
+  useEffect(() => {
+    setFormularioValido(Object.keys(errores).length === 0);
+  }, [errores]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
+    let valorFiltrado = value;
+    if (name === 'nombre') {
+      valorFiltrado = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+      if (valorFiltrado.length > 50) {
+        valorFiltrado = valorFiltrado.slice(0, 50);
+      }
+    } else if (name === 'telefono') {
+      valorFiltrado = value.replace(/[^0-9]/g, '');
+      if (valorFiltrado.length > 8) {
+        valorFiltrado = valorFiltrado.slice(0, 8);
+      }
+    }
+
     setContacto((prevContacto) => ({
       ...prevContacto,
-      [name]: value,
+      [name]: valorFiltrado,
     }));
+
+    // Marcar el campo como tocado
+    if (!camposTocados[name]) {
+      setCamposTocados(prev => ({
+        ...prev,
+        [name]: true
+      }));
+    }
+
+    // Validar el campo individual
+    validarCampoIndividual(name, valorFiltrado);
+  };
+
+  const validarCampoIndividual = (name: string, value: string) => {
+    const nuevosErrores = { ...errores };
+
+    switch (name) {
+      case 'nombre':
+        if (!value.trim()) {
+          nuevosErrores.nombre = t('contact.form.errors.nameRequired');
+        } else if (!/^[a-zA-ZÀ-ÿ\s]{2,50}$/.test(value)) {
+          nuevosErrores.nombre = t('contact.form.errors.nameInvalid');
+        } else {
+          delete nuevosErrores.nombre;
+        }
+        break;
+
+      case 'telefono':
+        if (!value.trim()) {
+          nuevosErrores.telefono = t('contact.form.errors.phoneRequired');
+        } else if (!/^[0-9]{8}$/.test(value)) {
+          nuevosErrores.telefono = t('contact.form.errors.phoneInvalid');
+        } else {
+          delete nuevosErrores.telefono;
+        }
+        break;
+
+      case 'email':
+        if (!value.trim()) {
+          nuevosErrores.email = t('contact.form.errors.emailRequired');
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          nuevosErrores.email = t('contact.form.errors.emailInvalid');
+        } else {
+          delete nuevosErrores.email;
+        }
+        break;
+
+      case 'mensaje':
+        if (!value.trim()) {
+          nuevosErrores.mensaje = t('contact.form.errors.messageRequired');
+        } else {
+          delete nuevosErrores.mensaje;
+        }
+        break;
+    }
+
+    setErrores(nuevosErrores);
   };
 
   const validarFormulario = () => {
@@ -55,27 +134,52 @@ export const Contactanos = () => {
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  const handleSumit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (!validarFormulario()) {
-      return;
+
+    // Marcar todos los campos como tocados al enviar
+    const todosLosCamposTocados = {
+      nombre: true,
+      telefono: true,
+      email: true,
+      mensaje: true
+    };
+    setCamposTocados(todosLosCamposTocados);
+
+    if (validarFormulario()) {
+      setMensajeEnviado(true);
+      setMostrarMensajeErrores(false);
+      setContacto({
+        nombre: '',
+        telefono: '',
+        email: '',
+        mensaje: ''
+      });
+      setErrores({});
+      setCamposTocados({});
+    } else {
+      setMostrarMensajeErrores(true);
     }
 
-    setMensajeEnviado(true);
-    setContacto({
-      nombre: '',
-      telefono: '',
-      email: '',
-      mensaje: ''
-    });
-    
     setTimeout(() => {
       setMensajeEnviado(false);
     }, 5000);
   };
 
-  const existeError = Object.keys(errores).length > 0;
+  // Función para determinar la clase del input
+  const getInputClass = (campo: string, valor: string) => {
+    const fueTocado = camposTocados[campo];
+    const tieneError = errores[campo];
+    const tieneValor = valor.trim() !== '';
+
+    if (fueTocado && tieneError) {
+      return 'border-red-500 bg-red-50'; // Error
+    } else if (fueTocado && !tieneError && tieneValor) {
+      return 'border-green-500 bg-green-50'; // Válido
+    } else {
+      return 'border-gray-300 bg-white'; // Neutral
+    }
+  };
 
   return (
     <div className='py-16 bg-white min-h-screen' id='contactanos'>
@@ -92,7 +196,7 @@ export const Contactanos = () => {
           </div>
         )}
 
-        {existeError && (
+        {mostrarMensajeErrores && !formularioValido && (
           <div className='mb-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded'>
             {t('contact.form.errorMessage')} 
           </div>
@@ -180,16 +284,20 @@ export const Contactanos = () => {
           </div>
 
           <div>
-            <form className='mt-12 lg:mt-0' onSubmit={handleSumit}>
+            <form className='mt-12 lg:mt-0' onSubmit={handleSubmit}>
               <label className='block text-[#003153] font-semibold mb-2' htmlFor='nombre'>
                 {t('contact.form.name')} 
               </label>
-              <input className={`w-full p-2 border rounded mb-4 ${errores.nombre && 'border-red-500'}`} 
-                    type='text' id='nombre' name='nombre' 
-                    onChange={handleChange} value={contacto.nombre}  
-                    placeholder={t('contact.form.placeholders.name')} 
-                    required />
-
+              <input 
+                className={`w-full p-2 border rounded mb-1 ${getInputClass('nombre', contacto.nombre)}`} 
+                type='text' 
+                id='nombre' 
+                name='nombre' 
+                onChange={handleChange} 
+                value={contacto.nombre}  
+                placeholder={t('contact.form.placeholders.name')}
+                required 
+              />
               {errores.nombre && ( 
                 <p className='text-red-500 text-sm mb-3'>{errores.nombre}</p>
               )}
@@ -197,11 +305,16 @@ export const Contactanos = () => {
               <label className='block text-[#003153] font-semibold mb-2' htmlFor='telefono'>
                 {t('contact.form.phone')} 
               </label>
-              <input className={`w-full p-2 border rounded mb-4 ${errores.telefono && 'border-red-500'}`} 
-                    type='tel' id='telefono' name='telefono'  
-                    onChange={handleChange} value={contacto.telefono} 
-                    placeholder={t('contact.form.placeholders.phone')} 
-                    required />
+              <input 
+                className={`w-full p-2 border rounded mb-1 ${getInputClass('telefono', contacto.telefono)}`} 
+                type='tel' 
+                id='telefono' 
+                name='telefono'  
+                onChange={handleChange} 
+                value={contacto.telefono} 
+                placeholder={t('contact.form.placeholders.phone')}
+                required 
+              />
               {errores.telefono && ( 
                 <p className='text-red-500 text-sm mb-3'>{errores.telefono}</p>
               )}
@@ -209,11 +322,16 @@ export const Contactanos = () => {
               <label className='block text-[#003153] font-semibold mb-2' htmlFor='email'>
                 {t('contact.form.email')} 
               </label>
-              <input className={`w-full p-2 border rounded mb-4 ${errores.email && 'border-red-500'}`} 
-                    type='email' id='email' name='email'   
-                    onChange={handleChange} value={contacto.email} 
-                    placeholder={t('contact.form.placeholders.email')} 
-                    required />
+              <input 
+                className={`w-full p-2 border rounded mb-1 ${getInputClass('email', contacto.email)}`} 
+                type='email' 
+                id='email' 
+                name='email'   
+                onChange={handleChange} 
+                value={contacto.email} 
+                placeholder={t('contact.form.placeholders.email')}
+                required 
+              />
               {errores.email && (  
                 <p className='text-red-500 text-sm mb-3'>{errores.email}</p>
               )}
@@ -221,17 +339,29 @@ export const Contactanos = () => {
               <label className='block text-[#003153] font-semibold mb-2' htmlFor='mensaje'>
                 {t('contact.form.message')} 
               </label>
-              <textarea className={`w-full p-2 border rounded mb-4 ${errores.mensaje && 'border-red-500'}`} 
-                        id='mensaje' name='mensaje'  
-                        value={contacto.mensaje} onChange={handleChange} 
-                        rows={4} 
-                        placeholder={t('contact.form.placeholders.message')} 
-                        required />
+              <textarea 
+                className={`w-full p-2 border rounded mb-1 ${getInputClass('mensaje', contacto.mensaje)}`} 
+                id='mensaje' 
+                name='mensaje'  
+                value={contacto.mensaje} 
+                onChange={handleChange} 
+                rows={4} 
+                placeholder={t('contact.form.placeholders.message')}
+                required 
+              />
               {errores.mensaje && ( 
                 <p className='text-red-500 text-sm mb-3'>{errores.mensaje}</p>
               )}
 
-              <button className='bg-[#003153] text-white px-4 py-2 rounded hover:bg-[#002140] transition-colors w-full' type='submit'>
+              <button 
+                className={`px-4 py-2 rounded transition-colors w-full ${
+                  formularioValido 
+                    ? 'bg-[#003153] text-white hover:bg-[#002140]' 
+                    : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                }`} 
+                type='submit' 
+                disabled={!formularioValido}
+              >
                 {t('contact.form.send')} 
               </button>
             </form>
