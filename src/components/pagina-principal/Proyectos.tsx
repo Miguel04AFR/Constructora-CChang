@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Proyecto } from '@/src/Services/Proyecto';
+import { useTranslation } from 'react-i18next';
 
 const proyectosEjemplo: Proyecto[] = [ 
   {
@@ -27,6 +28,7 @@ const proyectosEjemplo: Proyecto[] = [
 export const Proyectos = () => {
   const [indiceActual, setIndiceActual] = useState(0);
   const [estaTransicionando, setEstaTransicionando] = useState(false);
+  const { t } = useTranslation();
 
   const proyectoActual = proyectosEjemplo[indiceActual];
 
@@ -60,14 +62,13 @@ export const Proyectos = () => {
 
         <div className="text-center mb-16">
           <h2 className="text-5xl font-bold text-[#003153] mb-4">
-            Proyectos Destacados
+            {t('projects.title')}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Descubre nuestras obras más representativas donde calidad y diseño se encuentran
+            {t('projects.subtitle')}
           </p>
           <div className="w-24 h-1 bg-[#003153] mx-auto mt-6 rounded-full"></div>
         </div>
-
 
         <div className="max-w-6xl mx-auto">
           <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -125,7 +126,7 @@ export const Proyectos = () => {
             <button
               onClick={anteriorProyecto}
               className="absolute left-6 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-blue-800 text-[#003153] rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 "
-              aria-label="Proyecto anterior"
+              aria-label={t('projects.previous')}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -135,7 +136,7 @@ export const Proyectos = () => {
             <button 
               onClick={siguienteProyecto}
               className="absolute right-6 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-blue-800 text-[#003153] rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
-              aria-label="Siguiente proyecto"
+              aria-label={t('projects.next')}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -175,8 +176,6 @@ export const Proyectos = () => {
             ))}
           </div>
         </div>
-
-       
       </div>
     </section>
   );

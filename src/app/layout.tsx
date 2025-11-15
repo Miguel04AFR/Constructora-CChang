@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { roboto } from "@/src/config/font";
 import "./globals.css";
+import I18nProvider from "./i18n-provider";
 
 export const metadata: Metadata = {
   title: "CChang Constructora",
@@ -15,9 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={roboto.className}>
+    <html lang="es" className={roboto.className}>
       <body className={roboto.className}>
-        {children}
+        <I18nProvider>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   );

@@ -3,23 +3,27 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import type { Casa } from '@/src/components/index';
+import { useTranslation } from 'react-i18next';
 
 interface GaleriaHeaderProps {
     propiedad: Casa;
 }
 
 const Encabezado: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
+    const { t } = useTranslation();
+
+
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
                 <Link 
                     href="/catalogo"
-                    className="flex items-center text-[#003153] hover:text-blue-800 transition-colors font-medium"
+                    className="flex items-center text-[#003153] hover:text-blue-800 transition-colors font-medium mt-4"
                 >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
-                    Volver al Catálogo
+                    {t('propertyDetail.backToCatalog')}
                 </Link>
             </div>
 

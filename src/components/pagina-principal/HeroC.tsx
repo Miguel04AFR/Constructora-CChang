@@ -2,11 +2,13 @@
 
 import { useRef, useEffect, useState } from 'react';
 import '../../module/moduloHeroC.css';
+import { useTranslation } from 'react-i18next';
 
 
 export const HeroC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [estaCargado, setEstaCargado] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -21,8 +23,8 @@ export const HeroC = () => {
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
-   if (element !== null) {
-    element.scrollIntoView({ behavior: 'smooth' });
+    if (element !== null) {
+      element.scrollIntoView({ behavior: 'smooth' });
   }
   };
 
@@ -50,14 +52,14 @@ export const HeroC = () => {
       {/* Contenido */}
       <div className={`hero-content ${estaCargado ? 'loaded' : ''}`}>
         <h1 className="hero-title">
-          <span>CChang</span>
+          <span>{t('hero.title')}</span>
           <span className="hero-subtitle">
-            Transformamos tus espacios con calidad y confianza
+            {t('hero.subtitle')}
           </span>
         </h1>
 
         <p className="hero-description">
-          Más de 10 años construyendo sueños y proyectos duraderos
+          {t('hero.description')}
         </p>
 
         <div className="hero-buttons">
@@ -65,14 +67,14 @@ export const HeroC = () => {
             onClick={() => scrollToSection('contactanos')}
             className="btn-primary"
           >
-            Contáctanos
+            {t('hero.contact')}
           </button>
           
           <button 
             onClick={() => scrollToSection('proyectos')}
             className="btn-secondary"
           >
-            Ver nuestros proyectos
+            {t('hero.projects')}
           </button>
         </div>
       </div>

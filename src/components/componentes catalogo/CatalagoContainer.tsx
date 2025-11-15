@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react';
 import type { Casa } from '@/src/Services/Casa';
 import {casasAnadidas} from '@/src/data/propiedades-casas';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 
 export const CatalogoContainer = () => {
     const [indiceActual, setIndiceActual] = useState(0);
     const [direccion, setDireccion] = useState<'derecha' | 'izquierda'>('derecha');
+    const { t } = useTranslation();
 
     const totalCasas = casasAnadidas.length;
 
@@ -88,12 +90,15 @@ export const CatalogoContainer = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-          <div className="max-w-7xl mx-auto px-4 mt-4">
-            <h1 className="text-4xl font-bold text-[#003153] mb-4 text-center mt-5">
-              Nuestras Viviendas
+     
+
+          <div className="max-w-7xl mx-auto px-4">
+            <h1 className="text-4xl font-bold text-[#003153] mb-4 text-center mt-4">
+              {t('catalog.title')}
+
             </h1>
             <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-              Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad
+              {t('catalog.subtitle')}
             </p>
 
             {/* Carrusel */}
@@ -104,8 +109,8 @@ export const CatalogoContainer = () => {
                     <button
                       onClick={anterior}
                       className="absolute -left-4 top-1/2 transform -translate-y-1/2 z-30 bg-[#003153] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-800 transition-colors"
-                      aria-label='Casa anterior'
-                      title='Ver casa anterior'
+                      aria-label={t('catalog.previousHouse')}
+                      title={t('catalog.previousHouse')}
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -134,7 +139,7 @@ export const CatalogoContainer = () => {
                             ${posicion === 2 && totalCasas > 2 ? 'translate-x-2' : ''}
                           `}
                         >
-                          {/* Tarjeta - AQUÍ ESTÁ EL CAMBIO PRINCIPAL */}
+                          {/* Tarjeta */}
                           <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow w-full h-full flex flex-col">
                             {/* Imagen */}
                             <div className="h-64 bg-gray-100 overflow-hidden flex shrink-0"> 
@@ -145,36 +150,36 @@ export const CatalogoContainer = () => {
                               />
                             </div>
                             
-                            {/* Contenedor de datos - CAMBIO CLAVE: flex-grow para que ocupe el espacio disponible */}
+                            {/* Contenedor de datos */}
                             <div className="p-6  grow flex flex-col"> 
                               <h3 className="text-xl font-bold text-[#003153] mb-3"> 
                                 {casa.nombre}
                               </h3>
                         
-                              {/* Descripción - CAMBIO: min-h fijo para consistencia */}
+                              {/* Descripción */}
                               <div className="mb-3 min-h-[60px]"> 
                                 <p className="text-sm text-gray-600"> 
                                   {descripcionLimitada}
                                 </p>
                               </div>
                         
-                              {/* Especificaciones - CAMBIO: mb-auto para empujar el contenido hacia abajo */}
+                              {/* Especificaciones */}
                               <div className="grid grid-cols-2 gap-4 mb-auto text-[12px] text-gray-600"> 
                                 <div className="flex items-center gap-1">
                                   <span>📍 {casa.ubicacion}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <span>🛏️ {casa.habitaciones} hab.</span>
+                                  <span>🛏️ {casa.habitaciones} {t('catalog.bedrooms')}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <span>🚿 {casa.banos} baños</span>
+                                  <span>🚿 {casa.banos} {t('catalog.bathrooms')}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <span>📐 {casa.metrosCuadrados} m²</span>
+                                  <span>📐 {casa.metrosCuadrados}  {t('catalog.area')}</span>
                                 </div>
                               </div>
                         
-                              {/* Precio y Botón - CAMBIO: mt-4 para espacio consistente */}
+                              {/* Precio y Botón */}
                               <div className="mt-4 pt-4 border-t border-gray-200">
                                 <div className="flex justify-between items-center gap-2">
                                   <span className="text-2xl font-bold text-[#6B21A8] flex shrink-0"> 
@@ -183,10 +188,10 @@ export const CatalogoContainer = () => {
                                   <Link 
                                     href={`/catalogo/${casa.id}`}
                                     className="bg-[#003153] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm whitespace-nowrap flex shrink-0" 
-                                    aria-label={`Ver detalles de ${casa.nombre}`}
-                                    title={`Más información sobre ${casa.nombre}`}
+                                    aria-label={t('catalog.viewDetails', { name: casa.nombre })}
+                                    title={t('catalog.viewDetails', { name: casa.nombre })}
                                   >
-                                    Ver Detalles
+                                    {t('catalog.viewDetailsButton')}
                                   </Link>
                                 </div>
                               </div>
@@ -202,8 +207,8 @@ export const CatalogoContainer = () => {
                     <button
                       onClick={siguiente}
                       className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-30 bg-[#003153] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-800 transition-colors"
-                      aria-label='Casa siguiente'
-                      title='Ver casa siguiente'
+                      aria-label={t('catalog.nextHouse')}
+                      title={t('catalog.nextHouse')}
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -225,8 +230,8 @@ export const CatalogoContainer = () => {
                       className={`w-3 h-3 rounded-full transition-colors ${
                         index === indiceActual ? 'bg-[#003153]' : 'bg-gray-300'
                       }`}
-                      aria-label={`Ir a casa ${index + 1}`}
-                      title={`Ver casa ${index + 1}`}
+                      aria-label={t('catalog.goToHouse', { number: index + 1 })}
+                      title={t('catalog.goToHouse', { number: index + 1 })}
                     />
                   ))}
                 </div>

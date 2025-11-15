@@ -1,0 +1,211 @@
+{
+    "navigation": {
+        "services": "Services",
+        "projects": "Projects",
+        "about": "About Us",
+        "contact": "Contact",
+        "login": "Login",
+        "welcome": "Welcome, {{name}}",
+        "logout": "Logout"
+    },
+    "hero": {
+        "title": "CChang",
+        "subtitle": "We transform your spaces with quality and trust",
+        "description": "Over 10 years building dreams and lasting projects",
+        "contact": "Contact Us",
+        "projects": "View Our Projects"
+    },
+    "contactForm": {
+        "title": "Contact about this property",
+        "name": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "message": "Message",
+        "send": "Send Message",
+        "required": "Complete required fields"
+    },
+    "properties": {
+        "ourHomes": "Our Homes",
+        "discover": "Discover our exclusive selection of homes designed for your comfort",
+        "viewDetails": "View Details",
+        "price": "Price",
+        "bedrooms": "bedrooms",
+        "bathrooms": "bathrooms",
+        "area": "Area"
+    },
+    "projects": {
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "services": {
+    "title": "Our Construction Services",
+    "subtitle": "Comprehensive solutions to make your construction projects a reality",
+    "moreInfo": "More information and prices →",
+    "view": "View",
+    "list": {
+      "residential": {
+        "title": "Residential Construction",
+        "description": "Houses and buildings with the highest quality standards."
+      },
+      "renovations": {
+        "title": "Renovations and Remodeling",
+        "description": "We transform your existing spaces with modern designs."
+      },
+      "consulting": {
+        "title": "Construction Consulting",
+        "description": "Specialized advice for your construction project."
+      },
+      "supervision": {
+        "title": "Project Supervision", 
+        "description": "Quality control and guaranteed compliance with deadlines."
+      }
+    }
+  },
+  "about": {
+    "whyChoose": "Why Choose CChang?",
+    "ourValues": "Our Values",
+    "aboutUs": "About Us",
+    "contactProject": "Contact Us for Your Project",
+    "yearsExperience": "Years of Experience",
+    "multiple": "Multiple",
+    "provinces": "Provinces",
+    "description1": "CChang Constructora, a Cuban company with over 10 years of experience, specializes in projects for state institutions and private clients.",
+    "description2": "With presence in multiple provinces. We have a highly qualified team that guarantees efficient executions and lasting construction solutions.",
+    "description3": "Our portfolio reflects the commitment to national development and excellence in each project, building not only structures but also solid relationships with our clients.",
+    "values": {
+      "quality": {
+        "title": "Quality",
+        "description": "Premium materials and specialized workforce"
+      },
+      "trust": {
+        "title": "Trust",
+        "description": "We meet agreed deadlines and budgets"
+      },
+      "experience": {
+        "title": "Experience",
+        "description": "Over 10 years in the construction sector"
+      },
+      "guarantee": {
+        "title": "Guarantee",
+        "description": "We back all our work"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact us for any questions or inquiries",
+    "info": {
+      "title": "Contact Information",
+      "phone": {
+        "title": "Phone",
+        "hours": "Monday to Friday: 8:00 AM - 5:00 PM"
+      },
+      "whatsapp": {
+        "title": "WhatsApp",
+        "hours": "Chat available 24/7"
+      },
+      "email": {
+        "title": "Email",
+        "response": "We respond in less than 24 hours"
+      },
+      "address": {
+        "title": "Address",
+        "street": "Street 50 between 35 and 37 #3508, Playa",
+        "city": "Havana, Cuba"
+      }
+    },
+    "form": {
+      "name": "Name:",
+      "phone": "Phone:",
+      "email": "Email:",
+      "message": "Message:",
+      "send": "Send",
+      "successMessage": "Thank you for contacting us! We will get in touch with you soon.",
+      "errorMessage": "Please correct the errors in the form.",
+      "placeholders": {
+        "name": "Your full name",
+        "phone": "Your phone number",
+        "email": "your@email.com",
+        "message": "Brief message"
+      },
+      "errors": {
+        "nameRequired": "Name is required",
+        "nameInvalid": "Name must be between 2 and 50 characters and contain only letters.",
+        "phoneRequired": "Phone is required",
+        "phoneInvalid": "Phone must have exactly 8 numbers.",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address.",
+        "messageRequired": "Message is required"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "2025 Constructora CChang. All rights reserved.",
+    "tagline": "Construction, Quality, Trust",
+    "social": {
+      "facebook": "Follow us on Facebook",
+      "instagram": "Follow us on Instagram",
+      "linkedin": "Follow us on LinkedIn"
+    }
+  },
+  "catalog": {
+    "title": "Our Homes", 
+    "subtitle": "Discover our exclusive selection of homes designed for your comfort",
+    "previousHouse": "Previous house",
+    "nextHouse": "Next house",
+    "goToHouse": "View house {{number}}",
+    "viewDetails": "View details of {{name}}",
+    "viewDetailsButton": "View Details",
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "area": "sq m"
+  },
+  "propertyDetail": {
+    "backToCatalog": "Back to Catalog",
+    "price": "Price",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms", 
+    "area": "Area",
+    "description": "Description",
+    "features": {
+      "title": "Features",
+      "pool": "Swimming Pool",
+      "garage": "Garage",
+      "garden": "Garden",
+      "airConditioning": "Air Conditioning",
+      "laundry": "Laundry",
+      "kitchen": "Equipped Kitchen"
+    },
+    "contactForm": {
+      "title": "Contact about this property",
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message", 
+      "send": "Send Message",
+      "placeholderName": "Your name",
+      "placeholderEmail": "your@email.com",
+      "placeholderPhone": "+53 5622 6278",
+      "placeholderMessage": "I'm interested in the property: {{propertyName}}",
+      "completeFields": "Complete required fields",
+      "characters": "characters",
+      "requiredFields": "Required fields",
+      "errors": {
+        "nameRequired": "Name is required",
+        "nameMinLength": "Name must have at least 2 characters",
+        "nameMaxLength": "Name cannot exceed 50 characters",
+        "nameInvalid": "Name can only contain letters and spaces",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "phoneInvalid": "Phone must have 8 numeric digits",
+        "messageRequired": "Message is required",
+        "messageMinLength": "Message must have at least 10 characters",
+        "messageMaxLength": "Message cannot exceed 500 characters"
+      },
+      "successMessage": "Message sent successfully. We will contact you soon.",
+      "validName": "Valid name",
+      "validEmail": "Valid email",
+      "validPhone": "Valid phone",
+      "validMessage": "Valid message"
+    }
+  }
+}
