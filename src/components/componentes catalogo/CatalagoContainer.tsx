@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import type { Casa } from '@/src/components/index';
+import type { Casa } from '@/src/Services/Casa';
 import {casasAnadidas} from '@/src/data/propiedades-casas';
 import Link from 'next/link';
 
@@ -88,8 +88,8 @@ export const CatalogoContainer = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-          <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-4xl font-bold text-[#003153] mb-4 text-center">
+          <div className="max-w-7xl mx-auto px-4 mt-4">
+            <h1 className="text-4xl font-bold text-[#003153] mb-4 text-center mt-5">
               Nuestras Viviendas
             </h1>
             <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">

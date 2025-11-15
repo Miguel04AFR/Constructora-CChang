@@ -64,7 +64,7 @@ export const Contactanos = () => {
         if (!value.trim()) {
           nuevosErrores.nombre = 'El nombre es obligatorio';
         } else if (!/^[a-zA-ZÀ-ÿ\s]{2,50}$/.test(value)) {
-          nuevosErrores.nombre = 'El nombre debe tener entre 2 y 50 caracteres y solo letras.';
+          nuevosErrores.nombre = 'El nombre debe tener entre 2 y 50 caracteres';
         } else {
           delete nuevosErrores.nombre;
         }

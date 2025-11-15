@@ -27,7 +27,7 @@ export const HeroC = () => {
   };
 
   return (
-    <section className="hero-section">
+    <section className="hero-section" id='heroC'>
       
       {/* Contenedor del video */}
       <div className="video-container">
