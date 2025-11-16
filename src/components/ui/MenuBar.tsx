@@ -100,10 +100,7 @@ export const MenuBar = () => {
                 <IoPersonOutline size={20} />
                 <span className="font-medium">{t('navigation.login')}</span>
               </button>
-              {/* Selector de idioma */}
-              <div className="ml-4"> 
-                <LanguageSelector />
-              </div>
+
             </div>
           ) : (
             <div className='flex items-center gap-3 flex-col sm:flex-row'>
@@ -121,6 +118,9 @@ export const MenuBar = () => {
               </button>
             </div>
           )}
+          <div className="ml-4"> 
+                <LanguageSelector />
+              </div>
         </div>
       </nav>
 

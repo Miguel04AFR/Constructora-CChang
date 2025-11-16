@@ -72,19 +72,6 @@ export default function CrearCuenta() {
     e.preventDefault();
     setEstaCargando(true);
 
-    // Validaciones
-    if (formData.password !== formData.confirmarPassword) {
-      alert('Las contraseñas no coinciden');
-      setEstaCargando(false);
-      return;
-    }
-
-    if (!formData.aceptaTerminos) {
-      alert('Debes aceptar los términos y condiciones');
-      setEstaCargando(false);
-      return;
-    }
-
 
     const fechaNacimiento = new Date(formData.fechaNacimiento);
     const hoy = new Date();

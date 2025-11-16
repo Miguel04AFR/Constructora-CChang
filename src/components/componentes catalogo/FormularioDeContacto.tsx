@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { Casa } from '@/src/components/index';
+import type { Casa } from '@/src/Services/Casa';
 import { useTranslation } from 'react-i18next';
 
 interface FormularioContactoProps {
