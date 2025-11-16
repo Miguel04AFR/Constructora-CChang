@@ -1,24 +1,18 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Casa } from '@/src/components/index';
 import { useTranslation } from 'react-i18next';
 
 interface FormularioContactoProps {
     propiedad: Casa;
 }
+
 interface ErroresFormulario {
     nombre?: string;
     email?: string;
     telefono?: string;
     mensaje?: string;
-}
-
-interface CampoValido {
-    nombre: boolean;
-    email: boolean;
-    telefono: boolean;
-    mensaje: boolean;
 }
 
 export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad }) => {
@@ -30,193 +24,209 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     });
 
     const [errores, setErrores] = useState<ErroresFormulario>({});
-    const [campoValido, setCampoValido] = useState<CampoValido>({
-        nombre: false,
-        email: false,
-        telefono: true, // Teléfono es opcional, por defecto válido
-        mensaje: false
-    });
-    const [campoTocado, setCampoTocado] = useState<CampoValido>({
-        nombre: false,
-        email: false,
-        telefono: false,
-        mensaje: false
-    });
+    const [mostrarMensajeErrores, setMostrarMensajeErrores] = useState(false);
+    const [formularioValido, setFormularioValido] = useState(false);
+    const [camposTocados, setCamposTocados] = useState<{ [key: string]: boolean }>({});
+    const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
     const { t } = useTranslation();
 
-    const validarCampo = (nombre: string, valor: string): string => {
-        switch (nombre) {
-            case 'nombre':
-                if (!valor.trim()) {
-                    return t('propertyDetail.contactForm.errors.nameRequired');
-                }
-                if (valor.trim().length < 2) {
-                    return t('propertyDetail.contactForm.errors.nameMinLength');
-                }
-                if (valor.trim().length > 50) {
-                    return t('propertyDetail.contactForm.errors.nameMaxLength');
-                }
-                if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(valor)) {
-                    return t('propertyDetail.contactForm.errors.nameInvalid');
-                }
-                return '';
-
-            case 'email':
-                if (!valor.trim()) {
-                    return t('propertyDetail.contactForm.errors.emailRequired');
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)) {
-                    return t('propertyDetail.contactForm.errors.emailInvalid');
-                }
-                return '';
-
-            case 'telefono':
-                if (valor.trim() && !/^[0-9]{8}$/.test(valor.trim())) {
-                    return t('propertyDetail.contactForm.errors.phoneInvalid');
-                }
-                return '';
-
-            case 'mensaje':
-                if (!valor.trim()) {
-                    return t('propertyDetail.contactForm.errors.messageRequired');
-                }
-                if (valor.trim().length < 10) {
-                    return t('propertyDetail.contactForm.errors.messageMinLength');
-                }
-                if (valor.trim().length > 500) {
-                    return t('propertyDetail.contactForm.errors.messageMaxLength');
-                }
-                return '';
-
-            default:
-                return '';
-        }
-    };
+    // Efecto para verificar la validez del formulario cuando cambien los errores
+    useEffect(() => {
+        setFormularioValido(Object.keys(errores).length === 0);
+    }, [errores]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        
+
+        let valorFiltrado = value;
+        if (name === 'nombre') {
+            valorFiltrado = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+            if (valorFiltrado.length > 50) {
+                valorFiltrado = valorFiltrado.slice(0, 50);
+            }
+        } else if (name === 'telefono') {
+            valorFiltrado = value.replace(/[^0-9]/g, '');
+            if (valorFiltrado.length > 8) {
+                valorFiltrado = valorFiltrado.slice(0, 8);
+            }
+        }
+
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: valorFiltrado,
         }));
 
-        if (campoTocado[name as keyof CampoValido]) {
-            const error = validarCampo(name, value);
-            setErrores(prev => ({
+        // Marcar el campo como tocado
+        if (!camposTocados[name]) {
+            setCamposTocados(prev => ({
                 ...prev,
-                [name]: error
-            }));
-            setCampoValido(prev => ({
-                ...prev,
-                [name]: !error
+                [name]: true
             }));
         }
+
+        // Validar el campo individual
+        validarCampoIndividual(name, valorFiltrado);
     };
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        
-        setCampoTocado(prev => ({
-            ...prev,
-            [name]: true
-        }));
+    const validarCampoIndividual = (name: string, value: string) => {
+        const nuevosErrores = { ...errores };
 
-        const error = validarCampo(name, value);
-        setErrores(prev => ({
-            ...prev,
-            [name]: error
-        }));
-        setCampoValido(prev => ({
-            ...prev,
-            [name]: !error
-        }));
-    };
+        switch (name) {
+            case 'nombre':
+                if (!value.trim()) {
+                    nuevosErrores.nombre = t('propertyDetail.contactForm.errors.nameRequired');
+                } else if (!/^[a-zA-ZÀ-ÿ\s]{2,50}$/.test(value)) {
+                    nuevosErrores.nombre = t('propertyDetail.contactForm.errors.nameInvalid');
+                } else {
+                    delete nuevosErrores.nombre;
+                }
+                break;
 
-    const getInputClasses = (campo: string) => {
-        const baseClasses = "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200";
-        const hasError = errores[campo as keyof ErroresFormulario] && campoTocado[campo as keyof CampoValido];
-        const isValid = campoValido[campo as keyof CampoValido] && campoTocado[campo as keyof CampoValido];
-        
-        if (hasError) {
-            return `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50`;
-        } else if (isValid) {
-            return `${baseClasses} border-green-500 focus:ring-green-500 focus:border-green-500 bg-green-50`;
-        } else {
-            return `${baseClasses} border-gray-300 focus:ring-[#003153] focus:border-transparent`;
+            case 'telefono':
+                if (value.trim() && !/^[0-9]{8}$/.test(value)) {
+                    nuevosErrores.telefono = t('propertyDetail.contactForm.errors.phoneInvalid');
+                } else {
+                    delete nuevosErrores.telefono;
+                }
+                break;
+
+            case 'email':
+                if (!value.trim()) {
+                    nuevosErrores.email = t('propertyDetail.contactForm.errors.emailRequired');
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    nuevosErrores.email = t('propertyDetail.contactForm.errors.emailInvalid');
+                } else {
+                    delete nuevosErrores.email;
+                }
+                break;
+
+            case 'mensaje':
+                if (!value.trim()) {
+                    nuevosErrores.mensaje = t('propertyDetail.contactForm.errors.messageRequired');
+                } else if (value.trim().length < 10) {
+                    nuevosErrores.mensaje = t('propertyDetail.contactForm.errors.messageMinLength');
+                } else if (value.trim().length > 500) {
+                    nuevosErrores.mensaje = t('propertyDetail.contactForm.errors.messageMaxLength');
+                } else {
+                    delete nuevosErrores.mensaje;
+                }
+                break;
         }
-    };
-
-    const validarFormularioCompleto = (): boolean => {
-        const nuevosErrores: ErroresFormulario = {};
-        const nuevosCampoTocados: CampoValido = {
-            nombre: true,
-            email: true,
-            telefono: true,
-            mensaje: true
-        };
-
-        nuevosErrores.nombre = validarCampo('nombre', formData.nombre);
-        nuevosErrores.email = validarCampo('email', formData.email);
-        nuevosErrores.telefono = validarCampo('telefono', formData.telefono);
-        nuevosErrores.mensaje = validarCampo('mensaje', formData.mensaje);
 
         setErrores(nuevosErrores);
-        setCampoTocado(nuevosCampoTocados);
-        setCampoValido({
-            nombre: !nuevosErrores.nombre,
-            email: !nuevosErrores.email,
-            telefono: !nuevosErrores.telefono,
-            mensaje: !nuevosErrores.mensaje
-        });
+    };
 
-        return !Object.values(nuevosErrores).some(error => error !== '');
+    const validarFormularioCompleto = () => {
+        const nuevosErrores: ErroresFormulario = {};
+
+        if (!formData.nombre.trim()) {
+            nuevosErrores.nombre = t('propertyDetail.contactForm.errors.nameRequired');
+        } else if (!/^[a-zA-ZÀ-ÿ\s]{2,50}$/.test(formData.nombre)) {
+            nuevosErrores.nombre = t('propertyDetail.contactForm.errors.nameInvalid');
+        }
+
+        if (formData.telefono.trim() && !/^[0-9]{8}$/.test(formData.telefono)) {
+            nuevosErrores.telefono = t('propertyDetail.contactForm.errors.phoneInvalid');
+        }
+
+        if (!formData.email.trim()) {
+            nuevosErrores.email = t('propertyDetail.contactForm.errors.emailRequired');
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            nuevosErrores.email = t('propertyDetail.contactForm.errors.emailInvalid');
+        }
+
+        if (!formData.mensaje.trim()) {
+            nuevosErrores.mensaje = t('propertyDetail.contactForm.errors.messageRequired');
+        } else if (formData.mensaje.trim().length < 10) {
+            nuevosErrores.mensaje = t('propertyDetail.contactForm.errors.messageMinLength');
+        } else if (formData.mensaje.trim().length > 500) {
+            nuevosErrores.mensaje = t('propertyDetail.contactForm.errors.messageMaxLength');
+        }
+
+        setErrores(nuevosErrores);
+        return Object.keys(nuevosErrores).length === 0;
+    };
+
+    // Función para determinar la clase del input
+    const getInputClass = (campo: string, valor: string) => {
+        const baseClasses = "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200";
+        const fueTocado = camposTocados[campo];
+        const tieneError = errores[campo];
+        const tieneValor = valor.trim() !== '';
+
+        let estadoClase = '';
+        if (fueTocado && tieneError) {
+            estadoClase = 'border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50';
+        } else if (fueTocado && !tieneError && tieneValor) {
+            estadoClase = 'border-green-500 focus:ring-green-500 focus:border-green-500 bg-green-50';
+        } else {
+            estadoClase = 'border-gray-300 focus:ring-[#003153] focus:border-transparent';
+        }
+
+        return `${baseClasses} ${estadoClase}`;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!validarFormularioCompleto()) {
+        // Marcar todos los campos como tocados al enviar
+        const todosLosCamposTocados = {
+            nombre: true,
+            telefono: true,
+            email: true,
+            mensaje: true
+        };
+        setCamposTocados(todosLosCamposTocados);
+
+        if (validarFormularioCompleto()) {
+            setMensajeEnviado(true);
+            setMostrarMensajeErrores(false);
+            
+            // Aquí iría la lógica para enviar el formulario
+            console.log('Formulario enviado:', formData);
+            
+            // Limpiar formulario
+            setFormData({
+                nombre: '',
+                email: '',
+                telefono: '',
+                mensaje: ''
+            });
+            setErrores({});
+            setCamposTocados({});
+        } else {
+            setMostrarMensajeErrores(true);
             // Scroll al primer error
             const primerError = document.querySelector('.border-red-500');
             if (primerError) {
                 primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-            return;
         }
 
-        // Aquí iría la lógica para enviar el formulario
-        console.log('Formulario enviado:', formData);
-        alert('Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.');
-        
-        setFormData({
-            nombre: '',
-            email: '',
-            telefono: '',
-            mensaje: ''
-        });
-        setErrores({});
-        setCampoValido({
-            nombre: false,
-            email: false,
-            telefono: true,
-            mensaje: false
-        });
-        setCampoTocado({
-            nombre: false,
-            email: false,
-            telefono: false,
-            mensaje: false
-        });
+        setTimeout(() => {
+            setMensajeEnviado(false);
+        }, 5000);
     };
-
-    const formularioValido = campoValido.nombre && campoValido.email && campoValido.mensaje;
 
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-bold text-[#003153] mb-4">{t('propertyDetail.contactForm.title')}</h2>
+            <h2 className="text-xl font-bold text-[#003153] mb-4">
+                {t('propertyDetail.contactForm.title')}
+            </h2>
 
+            {mensajeEnviado && (
+                <div className='mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded text-sm'>
+                    {t('propertyDetail.contactForm.successMessage')}
+                </div>
+            )}
+
+            {mostrarMensajeErrores && !formularioValido && (
+                <div className='mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm'>
+                    {t('propertyDetail.contactForm.errorMessage')}
+                </div>
+            )}
+      
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Campo Nombre */}
                 <div>
@@ -229,21 +239,14 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                         name="nombre"
                         value={formData.nombre}
                         onChange={handleChange}
-                        onBlur={handleBlur}
-                        required
-                        className={getInputClasses('nombre')}
+                        className={getInputClass('nombre', formData.nombre)}
                         placeholder={t('propertyDetail.contactForm.placeholderName')}
+                        required
                     />
-                    {errores.nombre && campoTocado.nombre && (
+                    {errores.nombre && camposTocados.nombre && (
                         <p className="mt-1 text-sm text-red-600 flex items-center">
                             <span className="mr-1">⚠</span>
                             {errores.nombre}
-                        </p>
-                    )}
-                    {campoValido.nombre && campoTocado.nombre && (
-                        <p className="mt-1 text-sm text-green-600 flex items-center">
-                            <span className="mr-1">✓</span>
-                            {t('propertyDetail.contactForm.validName')}
                         </p>
                     )}
                 </div>
@@ -259,21 +262,14 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        onBlur={handleBlur}
+                        className={getInputClass('email', formData.email)}
+                        placeholder={t('propertyDetail.contactForm.placeholderEmail')}
                         required
-                        className={getInputClasses('email')}
-                        placeholder="tu@email.com"
                     />
-                    {errores.email && campoTocado.email && (
+                    {errores.email && camposTocados.email && (
                         <p className="mt-1 text-sm text-red-600 flex items-center">
                             <span className="mr-1">⚠</span>
                             {errores.email}
-                        </p>
-                    )}
-                    {campoValido.email && campoTocado.email && (
-                        <p className="mt-1 text-sm text-green-600 flex items-center">
-                            <span className="mr-1">✓</span>
-                            {t('propertyDetail.contactForm.validEmail')}
                         </p>
                     )}
                 </div>
@@ -289,20 +285,13 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                         name="telefono"
                         value={formData.telefono}
                         onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={getInputClasses('telefono')}
-                        placeholder="+53 12345678"
+                        className={getInputClass('telefono', formData.telefono)}
+                        placeholder={t('propertyDetail.contactForm.placeholderPhone')}
                     />
-                    {errores.telefono && campoTocado.telefono && (
+                    {errores.telefono && camposTocados.telefono && (
                         <p className="mt-1 text-sm text-red-600 flex items-center">
                             <span className="mr-1">⚠</span>
                             {errores.telefono}
-                        </p>
-                    )}
-                    {campoValido.telefono && campoTocado.telefono && formData.telefono && (
-                        <p className="mt-1 text-sm text-green-600 flex items-center">
-                            <span className="mr-1">✓</span>
-                            {t('propertyDetail.contactForm.validPhone')}
                         </p>
                     )}
                 </div>
@@ -317,22 +306,15 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                         name="mensaje"
                         value={formData.mensaje}
                         onChange={handleChange}
-                        onBlur={handleBlur}
                         rows={4}
-                        className={getInputClasses('mensaje')}
+                        className={getInputClass('mensaje', formData.mensaje)}
                         placeholder={t('propertyDetail.contactForm.placeholderMessage', { propertyName: propiedad.nombre })}
                         required
                     />
-                    {errores.mensaje && campoTocado.mensaje && (
+                    {errores.mensaje && camposTocados.mensaje && (
                         <p className="mt-1 text-sm text-red-600 flex items-center">
                             <span className="mr-1">⚠</span>
                             {errores.mensaje}
-                        </p>
-                    )}
-                    {campoValido.mensaje && campoTocado.mensaje && (
-                        <p className="mt-1 text-sm text-green-600 flex items-center">
-                            <span className="mr-1">✓</span>
-                            {t('propertyDetail.contactForm.validMessage')}
                         </p>
                     )}
                     <div className="mt-1 text-xs text-gray-500 text-right">
