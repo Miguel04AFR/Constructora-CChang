@@ -170,9 +170,11 @@ const Iniciar = () => {
           <div className="text-center pt-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
               ¿No tienes cuenta?{' '}
+              <a href='/CrearCuenta'>
               <button type="button" className="text-[#003153] hover:text-blue-700 font-medium transition-colors">
                 Regístrate aquí
               </button>
+              </a>
             </p>
           </div>
         </form>
