@@ -1,4 +1,4 @@
-import {Casa} from '@/src/components/index'
+import {Casa} from '../Services/Casa'
 
 
 export const casasAnadidas: Casa[] = [

@@ -1,210 +1,219 @@
 {
-    "navigation": {
-        "services": "Servicios",
-        "projects": "Proyectos", 
-        "about": "Nosotros",
-        "contact": "Contacto",
-        "login": "Login",
-        "welcome": "Bienvenido, {{name}}",
-        "logout": "Salir"
+  "navigation": {
+    "services": "Servicios",
+    "projects": "Proyectos",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "login": "Login",
+    "welcome": "Bienvenido, {{name}}",
+    "logout": "Salir"
+  },
+  "hero": {
+    "title": "CChang",
+    "subtitle": "Transformamos tus espacios con calidad y confianza",
+    "description": "Más de 10 años construyendo sueños y proyectos duraderos",
+    "contact": "Contáctanos",
+    "projects": "Ver nuestros proyectos"
+  },
+  "contactForm": {
+    "title": "Contactar sobre esta propiedad",
+    "name": "Nombre completo",
+    "email": "Email",
+    "phone": "Teléfono",
+    "message": "Mensaje",
+    "send": "Enviar Mensaje",
+    "required": "Complete los campos requeridos"
+  },
+  "properties": {
+    "ourHomes": "Nuestras Viviendas",
+    "discover": "Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad",
+    "viewDetails": "Ver Detalles",
+    "price": "Precio",
+    "bedrooms": "habitaciones",
+    "bathrooms": "baños",
+    "area": "Superficie"
+  },
+  "projects": {
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "services": {
+    "title": "Nuestros Servicios de Construcción",
+    "subtitle": "Soluciones integrales para hacer realidad tus proyectos constructivos",
+    "moreInfo": "Más información y precios →",
+    "view": "Vista",
+    "list": {
+      "residential": {
+        "title": "Construcción Residencial",
+        "description": "Casas y edificios con los más altos estándares de calidad."
+      },
+      "renovations": {
+        "title": "Renovaciones y Remodelaciones",
+        "description": "Transformamos tus espacios existentes con diseños modernos."
+      },
+      "consulting": {
+        "title": "Consultoría en Construcción",
+        "description": "Asesoría especializada para tu proyecto constructivo."
+      },
+      "supervision": {
+        "title": "Supervisión de Proyectos",
+        "description": "Control de calidad y cumplimiento de plazos garantizados."
+      }
+    }
+  },
+  "about": {
+    "whyChoose": "¿Por qué elegir CChang?",
+    "ourValues": "Nuestros Valores",
+    "aboutUs": "Sobre Nosotros",
+    "contactProject": "Contactanos para tu Proyecto",
+    "yearsExperience": "Años de Experiencia",
+    "multiple": "Múltiples",
+    "provinces": "Provincias",
+    "description1": "CChang Constructora, empresa cubana con más de 10 anos de experiencia, se especializa en proyectos para instituciones estatales y clientes privados.",
+    "description2": "Con presencia en múltiples provincias. Contamos con un equipo altamente calificado que garantiza ejecuciones eficientes y soluciones constructivas duraderas.",
+    "description3": "Nuestra cartera refleja el compromiso con el desarrollo nacional y la excelencia en cada proyecto, edificando no solo estructuras sino también relaciones sólidas con nuestros clientes.",
+    "values": {
+      "quality": {
+        "title": "Calidad",
+        "description": "Materiales de primera y mano de obra especializada"
+      },
+      "trust": {
+        "title": "Confianza",
+        "description": "Cumplimos plazos y presupuestos acordados"
+      },
+      "experience": {
+        "title": "Experiencia",
+        "description": "Más de 10 años en el sector de la construcción"
+      },
+      "guarantee": {
+        "title": "Garantía",
+        "description": "Respaldamos todos nuestros trabajos"
+      }
+    }
+  },
+  "contact": {
+    "title": "Contacta con nosotros para cualquier duda o consulta",
+    "info": {
+      "title": "Información de Contacto",
+      "phone": {
+        "title": "Teléfono",
+        "hours": "Lunes a Viernes: 8:00 AM - 5:00 PM"
+      },
+      "whatsapp": {
+        "title": "WhatsApp",
+        "hours": "Chat disponible 24/7"
+      },
+      "email": {
+        "title": "Email",
+        "response": "Respondemos en menos de 24 horas"
+      },
+      "address": {
+        "title": "Dirección",
+        "street": "Calle 50 entre 35 y 37 #3508, Playa",
+        "city": "La Habana, Cuba"
+      }
     },
-    "hero": {
-        "title": "CChang",
-        "subtitle": "Transformamos tus espacios con calidad y confianza",
-        "description": "Más de 10 años construyendo sueños y proyectos duraderos",
-        "contact": "Contáctanos",
-        "projects": "Ver nuestros proyectos"
+    "form": {
+      "name": "Nombre:",
+      "phone": "Teléfono:",
+      "email": "Email:",
+      "message": "Mensaje:",
+      "send": "Enviar",
+      "successMessage": "¡Gracias por contactarnos! Nos pondremos en contacto contigo pronto.",
+      "errorMessage": "Por favor, corrige los errores en el formulario.",
+      "placeholders": {
+        "name": "Tu nombre completo",
+        "phone": "Tu número de teléfono",
+        "email": "tu@email.com",
+        "message": "Mensaje breve"
+      },
+      "errors": {
+        "nameRequired": "El nombre es obligatorio",
+        "nameInvalid": "El nombre debe tener entre 2 y 50 caracteres y solo letras.",
+        "phoneRequired": "El teléfono es obligatorio",
+        "phoneInvalid": "El teléfono debe tener exactamente 8 números.",
+        "emailRequired": "El email es obligatorio",
+        "emailInvalid": "Por favor, ingresa un correo electrónico válido.",
+        "messageRequired": "El mensaje es obligatorio"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "2025 Constructora CChang. Todos los derechos reservados.",
+    "tagline": "Construcción, Calidad, Confianza",
+    "social": {
+      "facebook": "Síguenos en Facebook",
+      "instagram": "Síguenos en Instagram",
+      "linkedin": "Síguenos en LinkedIn"
+    }
+  },
+  "catalog": {
+    "title": "Nuestras Viviendas",
+    "subtitle": "Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad",
+    "previousHouse": "Casa anterior",
+    "nextHouse": "Casa siguiente",
+    "goToHouse": "Ver casa {{number}}",
+    "viewDetails": "Ver detalles de {{name}}",
+    "viewDetailsButton": "Ver Detalles",
+    "bedrooms": "hab.",
+    "bathrooms": "baños",
+    "area": "m²"
+  },
+  "propertyDetail": {
+    "backToCatalog": "Volver al Catálogo",
+    "price": "Precio",
+    "bedrooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "area": "Superficie",
+    "description": "Descripción",
+    "remodel": {
+      "subtitle": "Dale nueva vida a tus espacios con nuestras remodelaciones."
+    },
+    "features": {
+      "title": "Características",
+      "pool": "Piscina",
+      "garage": "Garaje",
+      "garden": "Jardín",
+      "airConditioning": "Aire Acondicionado",
+      "laundry": "Lavadero",
+      "kitchen": "Cocina Equipada"
     },
     "contactForm": {
-        "title": "Contactar sobre esta propiedad",
-        "name": "Nombre completo",
-        "email": "Email",
-        "phone": "Teléfono",
-        "message": "Mensaje",
-        "send": "Enviar Mensaje",
-        "required": "Complete los campos requeridos"
-    },
-    "properties": {
-        "ourHomes": "Nuestras Viviendas",
-        "discover": "Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad",
-        "viewDetails": "Ver Detalles",
-        "price": "Precio",
-        "bedrooms": "habitaciones",
-        "bathrooms": "baños",
-        "area": "Superficie"
-    },
-    "projects": {
-        "previous": "Anterior",
-        "next": "Siguiente"
-    },
-    "services": {
-        "title": "Nuestros Servicios de Construcción",
-        "subtitle": "Soluciones integrales para hacer realidad tus proyectos constructivos",
-        "moreInfo": "Más información y precios →",
-        "view": "Vista",
-        "list": {
-            "residential": {
-                "title": "Construcción Residencial",
-                "description": "Casas y edificios con los más altos estándares de calidad."
-            },
-            "renovations": {
-                "title": "Renovaciones y Remodelaciones", 
-                "description": "Transformamos tus espacios existentes con diseños modernos."
-            },
-            "consulting": {
-                "title": "Consultoría en Construcción",
-                "description": "Asesoría especializada para tu proyecto constructivo."
-            },
-            "supervision": {
-                "title": "Supervisión de Proyectos",
-                "description": "Control de calidad y cumplimiento de plazos garantizados."
-            }
-        }
-    },
-    "about": {
-        "whyChoose": "¿Por qué elegir CChang?",
-        "ourValues": "Nuestros Valores",
-        "aboutUs": "Sobre Nosotros",
-        "contactProject": "Contactanos para tu Proyecto",
-        "yearsExperience": "Años de Experiencia",
-        "multiple": "Múltiples",
-        "provinces": "Provincias",
-        "description1": "CChang Constructora, empresa cubana con más de 10 anos de experiencia, se especializa en proyectos para instituciones estatales y clientes privados.",
-        "description2": "Con presencia en múltiples provincias. Contamos con un equipo altamente calificado que garantiza ejecuciones eficientes y soluciones constructivas duraderas.",
-        "description3": "Nuestra cartera refleja el compromiso con el desarrollo nacional y la excelencia en cada proyecto, edificando no solo estructuras sino también relaciones sólidas con nuestros clientes.",
-        "values": {
-            "quality": {
-                "title": "Calidad",
-                "description": "Materiales de primera y mano de obra especializada"
-            },
-            "trust": {
-                "title": "Confianza",
-                "description": "Cumplimos plazos y presupuestos acordados"
-            },
-            "experience": {
-                "title": "Experiencia",
-                "description": "Más de 10 años en el sector de la construcción"
-            },
-            "guarantee": {
-                "title": "Garantía",
-                "description": "Respaldamos todos nuestros trabajos"
-            }
-        }
-    },
-    "contact": {
-        "title": "Contacta con nosotros para cualquier duda o consulta",
-        "info": {
-            "title": "Información de Contacto",
-            "phone": {
-                "title": "Teléfono",
-                "hours": "Lunes a Viernes: 8:00 AM - 5:00 PM"
-            },
-            "whatsapp": {
-                "title": "WhatsApp",
-                "hours": "Chat disponible 24/7"
-            },
-            "email": {
-                "title": "Email",
-                "response": "Respondemos en menos de 24 horas"
-            },
-            "address": {
-                "title": "Dirección",
-                "street": "Calle 50 entre 35 y 37 #3508, Playa",
-                "city": "La Habana, Cuba"
-            }
-        },
-        "form": {
-            "name": "Nombre:",
-            "phone": "Teléfono:",
-            "email": "Email:",
-            "message": "Mensaje:",
-            "send": "Enviar",
-            "successMessage": "¡Gracias por contactarnos! Nos pondremos en contacto contigo pronto.",
-            "errorMessage": "Por favor, corrige los errores en el formulario.",
-            "placeholders": {
-                "name": "Tu nombre completo",
-                "phone": "Tu número de teléfono",
-                "email": "tu@email.com",
-                "message": "Mensaje breve"
-            },
-            "errors": {
-                "nameRequired": "El nombre es obligatorio",
-                "nameInvalid": "El nombre debe tener entre 2 y 50 caracteres y solo letras.",
-                "phoneRequired": "El teléfono es obligatorio",
-                "phoneInvalid": "El teléfono debe tener exactamente 8 números.",
-                "emailRequired": "El email es obligatorio",
-                "emailInvalid": "Por favor, ingresa un correo electrónico válido.",
-                "messageRequired": "El mensaje es obligatorio"
-            }
-        }
-    },
-    "footer": {
-        "copyright": "2025 Constructora CChang. Todos los derechos reservados.",
-        "tagline": "Construcción, Calidad, Confianza",
-        "social": {
-            "facebook": "Síguenos en Facebook",
-            "instagram": "Síguenos en Instagram", 
-            "linkedin": "Síguenos en LinkedIn"
-        }
-    },
-    "catalog": {
-        "title": "Nuestras Viviendas",
-        "subtitle": "Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad",
-        "previousHouse": "Casa anterior",
-        "nextHouse": "Casa siguiente", 
-        "goToHouse": "Ver casa {{number}}",
-        "viewDetails": "Ver detalles de {{name}}",
-        "viewDetailsButton": "Ver Detalles",
-        "bedrooms": "hab.",
-        "bathrooms": "baños",
-        "area": "m²"
-    },
-    "propertyDetail": {
-        "backToCatalog": "Volver al Catálogo",
-        "price": "Precio",
-        "bedrooms": "Habitaciones",
-        "bathrooms": "Baños",
-        "area": "Superficie",
-        "description": "Descripción",
-        "features": {
-            "title": "Características",
-            "pool": "Piscina",
-            "garage": "Garaje",
-            "garden": "Jardín",
-            "airConditioning": "Aire Acondicionado",
-            "laundry": "Lavadero",
-            "kitchen": "Cocina Equipada"
-        },
-        "contactForm": {
-            "title": "Contactar sobre esta propiedad",
-            "name": "Nombre completo",
-            "email": "Email", 
-            "phone": "Teléfono",
-            "message": "Mensaje",
-            "send": "Enviar Mensaje",
-            "placeholderName": "Tu nombre",
-            "placeholderEmail": "tu@email.com",
-            "placeholderMessage": "Estoy interesado en la propiedad: {{propertyName}}",
-            "completeFields": "Complete los campos requeridos",
-            "requiredFields": "Campos obligatorios",
-            "characters": "caracteres",
-            "errors": {
-                "nameRequired": "El nombre es obligatorio",
-                "nameMinLength": "El nombre debe tener al menos 2 caracteres",
-                "nameMaxLength": "El nombre no puede exceder 50 caracteres",
-                "nameInvalid": "El nombre solo puede contener letras y espacios",
-                "emailRequired": "El email es obligatorio",
-                "emailInvalid": "Por favor, ingresa un email válido",
-                "phoneInvalid": "El teléfono debe tener 8 dígitos numéricos",
-                "messageRequired": "El mensaje es obligatorio",
-                "messageMinLength": "El mensaje debe tener al menos 10 caracteres",
-                "messageMaxLength": "El mensaje no puede exceder 500 caracteres"
-            },
-            "successMessage": "Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.",
-            "validName": "Nombre válido",
-            "validEmail": "Email válido",
-            "validPhone": "Teléfono válido",
-            "validMessage": "Mensaje válido"    
-        }
-    }    
+      "title": "Contactar sobre esta propiedad",
+      "name": "Nombre completo",
+      "email": "Email",
+      "phone": "Teléfono",
+      "message": "Mensaje",
+      "send": "Enviar Mensaje",
+      "placeholderName": "Tu nombre",
+      "placeholderEmail": "tu@email.com",
+      "placeholderMessage": "Estoy interesado en la propiedad: {{propertyName}}",
+      "completeFields": "Complete los campos requeridos",
+      "requiredFields": "Campos obligatorios",
+      "characters": "caracteres",
+      "errors": {
+        "nameRequired": "El nombre es obligatorio",
+        "nameMinLength": "El nombre debe tener al menos 2 caracteres",
+        "nameMaxLength": "El nombre no puede exceder 50 caracteres",
+        "nameInvalid": "El nombre solo puede contener letras y espacios",
+        "emailRequired": "El email es obligatorio",
+        "emailInvalid": "Por favor, ingresa un email válido",
+        "phoneInvalid": "El teléfono debe tener 8 dígitos numéricos",
+        "messageRequired": "El mensaje es obligatorio",
+        "messageMinLength": "El mensaje debe tener al menos 10 caracteres",
+        "messageMaxLength": "El mensaje no puede exceder 500 caracteres"
+      },
+      "successMessage": "Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.",
+      "validName": "Nombre válido",
+      "validEmail": "Email válido",
+      "validPhone": "Teléfono válido",
+      "validMessage": "Mensaje válido"
+    }
+  },
+  "remodel": {
+    "subtitle": "Dale nueva vida a tus espacios con nuestros servicios de remodelación.",
+    "itemsTitle": "Objetos",
+    "contact": "Comprar",
+    "viewDetails": "Detalles"
+  }
 }
