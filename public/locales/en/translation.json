@@ -34,6 +34,8 @@
         "area": "Area"
     },
     "projects": {
+    "title": "Our projects",
+    "subtitle": "Discover our most outstanding works and innovative projects",
     "previous": "Previous",
     "next": "Next"
   },

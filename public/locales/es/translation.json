@@ -34,6 +34,8 @@
         "area": "Superficie"
     },
     "projects": {
+        "title": "Nuestros Proyectos",
+        "subtitle": "Descubre nuestras obras más destacadas y proyectos innovadores",
         "previous": "Anterior",
         "next": "Siguiente"
     },
