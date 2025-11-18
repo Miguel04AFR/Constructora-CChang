@@ -1,43 +1,63 @@
 {
-    "navigation": {
-        "services": "Services",
-        "projects": "Projects",
-        "about": "About Us",
-        "contact": "Contact",
-        "login": "Login",
-        "welcome": "Welcome, {{name}}",
-        "logout": "Logout"
-    },
-    "hero": {
-        "title": "CChang",
-        "subtitle": "We transform your spaces with quality and trust",
-        "description": "Over 10 years building dreams and lasting projects",
-        "contact": "Contact Us",
-        "projects": "View Our Projects"
-    },
-    "contactForm": {
-        "title": "Contact about this property",
-        "name": "Full Name",
-        "email": "Email",
-        "phone": "Phone",
-        "message": "Message",
-        "send": "Send Message",
-        "required": "Complete required fields"
-    },
-    "properties": {
-        "ourHomes": "Our Homes",
-        "discover": "Discover our exclusive selection of homes designed for your comfort",
-        "viewDetails": "View Details",
-        "price": "Price",
-        "bedrooms": "bedrooms",
-        "bathrooms": "bathrooms",
-        "area": "Area"
-    },
-    "projects": {
-    "title": "Our projects",
+  "navigation": {
+    "services": "Services",
+    "projects": "Projects",
+    "about": "About Us",
+    "contact": "Contact",
+    "login": "Login",
+    "welcome": "Welcome, {{name}}",
+    "logout": "Logout"
+  },
+  "hero": {
+    "title": "CChang",
+    "subtitle": "We transform your spaces with quality and trust",
+    "description": "Over 10 years building dreams and lasting projects",
+    "contact": "Contact Us",
+    "projects": "View Our Projects"
+  },
+  "contactForm": {
+    "title": "Contact about this property",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send Message",
+    "required": "Complete required fields"
+  },
+  "properties": {
+    "ourHomes": "Our Homes",
+    "discover": "Discover our exclusive selection of homes designed for your comfort",
+    "viewDetails": "View Details",
+    "price": "Price",
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "area": "Area"
+  },
+  "projects": {
+    "title": "Our Projects",
     "subtitle": "Discover our most outstanding works and innovative projects",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "goToProject": "Go to project {{number}}",
+    "viewProject": "View project {{name}}",
+    "list": {
+      "residential": {
+        "title": "Residential Construction",
+        "description": "Houses and buildings with the highest quality standards."
+      },
+      "renovations": {
+        "title": "Renovations and Remodeling",
+        "description": "We transform your existing spaces with modern designs."
+      },
+      "consulting": {
+        "title": "Construction Consulting",
+        "description": "Specialized advice for your construction project."
+      },
+      "supervision": {
+        "title": "Project Supervision",
+        "description": "Quality control and guaranteed compliance with deadlines."
+      }
+    }
   },
   "services": {
     "title": "Our Construction Services",
@@ -58,7 +78,7 @@
         "description": "Specialized advice for your construction project."
       },
       "supervision": {
-        "title": "Project Supervision", 
+        "title": "Project Supervision",
         "description": "Quality control and guaranteed compliance with deadlines."
       }
     }
@@ -141,7 +161,7 @@
     }
   },
   "footer": {
-    "copyright": "2025 Constructora CChang. All rights reserved.",
+    "copyright": "&copy; 2025 Constructora CChang. All rights reserved.",
     "tagline": "Construction, Quality, Trust",
     "social": {
       "facebook": "Follow us on Facebook",
@@ -150,7 +170,7 @@
     }
   },
   "catalog": {
-    "title": "Our Homes", 
+    "title": "Our Homes",
     "subtitle": "Discover our exclusive selection of homes designed for your comfort",
     "previousHouse": "Previous house",
     "nextHouse": "Next house",
@@ -165,7 +185,7 @@
     "backToCatalog": "Back to Catalog",
     "price": "Price",
     "bedrooms": "Bedrooms",
-    "bathrooms": "Bathrooms", 
+    "bathrooms": "Bathrooms",
     "area": "Area",
     "description": "Description",
     "features": {
@@ -174,6 +194,7 @@
       "garage": "Garage",
       "garden": "Garden",
       "airConditioning": "Air Conditioning",
+      "wifi": "WiFi",
       "laundry": "Laundry",
       "kitchen": "Equipped Kitchen"
     },
@@ -182,7 +203,7 @@
       "name": "Full Name",
       "email": "Email",
       "phone": "Phone",
-      "message": "Message", 
+      "message": "Message",
       "send": "Send Message",
       "placeholderName": "Your name",
       "placeholderEmail": "your@email.com",
@@ -209,5 +230,11 @@
       "validPhone": "Valid phone",
       "validMessage": "Valid message"
     }
+  },
+  "remodel": {
+    "subtitle": "Give new life to your spaces with our remodeling services.",
+    "itemsTitle": "Items",
+    "viewDetails": "Details",
+    "contact": "Buy"
   }
 }

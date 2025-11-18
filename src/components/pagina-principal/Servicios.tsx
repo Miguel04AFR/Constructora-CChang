@@ -74,7 +74,7 @@ export const Servicios = () => {
                                         <p className="mt-4 text-[#003153] font-medium hover:text-blue-800 transition-colors">
                                             {t('services.moreInfo')}
                                         </p>
-                                        <Link href="/catalogo">
+                                        <Link href={servicio.id === 2 ? '/servicios/renovaciones' : '/catalogo'}>
                                             <button className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
                                                 {t('services.view')}
                                             </button>
