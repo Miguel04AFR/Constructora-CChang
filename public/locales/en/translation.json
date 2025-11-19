@@ -236,5 +236,29 @@
     "itemsTitle": "Items",
     "viewDetails": "Details",
     "contact": "Buy"
-  }
+  },
+  "newUser": {
+    "title": "Create Account",
+    "subtitle": "Join Constructora CChang",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "lastname": "Last Name",
+    "lastnamePlaceholder": "Your last name",
+    "email": "Email",
+    "yourEmail": "your@email.com",
+    "telephone": "Phone",
+    "dateOfbirth": "Date of Birth",
+    "adult": "You must be over 18 years old",
+    "password": "Password",
+    "passwordPlaceHolder": "Minimum 6 characters",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceHolder": "Repeat your password",
+    "termsPlaceHolder": "terms and conditions",
+    "and": "and the",
+    "privatePolicy": "privacy policy",
+    "creating": "Creating account...",
+    "create": "Create Account",
+    "question": "Already have an account?",
+    "getBack": "Back"
+}
 }

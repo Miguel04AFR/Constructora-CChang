@@ -112,6 +112,7 @@ export const Proyectos = () => {
                               ? 'bg-white scale-125' 
                               : 'bg-white/50 hover:bg-white/80'
                           }`}
+                          aria-label={t('projects.goToProject', { number: index + 1 })}
                         />
                       ))}
                     </div>

@@ -236,5 +236,29 @@
     "itemsTitle": "Objetos",
     "contact": "Comprar",
     "viewDetails": "Detalles"
+  },
+  "newUser": {
+    "title": "Crear cuenta",
+    "subtitle": "Únete a Constructora CChang",
+    "name": "Nombre",
+    "namePlaceholder": "Tu nombre",
+    "lastname": "Apellido",
+    "lastnamePlaceholder": "Tus apellidos",
+    "email": "Correo electrónico",
+    "yourEmail": "tu@email.com",
+    "telephone": "Teléfono",
+    "dateOfbirth": "Fecha de Nacimiento",
+    "adult": "Debes ser mayor de 18 años",
+    "password": "Contraseña",
+    "passwordPlaceHolder": "Mínimo 6 caracteres",
+    "confirmPassword": "Confirmar Contraseña",
+    "confirmPasswordPlaceHolder": "Repite tu contraseña",
+    "termsPlaceHolder": "terminos y condiciones",
+    "and": "y la",
+    "privatePolicy": "política de privacidad",
+    "creating": "Creando cuenta...",
+    "create": "Crear Cuenta",
+    "question": "¿Ya tienes cuenta?",
+    "getBack": "Volver"
   }
 }

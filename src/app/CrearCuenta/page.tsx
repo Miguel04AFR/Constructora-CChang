@@ -4,9 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Usuario } from '@/src/Services/Usuario';
+import { useTranslation } from 'react-i18next';
 
 export default function CrearCuenta() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -19,26 +21,23 @@ export default function CrearCuenta() {
   });
   const [estaCargando, setEstaCargando] = useState(false);
 
-
   const abrirCalendario = () => {
-  const inputFecha = document.querySelector('#fechaNacimiento') as HTMLInputElement;
-   if (inputFecha && 'showPicker' in inputFecha) {// && showPicker in inputfecha verifica que el metodo showpicker este en el input d ela fecha
-    inputFecha.showPicker();
-  }
-};
+    const inputFecha = document.querySelector('#fechaNacimiento') as HTMLInputElement;
+    if (inputFecha && 'showPicker' in inputFecha) {
+      inputFecha.showPicker();
+    }
+  };
 
   const manejarCambio = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
 
-
-     let valorFiltrado = value;
+    let valorFiltrado = value;
     if (name === 'nombre') {
       valorFiltrado = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
       if (valorFiltrado.length > 50) {
         valorFiltrado = valorFiltrado.slice(0, 50);
       }
-    }
-      else if (name === 'apellido') {
+    } else if (name === 'apellido') {
       valorFiltrado = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
       if (valorFiltrado.length > 50) {
         valorFiltrado = valorFiltrado.slice(0, 50);
@@ -57,10 +56,6 @@ export default function CrearCuenta() {
         valorFiltrado = valorFiltrado.slice(0, 40);
       }
     }
-    
-
-
-
 
     setFormData(prev => ({
       ...prev,
@@ -72,7 +67,6 @@ export default function CrearCuenta() {
     e.preventDefault();
     setEstaCargando(true);
 
-
     const fechaNacimiento = new Date(formData.fechaNacimiento);
     const hoy = new Date();
     const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
@@ -83,7 +77,6 @@ export default function CrearCuenta() {
     }
 
     try {
-      // Crear objeto Usuario directamente
       const nuevoUsuario: Usuario = {
         nombre: formData.nombre,
         apellido: formData.apellido,
@@ -129,27 +122,27 @@ export default function CrearCuenta() {
     <main className="min-h-screen py-12">
       <div className="max-w-lvh mx-auto bg-white rounded-2xl shadow-lg p-8">
 
-       <div className="text-center mb-5">
-    <div className="flex justify-center"> {/* Contenedor solo para la imagen sino no se centra la hp*/}
-    <img 
-      src="/constructora-removebg-preview.png" 
-      alt="Logo Constructora CChang"
-      className="w-auto h-auto object-contain" 
-    />
-  </div>
-  <h1 className="text-3xl font-bold text-[#003153] mb-2 mt-0">
-    Crear Cuenta
-  </h1>
-  <p className="text-gray-600">
-    Únete a Constructora CChang
-  </p>
-</div>
+        <div className="text-center mb-5">
+          <div className="flex justify-center">
+            <img 
+              src="/constructora-removebg-preview.png" 
+              alt="Logo Constructora CChang"
+              className="w-auto h-auto object-contain" 
+            />
+          </div>
+          <h1 className="text-3xl font-bold text-[#003153] mb-2 mt-0">
+            {t('newUser.title')}
+          </h1>
+          <p className="text-gray-600">
+            {t('newUser.subtitle')}
+          </p>
+        </div>
 
         <form onSubmit={manejarEnvio} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nombre *
+                {t('newUser.name')} *
               </label>
               <input
                 type="text"
@@ -158,12 +151,12 @@ export default function CrearCuenta() {
                 onChange={manejarCambio}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
-                placeholder="Tu nombre"
+                placeholder={t('newUser.namePlaceholder')}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Apellido *
+                {t('newUser.lastname')} *
               </label>
               <input
                 type="text"
@@ -172,14 +165,14 @@ export default function CrearCuenta() {
                 onChange={manejarCambio}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
-                placeholder="Tu apellido"
+                placeholder={t('newUser.lastnamePlaceholder')}
               />
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Correo Electrónico *
+              {t('newUser.email')} *
             </label>
             <input
               type="email"
@@ -188,13 +181,13 @@ export default function CrearCuenta() {
               onChange={manejarCambio}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
-              placeholder="tu@email.com"
+              placeholder={t('newUser.yourEmail')}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Teléfono *
+              {t('newUser.telephone')} *
             </label>
             <input
               type="tel"
@@ -209,7 +202,7 @@ export default function CrearCuenta() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Fecha de Nacimiento *
+              {t('newUser.dateOfbirth')} *
             </label>
             <input
               id='fechaNacimiento'
@@ -221,19 +214,19 @@ export default function CrearCuenta() {
               onKeyDown={(e) => e.preventDefault()}
               max={calcularFechaMaxima()}
               min={calcularFechaMinima()}
-               onFocus={abrirCalendario} 
+              onFocus={abrirCalendario} 
               onClick={abrirCalendario}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
-              placeholder='fecha de Nacimiento'
+              placeholder={t('newUser.dateOfbirth')}
             />
             <p className="text-xs text-gray-500 mt-1">
-              Debes ser mayor de 18 años
+              {t('newUser.adult')}
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Contraseña *
+              {t('newUser.password')} *
             </label>
             <input
               type="password"
@@ -243,13 +236,13 @@ export default function CrearCuenta() {
               required
               minLength={6}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
-              placeholder="Mínimo 6 caracteres"
+              placeholder={t('newUser.passwordPlaceHolder')}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Confirmar Contraseña *
+              {t('newUser.confirmPassword')} *
             </label>
             <input
               type="password"
@@ -258,7 +251,7 @@ export default function CrearCuenta() {
               onChange={manejarCambio}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
-              placeholder="Repite tu contraseña"
+              placeholder={t('newUser.confirmPasswordPlaceHolder')}
             />
           </div>
 
@@ -269,17 +262,17 @@ export default function CrearCuenta() {
               checked={formData.aceptaTerminos}
               onChange={manejarCambio}
               required
+              aria-label="Acepto los términos y condiciones y la política de privacidad"
               className="w-4 h-4 text-[#003153] border-gray-300 rounded focus:ring-[#003153] mt-1"
-              placeholder='terminos y condicione'
             />
             <label className="text-sm text-gray-600">
-              Acepto los{' '}
+              {t('newUser.termsPlaceHolder')}{' '}
               <Link href="/terminos" className="text-[#003153] hover:underline">
-                términos y condiciones
+                {t('newUser.termsPlaceHolder')}
               </Link>{' '}
-              y la{' '}
+              {t('newUser.and')}{' '}
               <Link href="/privacidad" className="text-[#003153] hover:underline">
-                política de privacidad
+                {t('newUser.privatePolicy')}
               </Link>
             </label>
           </div>
@@ -289,15 +282,15 @@ export default function CrearCuenta() {
             disabled={estaCargando}
             className="w-full bg-[#003153] text-white py-3 rounded-lg hover:bg-blue-800 transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {estaCargando ? 'Creando cuenta...' : 'Crear Cuenta'}
+            {estaCargando ? t('newUser.creating') : t('newUser.create')}
           </button>
 
           {/* Enlace a Login */}
           <div className="text-center">
             <p className="text-gray-600">
-              ¿Ya tienes cuenta?{' '}
+              {t('newUser.question')}{' '}
               <Link href="/" className="text-[#003153] hover:underline font-semibold">
-                Volver
+                {t('newUser.getBack')}
               </Link>
             </p>
           </div>
