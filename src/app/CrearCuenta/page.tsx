@@ -1,10 +1,17 @@
 'use client';
 
+
+
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+<<<<<<< Updated upstream
 import type { Usuario } from '@/src/Services/Usuario';
 import { useTranslation } from 'react-i18next';
+=======
+import  {usuarioService ,type Usuario } from '@/src/Services/Usuario';
+>>>>>>> Stashed changes
 
 export default function CrearCuenta() {
   const router = useRouter();
@@ -20,6 +27,7 @@ export default function CrearCuenta() {
     aceptaTerminos: false
   });
   const [estaCargando, setEstaCargando] = useState(false);
+  const [mostrarExito, setMostrarExito] = useState(false);
 
   const abrirCalendario = () => {
     const inputFecha = document.querySelector('#fechaNacimiento') as HTMLInputElement;
@@ -77,28 +85,28 @@ export default function CrearCuenta() {
     }
 
     try {
+<<<<<<< Updated upstream
+=======
+      // Crear Usuario
+>>>>>>> Stashed changes
       const nuevoUsuario: Usuario = {
         nombre: formData.nombre,
         apellido: formData.apellido,
-        email: formData.email,
+        gmail: formData.email,
         password: formData.password,
         telefono: formData.telefono,
         fechaNacimiento: new Date(formData.fechaNacimiento)
       };
 
-      console.log('Usuario a crear:', nuevoUsuario);
-      
-      // Aquí iría la llamada a la API
-      // await registrarUsuario(nuevoUsuario);
-      
+      const usuarioCreado = await usuarioService.crearUsuario(nuevoUsuario);
+      setMostrarExito(true);
       // Simular registro exitoso 
       setTimeout(() => {
-        router.push('/cuenta-creada');
-      }, 1000);
+        router.push('/');
+      }, 2000);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al crear cuenta:', error);
-      alert('Error al crear la cuenta. Intenta nuevamente.');
     } finally {
       setEstaCargando(false);
     }
@@ -214,7 +222,10 @@ export default function CrearCuenta() {
               onKeyDown={(e) => e.preventDefault()}
               max={calcularFechaMaxima()}
               min={calcularFechaMinima()}
+<<<<<<< Updated upstream
               onFocus={abrirCalendario} 
+=======
+>>>>>>> Stashed changes
               onClick={abrirCalendario}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
               placeholder={t('newUser.dateOfbirth')}
@@ -296,6 +307,36 @@ export default function CrearCuenta() {
           </div>
         </form>
       </div>
+        {mostrarExito && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 text-center">
+          
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          
+       
+          <h3 className="text-xl font-bold text-gray-800 mb-2">
+            ¡Cuenta Creada!
+          </h3>
+          <p className="text-gray-600 mb-6">
+            Tu cuenta ha sido creada exitosamente.
+          </p>
+          
+         
+          <div className="text-sm text-gray-500">
+            Redirigiendo en 2 segundos...
+          </div>
+          
+        
+          <div className="mt-4">
+            <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
+          </div>
+        </div>
+      </div>
+        )}
     </main>
   );
 }
