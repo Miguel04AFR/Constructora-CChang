@@ -1,17 +1,10 @@
 'use client';
 
-
-
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-<<<<<<< Updated upstream
-import type { Usuario } from '@/src/Services/Usuario';
+import { usuarioService, type Usuario } from '@/src/Services/Usuario';
 import { useTranslation } from 'react-i18next';
-=======
-import  {usuarioService ,type Usuario } from '@/src/Services/Usuario';
->>>>>>> Stashed changes
 
 export default function CrearCuenta() {
   const router = useRouter();
@@ -85,10 +78,7 @@ export default function CrearCuenta() {
     }
 
     try {
-<<<<<<< Updated upstream
-=======
       // Crear Usuario
->>>>>>> Stashed changes
       const nuevoUsuario: Usuario = {
         nombre: formData.nombre,
         apellido: formData.apellido,
@@ -100,7 +90,7 @@ export default function CrearCuenta() {
 
       const usuarioCreado = await usuarioService.crearUsuario(nuevoUsuario);
       setMostrarExito(true);
-      // Simular registro exitoso 
+      
       setTimeout(() => {
         router.push('/');
       }, 2000);
@@ -222,10 +212,6 @@ export default function CrearCuenta() {
               onKeyDown={(e) => e.preventDefault()}
               max={calcularFechaMaxima()}
               min={calcularFechaMinima()}
-<<<<<<< Updated upstream
-              onFocus={abrirCalendario} 
-=======
->>>>>>> Stashed changes
               onClick={abrirCalendario}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#003153] focus:border-transparent"
               placeholder={t('newUser.dateOfbirth')}
