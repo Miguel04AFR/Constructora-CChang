@@ -13,25 +13,33 @@ export const Servicios = () => {
             id: 1,
             titulo: t('services.list.residential.title'),
             descripcion: t('services.list.residential.description'),
-            iconoUrl: '/window.png'
+            iconoUrl: '/window.png',
+            ruta: '/servicios/catalogo', 
+            textoBoton: t('services.viewHomes')
         },
         {
             id: 2,
             titulo: t('services.list.renovations.title'),
             descripcion: t('services.list.renovations.description'),
-            iconoUrl: '/glove.svg'
+            iconoUrl: '/glove.svg',
+            ruta: '/servicios/renovaciones', 
+            textoBoton: t('services.viewRenovations')
         },
         {
             id: 3,
             titulo: t('services.list.consulting.title'),
             descripcion: t('services.list.consulting.description'),
-            iconoUrl: '/file.svg'
+            iconoUrl: '/file.svg',
+            ruta: '/servicios/consultoria', 
+            textoBoton: t('services.contactConsulting')
         },
         {
             id: 4,
             titulo: t('services.list.supervision.title'),
             descripcion: t('services.list.supervision.description'),
-            iconoUrl: '/icono-consultoria.png'
+            iconoUrl: '/icono-consultoria.png',
+            ruta: '/catalogo', 
+            textoBoton: t('services.viewHomes')
         }
     ];
 
@@ -71,12 +79,12 @@ export const Servicios = () => {
                                         {servicio.descripcion}
                                     </p>
                                     <div className="flex items-center gap-6 mt-4">
-                                        <p className="mt-4 text-[#003153] font-medium hover:text-blue-800 transition-colors">
+                                        <p className="text-[#003153] font-medium hover:text-blue-800 transition-colors">
                                             {t('services.moreInfo')}
                                         </p>
-                                        <Link href={servicio.id === 2 ? '/servicios/renovaciones' : '/catalogo'}>
-                                            <button className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
-                                                {t('services.view')}
+                                        <Link href={servicio.ruta}>
+                                            <button className="text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
+                                                {servicio.textoBoton}
                                             </button>
                                         </Link>
                                     </div>

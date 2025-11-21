@@ -63,6 +63,10 @@
     "title": "Our Construction Services",
     "subtitle": "Comprehensive solutions to make your construction projects a reality",
     "moreInfo": "More information and prices →",
+    "viewHomes": "View",
+    "viewRenovations": "View",
+    "contactConsulting": "View",
+    "contactSupervision": "View",
     "view": "View",
     "list": {
       "residential": {
@@ -179,7 +183,8 @@
     "viewDetailsButton": "View Details",
     "bedrooms": "bedrooms",
     "bathrooms": "bathrooms",
-    "area": "sq m"
+    "area": "sq m",
+    "price": "Price"
   },
   "propertyDetail": {
     "backToCatalog": "Back to Catalog",
@@ -234,8 +239,14 @@
   "remodel": {
     "subtitle": "Give new life to your spaces with our remodeling services.",
     "itemsTitle": "Items",
+    "contact": "Buy",
     "viewDetails": "Details",
-    "contact": "Buy"
+    "detailTitle": "Detailed service description",
+    "price": "Price",
+    "perUnit": "/unit",
+    "itemTotal": "Item total",
+    "empty": "No renovations available",
+    "carousel": "Renovations carousel"
   },
   "newUser": {
     "title": "Create Account",
@@ -260,5 +271,108 @@
     "create": "Create Account",
     "question": "Already have an account?",
     "getBack": "Back"
-}
+  },
+  "login": {
+    "title": "Login",
+    "success": "Success",
+    "successTitle": "Login successful!",
+    "welcomeBack": "Welcome back",
+    "closingAutomatically": "Closing automatically...",
+    "email": "Username or Email",
+    "emailPlaceholder": "Username or Email",
+    "password": "Password",
+    "passwordPlaceholder": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?",
+    "signIn": "Sign In",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Sign up here",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "common": {
+    "close": "Close"
+  },
+  "consulting": {
+    "title": "Construction Consulting",
+    "subtitle": "Specialized advice to optimize your construction project",
+    "whatIs": {
+      "title": "What is Construction Consulting?",
+      "description1": "Our construction consulting service offers specialized technical advice to ensure the success of your project. From initial planning to execution, our team of experts will guide you through each stage.",
+      "description2": "We analyze feasibility, optimize resources, manage risks, and ensure regulatory compliance, guaranteeing that your project is completed within the established budget and timeline."
+    },
+    "benefits": {
+      "title": "Benefits of Our Consulting",
+      "costOptimization": {
+        "title": "Cost Optimization",
+        "description": "We identify savings opportunities without compromising quality"
+      },
+      "technicalAdvice": {
+        "title": "Technical Advice",
+        "description": "Specialized technical solutions for construction challenges"
+      },
+      "riskReduction": {
+        "title": "Risk Reduction",
+        "description": "We minimize unforeseen events and ensure regulatory compliance"
+      },
+      "qualityAssurance": {
+        "title": "Quality Assurance",
+        "description": "We ensure the highest standards in materials and execution"
+      }
+    },
+    "finalDescription": "Trust our experience to transform your vision into a successful construction reality. Over 10 years in the sector back us.",
+    "imagePlaceholder1": "Image: Plans and Designs",
+    "imagePlaceholder2": "Image: Technical Analysis",
+    "form": {
+      "title": "Request Your Consultation",
+      "subtitle": "Complete the form and we will contact you in less than 24 hours",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "projectType": "Project type",
+      "budget": "Estimated budget",
+      "location": "Project location",
+      "description": "Project description",
+      "send": "Request Consultation",
+      "completeFields": "Complete required fields",
+      "characters": "characters",
+      "requiredFields": "Required fields",
+      "placeholderName": "Your full name",
+      "placeholderEmail": "your@email.com",
+      "placeholderPhone": "+53 5622 6278",
+      "placeholderLocation": "City, province",
+      "placeholderDescription": "Describe your project, specific needs, objectives and any special requirements...",
+      "selectProjectType": "Select project type",
+      "selectBudget": "Select budget range",
+      "projectTypes": {
+        "residential": "Residential",
+        "commercial": "Commercial",
+        "industrial": "Industrial",
+        "remodeling": "Remodeling",
+        "other": "Other"
+      },
+      "budgets": {
+        "lessThan10k": "Less than $10,000",
+        "10kTo50k": "$10,000 - $50,000",
+        "50kTo100k": "$50,000 - $100,000",
+        "100kTo500k": "$100,000 - $500,000",
+        "moreThan500k": "More than $500,000"
+      },
+      "successMessage": "Request sent successfully! We will contact you in less than 24 hours.",
+      "errorMessage": "Please correct the errors in the form.",
+      "errors": {
+        "nameRequired": "Name is required",
+        "nameInvalid": "Name can only contain letters and spaces",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "phoneInvalid": "Phone must have 8 numeric digits",
+        "projectTypeRequired": "Project type is required",
+        "budgetRequired": "Budget is required",
+        "locationRequired": "Location is required",
+        "descriptionRequired": "Description is required",
+        "descriptionMinLength": "Description must have at least 20 characters",
+        "descriptionMaxLength": "Description cannot exceed 1000 characters"
+      }
+    }
+  }
 }

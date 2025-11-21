@@ -63,6 +63,10 @@
     "title": "Nuestros Servicios de Construcción",
     "subtitle": "Soluciones integrales para hacer realidad tus proyectos constructivos",
     "moreInfo": "Más información y precios →",
+    "viewHomes": "Ver",
+    "viewRenovations": "Ver",
+    "contactConsulting": "Ver",
+    "contactSupervision": "Ver",
     "view": "Vista",
     "list": {
       "residential": {
@@ -179,7 +183,8 @@
     "viewDetailsButton": "Ver Detalles",
     "bedrooms": "hab.",
     "bathrooms": "baños",
-    "area": "m²"
+    "area": "m²",
+    "price": "Precio"
   },
   "propertyDetail": {
     "backToCatalog": "Volver al Catálogo",
@@ -224,7 +229,7 @@
         "messageMinLength": "El mensaje debe tener al menos 10 caracteres",
         "messageMaxLength": "El mensaje no puede exceder 500 caracteres"
       },
-      "successMessage": "Mensaje enviado correctamente. Nos pondremos en contacto contigo pronto.",
+      "successMessage": "Mensaje enviado correctamente. Nos pondremos en contacto contido pronto.",
       "validName": "Nombre válido",
       "validEmail": "Email válido",
       "validPhone": "Teléfono válido",
@@ -235,7 +240,13 @@
     "subtitle": "Dale nueva vida a tus espacios con nuestros servicios de remodelación.",
     "itemsTitle": "Objetos",
     "contact": "Comprar",
-    "viewDetails": "Detalles"
+    "viewDetails": "Detalles",
+    "detailTitle": "Descripción detallada del servicio",
+    "price": "Precio",
+    "perUnit": "/unidad",
+    "itemTotal": "Total del item",
+    "empty": "No hay remodelaciones disponibles",
+    "carousel": "Carrusel de remodelaciones"
   },
   "newUser": {
     "title": "Crear cuenta",
@@ -260,5 +271,108 @@
     "create": "Crear Cuenta",
     "question": "¿Ya tienes cuenta?",
     "getBack": "Volver"
+  },
+  "login": {
+    "title": "Iniciar Sesión",
+    "success": "Éxito",
+    "successTitle": "¡Inicio de sesión exitoso!",
+    "welcomeBack": "Bienvenido de vuelta",
+    "closingAutomatically": "Cerrando automáticamente...",
+    "email": "Usuario o Gmail",
+    "emailPlaceholder": "Usuario o Gmail",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Contraseña",
+    "rememberMe": "Recordarme",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "signIn": "Iniciar Sesión",
+    "noAccount": "¿No tienes cuenta?",
+    "createAccount": "Regístrate aquí",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña"
+  },
+  "common": {
+    "close": "Cerrar"
+  },
+  "consulting": {
+    "title": "Consultoría en Construcción",
+    "subtitle": "Asesoría especializada para optimizar tu proyecto constructivo",
+    "whatIs": {
+      "title": "¿Qué es la Consultoría en Construcción?",
+      "description1": "Nuestro servicio de consultoría en construcción ofrece asesoramiento técnico especializado para garantizar el éxito de tu proyecto. Desde la planificación inicial hasta la ejecución, nuestro equipo de expertos te guiará en cada etapa.",
+      "description2": "Analizamos viabilidad, optimizamos recursos, gestionamos riesgos y garantizamos el cumplimiento de normativas, asegurando que tu proyecto se complete dentro del presupuesto y plazo establecidos."
+    },
+    "benefits": {
+      "title": "Beneficios de Nuestra Consultoría",
+      "costOptimization": {
+        "title": "Optimización de Costos",
+        "description": "Identificamos oportunidades de ahorro sin comprometer la calidad"
+      },
+      "technicalAdvice": {
+        "title": "Asesoría Técnica",
+        "description": "Soluciones técnicas especializadas para desafíos constructivos"
+      },
+      "riskReduction": {
+        "title": "Reducción de Riesgos",
+        "description": "Minimizamos imprevistos y garantizamos cumplimiento normativo"
+      },
+      "qualityAssurance": {
+        "title": "Garantía de Calidad",
+        "description": "Aseguramos los más altos estándares en materiales y ejecución"
+      }
+    },
+    "finalDescription": "Confía en nuestra experiencia para transformar tu visión en una realidad constructiva exitosa. Más de 10 años en el sector nos avalan.",
+    "imagePlaceholder1": "Imagen: Planos y Diseños",
+    "imagePlaceholder2": "Imagen: Análisis Técnico",
+    "form": {
+      "title": "Solicita tu Consultoría",
+      "subtitle": "Completa el formulario y nos pondremos en contacto contigo en menos de 24 horas",
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "projectType": "Tipo de proyecto",
+      "budget": "Presupuesto estimado",
+      "location": "Ubicación del proyecto",
+      "description": "Descripción del proyecto",
+      "send": "Solicitar Consultoría",
+      "completeFields": "Complete los campos requeridos",
+      "characters": "caracteres",
+      "requiredFields": "Campos obligatorios",
+      "placeholderName": "Tu nombre completo",
+      "placeholderEmail": "tu@email.com",
+      "placeholderPhone": "+53 5622 6278",
+      "placeholderLocation": "Ciudad, provincia",
+      "placeholderDescription": "Describe tu proyecto, necesidades específicas, objetivos y cualquier requerimiento especial...",
+      "selectProjectType": "Selecciona el tipo de proyecto",
+      "selectBudget": "Selecciona el rango de presupuesto",
+      "projectTypes": {
+        "residential": "Residencial",
+        "commercial": "Comercial",
+        "industrial": "Industrial",
+        "remodeling": "Remodelación",
+        "other": "Otro"
+      },
+      "budgets": {
+        "lessThan10k": "Menos de $10,000",
+        "10kTo50k": "$10,000 - $50,000",
+        "50kTo100k": "$50,000 - $100,000",
+        "100kTo500k": "$100,000 - $500,000",
+        "moreThan500k": "Más de $500,000"
+      },
+      "successMessage": "¡Solicitud enviada correctamente! Nos pondremos en contacto contigo en menos de 24 horas.",
+      "errorMessage": "Por favor, corrige los errores en el formulario.",
+      "errors": {
+        "nameRequired": "El nombre es obligatorio",
+        "nameInvalid": "El nombre solo puede contener letras y espacios",
+        "emailRequired": "El email es obligatorio",
+        "emailInvalid": "Por favor, ingresa un email válido",
+        "phoneInvalid": "El teléfono debe tener 8 dígitos numéricos",
+        "projectTypeRequired": "El tipo de proyecto es obligatorio",
+        "budgetRequired": "El presupuesto es obligatorio",
+        "locationRequired": "La ubicación es obligatoria",
+        "descriptionRequired": "La descripción es obligatoria",
+        "descriptionMinLength": "La descripción debe tener al menos 20 caracteres",
+        "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres"
+      }
+    }
   }
 }

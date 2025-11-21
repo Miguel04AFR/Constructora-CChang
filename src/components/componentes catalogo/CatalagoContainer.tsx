@@ -186,7 +186,7 @@ export const CatalogoContainer = () => {
                                     ${casa.precio.toLocaleString()}
                                   </span>
                                   <Link 
-                                    href={`/catalogo/${casa.id}`}
+                                    href={`/servicios/catalogo/${casa.id}`}
                                     className="bg-[#003153] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm whitespace-nowrap flex shrink-0" 
                                     aria-label={t('catalog.viewDetails', { name: casa.nombre })}
                                     title={t('catalog.viewDetails', { name: casa.nombre })}

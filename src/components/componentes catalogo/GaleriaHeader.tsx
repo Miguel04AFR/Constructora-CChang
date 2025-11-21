@@ -17,7 +17,7 @@ const Encabezado: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
         <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
                 <Link 
-                    href="/catalogo"
+                    href="/servicios/catalogo"
                     className="flex items-center text-[#003153] hover:text-blue-800 transition-colors font-medium mt-4"
                 >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

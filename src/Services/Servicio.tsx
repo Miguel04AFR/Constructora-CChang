@@ -3,4 +3,6 @@ export interface Servicio {
     titulo?: string;
     descripcion?: string;
     iconoUrl: string;
+    ruta: string; 
+    textoBoton: string; 
 }
