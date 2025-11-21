@@ -1,19 +1,15 @@
 import { API_CONFIG } from "../config/env";
+import { Usuario } from "./Usuario";
 
-export interface Casa {
-    id?: string;
-    nombre: string;
-    imagenUrl: string;
-    precio: number;
-    ubicacion: string;
-    habitaciones: number;
-    banos: number;
-    metrosCuadrados: number;
-    descripcion: string;
+export interface Mensaje{
+    tipo: string;
+    motivo: string;
+    gmail:string;
+    user: Usuario;
+
 }
-
- export const casaService = {
-      async crearUsuario(casa: Casa) {
+    export const mensajeService = {
+      async crearUsuario(mensaje: Mensaje) {
         try {
           const responde = await fetch(`${API_CONFIG.BASE_URL}/users`, {
             method: 'POST',
@@ -21,16 +17,13 @@ export interface Casa {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: casa.id,
-                nombre: casa.nombre,
-                precio: casa.precio,
-                ubicacion: casa.ubicacion,
-                habitaciones: casa.habitaciones,
-                banos: casa.banos,
-                metrosCuadrados: casa.metrosCuadrados,
-                descripcion: casa.descripcion,
+                tipo: mensaje.tipo,
+                motivo: mensaje.motivo,
+                user: mensaje.user,
+                gmail: mensaje.gmail,
             }),
-            });
+          });
+    
           if (!responde.ok) {
             const errorData = await responde.json();
             throw new Error(errorData.message || 'Error al crear usuario');
@@ -44,7 +37,7 @@ export interface Casa {
       },
     
     
-      async obtenerCasas() {
+      async obtenerMensajes() {
         try {
           const response = await fetch(`${API_CONFIG.BASE_URL}/users`);
           return await response.json();

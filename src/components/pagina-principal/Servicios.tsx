@@ -3,34 +3,31 @@
 import React from 'react'
 import type { Servicio } from '@/src/Services/Servicio';
 import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
 
 export const Servicios = () => {
-    const { t } = useTranslation();
-
     const servicios: Servicio[] = [
         {
             id: 1,
-            titulo: t('services.list.residential.title'),
-            descripcion: t('services.list.residential.description'),
+            titulo: "Construcción Residencial",
+            descripcion: "Diseñamos y construimos tu hogar ideal con los más altos estándares de calidad y atención personalizada.",
             iconoUrl: '/window.png'
         },
         {
             id: 2,
-            titulo: t('services.list.renovations.title'),
-            descripcion: t('services.list.renovations.description'),
+            titulo: "Remodelaciones",
+            descripcion: "Transformamos tus espacios existentes con soluciones innovadoras que maximizan funcionalidad y estética.",
             iconoUrl: '/glove.svg'
         },
         {
             id: 3,
-            titulo: t('services.list.consulting.title'),
-            descripcion: t('services.list.consulting.description'),
+            titulo: "Consultoría Especializada",
+            descripcion: "Asesoramiento técnico profesional para planificar y ejecutar tu proyecto con total confianza.",
             iconoUrl: '/file.svg'
         },
         {
             id: 4,
-            titulo: t('services.list.supervision.title'),
-            descripcion: t('services.list.supervision.description'),
+            titulo: "Supervisión de Obras",
+            descripcion: "Control y seguimiento continuo garantizando el cumplimiento de plazos, presupuestos y calidad.",
             iconoUrl: '/icono-consultoria.png'
         }
     ];
@@ -39,11 +36,11 @@ export const Servicios = () => {
         <div id="servicios" className="py-16 bg-gray-50 min-h-screen">
             <div className="max-w-7xl mx-auto px-4">
                 <h1 className="text-4xl md:text-5xl font-bold text-center text-[#003153] mb-4">
-                    {t('services.title')}
+                    Nuestros Servicios
                 </h1>
                 
                 <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-                    {t('services.subtitle')}
+                    Ofrecemos soluciones integrales en construcción y remodelación para hacer realidad tus proyectos
                 </p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -71,12 +68,12 @@ export const Servicios = () => {
                                         {servicio.descripcion}
                                     </p>
                                     <div className="flex items-center gap-6 mt-4">
-                                        <p className="mt-4 text-[#003153] font-medium hover:text-blue-800 transition-colors">
-                                            {t('services.moreInfo')}
+                                        <p className="text-[#003153] font-medium hover:text-blue-800 transition-colors cursor-pointer">
+                                            Más información
                                         </p>
                                         <Link href={servicio.id === 2 ? '/servicios/renovaciones' : '/catalogo'}>
-                                            <button className="mt-4 text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
-                                                {t('services.view')}
+                                            <button className="text-white font-medium bg-[#6B21A8] hover:bg-purple-700 rounded-lg transition-all py-3 px-10">
+                                                Ver más
                                             </button>
                                         </Link>
                                     </div>
