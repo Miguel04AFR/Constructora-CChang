@@ -1,19 +1,49 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { remodelaciones } from '@/src/data/remodelaciones';
+import React, { useState, useEffect, useRef } from 'react';
+import { remodelaciones as remodelacionesNamed } from '@/src/data/remodelaciones';
 import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
+import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
 export const RemodelacionesCarousel = () => {
   const { t } = useTranslation();
-  const [indiceActual, setIndiceActual] = useState(0);
-  const [direccion, setDireccion] = useState<'derecha' | 'izquierda'>('derecha');
+  const pageSize = 3;
+  // Normalize possible shapes (named export or other shapes)
+  const items: Remodelacion[] = Array.isArray(remodelacionesNamed)
+    ? (remodelacionesNamed as Remodelacion[])
+    : ((remodelacionesNamed as unknown as { default?: Remodelacion[] }).default ?? []);
 
-  const total = remodelaciones.length;
+  const total = items.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const [page, setPage] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalRemodel, setModalRemodel] = useState<Remodelacion | null>(null);
+  const [formValido, setFormValido] = useState(false);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  const limitarDescripcion = (descripcion: string, maxCaracteres: number = 120) => {
+  // Keep page index in-range if items change dynamically
+
+  // Keep page index in-range if items change dynamically
+  useEffect(() => {
+    setPage((p) => Math.min(p, Math.max(0, totalPages - 1)));
+  }, [totalPages]);
+
+  // Scroll to top when page changes so upper side is visible
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [page]);
+
+  const goPrev = () => setPage((p) => Math.max(0, p - 1));
+  const goNext = () => setPage((p) => Math.min(totalPages - 1, p + 1));
+
+  const pageItems = items.slice(page * pageSize, page * pageSize + pageSize);
+
+  const limitarDescripcion = (descripcion: string, maxCaracteres: number = 200) => {
     if (!descripcion) return '';
     if (descripcion.length <= maxCaracteres) return descripcion;
     const textoCortado = descripcion.substring(0, maxCaracteres - 3);
@@ -23,52 +53,6 @@ export const RemodelacionesCarousel = () => {
     }
     return textoCortado + '...';
   };
-
-  const siguiente = () => {
-    setDireccion('derecha');
-    setIndiceActual((prev) => (prev + 1) % total);
-  };
-
-  const anterior = () => {
-    setDireccion('izquierda');
-    setIndiceActual((prev) => (prev - 1 + total) % total);
-  };
-
-  useEffect(() => {
-    if (total <= 1) return;
-    const intervalo = setInterval(() => {
-      if (direccion === 'derecha') {
-        if (indiceActual === total - 1) {
-          setDireccion('izquierda');
-          anterior();
-        } else {
-          siguiente();
-        }
-      } else {
-        if (indiceActual === 0) {
-          setDireccion('derecha');
-          siguiente();
-        } else {
-          anterior();
-        }
-      }
-    }, 4000);
-
-    return () => clearInterval(intervalo);
-  }, [indiceActual, direccion, total]);
-
-  const getIndicesVisibles = () => {
-    if (total === 0) return [];
-    if (total === 1) return [0];
-    if (total === 2) return [indiceActual, (indiceActual + 1) % total];
-    return [
-      (indiceActual - 1 + total) % total,
-      indiceActual,
-      (indiceActual + 1) % total,
-    ];
-  };
-
-  const indicesVisibles = getIndicesVisibles();
 
   if (total === 0) {
     return (
@@ -80,122 +64,123 @@ export const RemodelacionesCarousel = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-3xl mx-auto px-4">
         <h1 className="text-4xl font-bold text-[#003153] mb-4 text-center mt-4">{t('services.list.renovations.title')}</h1>
-        <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">{t('remodel.subtitle') || 'Conoce nuestras opciones de remodelación y paquetes.'}</p>
+        <p className="text-lg text-gray-600 text-center mb-8 max-w-2xl mx-auto">{t('remodel.subtitle') || 'Conoce nuestras opciones de remodelación y paquetes.'}</p>
 
-        <div className="relative max-w-6xl mx-auto">
-          {total > 1 && (
+        {/* Dots */}
+        <div className="flex justify-center gap-2 mb-6">
+          {Array.from({ length: totalPages }).map((_, i) => (
             <button
-              onClick={anterior}
-              className="absolute -left-4 top-1/2 transform -translate-y-1/2 z-30 bg-[#003153] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-800 transition-colors"
-              aria-label={t('catalog.previousHouse')}
-              title={t('catalog.previousHouse')}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          )}
-
-          <div className="flex items-center justify-center gap-4 px-12">
-            {indicesVisibles.map((indice, posicion) => {
-              const r = remodelaciones[indice];
-              const esCentro = total > 2 ? posicion === 1 : posicion === 0;
-              const descripcionLimitada = limitarDescripcion(r.descripcion || '');
-
-              const baseCard = 'transition-all duration-500 ease-in-out w-[380px] h-[520px] flex-none';
-              const scaleClass = esCentro ? 'scale-100 opacity-100 z-20' : 'scale-90 opacity-60 z-10';
-              const shiftClass = posicion === 0 && total > 2 ? '-translate-x-2' : posicion === 2 && total > 2 ? 'translate-x-2' : '';
-              const cardClasses = `${baseCard} ${scaleClass} ${shiftClass}`;
-
-              return (
-                <div
-                  key={`${r.id}-${posicion}`}
-                  className={`${cardClasses} cursor-pointer`}
-                  onClick={() => {
-                    // if this card isn't the focused one, make it focused
-                    if (indiceActual !== indice) setIndiceActual(indice);
-                  }}
-                >
-                  <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow w-full h-full flex flex-col">
-                    <div className="h-64 bg-gray-100 overflow-hidden flex shrink-0">
-                      {r.imagenUrl ? (
-                        esCentro ? (
-                          // When the card is focused/center, clicking the image should navigate to details
-                          <Link href={`/servicios/renovaciones/${r.id}`} onClick={(e) => e.stopPropagation()}>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={r.imagenUrl} alt={r.nombre} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
-                          </Link>
-                        ) : (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={r.imagenUrl} alt={r.nombre} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
-                        )
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
-                      )}
-                    </div>
-
-                    <div className="p-6 grow flex flex-col">
-                      <h3 className="text-xl font-bold text-[#003153] mb-3">{r.nombre}</h3>
-                      <div className="mb-3 min-h-[60px]">
-                        <p className="text-sm text-gray-600">{descripcionLimitada}</p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 mb-auto text-[12px] text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <span>📌 {t('catalog.area') || 'm²'}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="text-2xl font-bold text-[#6B21A8]">{new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(r.precio)}</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
-                        <Link
-                          href={`/servicios/renovaciones/${r.id}`}
-                          className="bg-[#003153] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {t('catalog.viewDetailsButton') || 'Ver Detalles'}
-                        </Link>
-                        <button className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors">{t('remodel.contact') || 'Contactar'}</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {total > 1 && (
-            <button
-              onClick={siguiente}
-              className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-30 bg-[#003153] text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-800 transition-colors"
-              aria-label={t('catalog.nextHouse')}
-              title={t('catalog.nextHouse')}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          )}
+              key={i}
+              aria-label={`Page ${i + 1}`}
+              onClick={() => setPage(i)}
+              className={`w-3 h-3 rounded-full transition-colors ${i === page ? 'bg-[#003153]' : 'bg-gray-300'}`}
+            />
+          ))}
         </div>
 
-        {total > 1 && (
-          <div className="flex justify-center gap-2 mt-8">
-            {remodelaciones.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setIndiceActual(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${index === indiceActual ? 'bg-[#003153]' : 'bg-gray-300'}`}
-                aria-label={t('catalog.goToHouse', { number: index + 1 })}
-                title={t('catalog.goToHouse', { number: index + 1 })}
-              />
-            ))}
-          </div>
-        )}
+        {/* Cards stack */}
+        <div className="space-y-6">
+          {pageItems.map((r) => (
+            <div key={r.id} className="bg-white rounded-xl shadow-lg overflow-hidden transition-shadow hover:shadow-xl">
+              <div className="md:flex">
+                <div className="md:w-1/3 h-48 md:h-auto bg-gray-100 overflow-hidden">
+                  {r.imagenUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={r.imagenUrl} alt={r.nombre} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                  )}
+                </div>
+                <div className="p-6 md:w-2/3 flex flex-col">
+                  <h3 className="text-2xl font-bold text-[#003153] mb-2">{r.nombre}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{limitarDescripcion(r.descripcion || '')}</p>
+
+                  <div className="flex items-center justify-between mt-auto">
+                    <div className="text-sm text-gray-600">📌 {t('catalog.area') || 'm²'}</div>
+                    <div className="text-2xl font-bold text-[#6B21A8]">{new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(r.precio)}</div>
+                  </div>
+
+                  <div className="mt-4 flex gap-3">
+                    <Link href={`/servicios/renovaciones/${r.id}`} className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">{t('catalog.viewDetailsButton') || 'Ver Detalles'}</Link>
+                    <button
+                      onClick={() => { setModalRemodel(r); setModalOpen(true); setFormValido(false); }}
+                      className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                    >{t('remodel.contact') || 'Contactar'}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Prev / Next buttons */}
+        <div className="flex items-center justify-between mt-8">
+          <button onClick={goPrev} disabled={page === 0} className={`px-4 py-2 rounded-md ${page === 0 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
+             {t('catalog.next') || 'Siguiente'}
+          </button>
+          <div className="text-sm text-gray-600">{t('remodel.pageInfo') || `Página ${page + 1} de ${totalPages}`}</div>
+          <button onClick={goNext} disabled={page === totalPages - 1} className={`px-4 py-2 rounded-md ${page === totalPages - 1 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
+          
+             {t('catalog.previous') || 'Anterior'}
+          </button>
+        </div>
       </div>
+      {/* Modal for contact form */}
+      {modalOpen && modalRemodel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setModalOpen(false)} />
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg mx-4 z-10 max-h-[70vh]">
+            <button
+              aria-label={t('close') || 'Cerrar'}
+              onClick={() => { setModalOpen(false); setModalRemodel(null); }}
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center z-20"
+            >
+              ×
+            </button>
+            <div className="p-4">
+              <h3 className="text-2xl font-bold text-[#003153] mb-2">{t('propertyDetail.contactForm.title') || 'Formulario'}</h3>
+            </div>
+
+            <div className="px-4 overflow-auto max-h-[56vh]">
+                <FormularioContacto
+                  propiedad={{ nombre: modalRemodel.nombre }}
+                  formRef={formRef}
+                  onValChange={(v) => setFormValido(v)}
+                  onSubmitSuccess={() => {
+                    setModalOpen(false);
+                    setModalRemodel(null);
+                    setShowSuccess(true);
+                    setTimeout(() => setShowSuccess(false), 3000);
+                  }}
+                  hideSubmit={true}
+                />
+            </div>
+            <div className="flex justify-end gap-3 p-4 border-t">
+              <button onClick={() => setModalOpen(false)} className="px-4 py-2 rounded bg-gray-200">{t('cancel') || 'Cancelar'}</button>
+              <button
+                onClick={() => {
+                  if (formRef.current) {
+                    // requestSubmit is preferred when available
+                    // @ts-ignore
+                    if (typeof formRef.current.requestSubmit === 'function') formRef.current.requestSubmit();
+                    else formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+                  }
+                }}
+                disabled={!formValido}
+                className={`px-4 py-2 rounded text-white ${formValido ? 'bg-[#003153] hover:bg-blue-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              >{t('accept') || 'Aceptar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Success toast */}
+      {showSuccess && (
+        <div role="status" className="fixed bottom-6 right-6 z-60 bg-green-600 text-white px-4 py-2 rounded shadow">
+          {t('propertyDetail.contactForm.successMessage') || 'Operación realizada con éxito'}
+        </div>
+      )}
     </div>
   );
 };

@@ -63,10 +63,10 @@
     "title": "Our Construction Services",
     "subtitle": "Comprehensive solutions to make your construction projects a reality",
     "moreInfo": "More information and prices →",
-    "viewHomes": "View",
-    "viewRenovations": "View",
-    "contactConsulting": "View",
-    "contactSupervision": "View",
+    "viewHomes": "View Homes",
+    "viewRenovations": "View Renovations",
+    "contactConsulting": "Request Consulting",
+    "contactSupervision": "Request Supervision",
     "view": "View",
     "list": {
       "residential": {

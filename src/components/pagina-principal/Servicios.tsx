@@ -38,7 +38,7 @@ export const Servicios = () => {
             titulo: t('services.list.supervision.title'),
             descripcion: t('services.list.supervision.description'),
             iconoUrl: '/icono-consultoria.png',
-            ruta: '/catalogo', 
+            ruta: '/servicios/catalogo', 
             textoBoton: t('services.viewHomes')
         }
     ];

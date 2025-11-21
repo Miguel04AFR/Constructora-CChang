@@ -5,10 +5,12 @@ import type { Casa } from '@/src/Services/Casa';
 import { useTranslation } from 'react-i18next';
 
 interface FormularioContactoProps {
-    propiedad: Casa;
+    propiedad: Casa | { nombre: string };
+    formRef?: React.Ref<HTMLFormElement>;
+    onValChange?: (valid: boolean) => void;
+    onSubmitSuccess?: () => void;
+    hideSubmit?: boolean;
 }
-
-type CamposFormulario = 'nombre' | 'email' | 'telefono' | 'mensaje';
 
 interface ErroresFormulario {
     nombre?: string;
@@ -17,7 +19,7 @@ interface ErroresFormulario {
     mensaje?: string;
 }
 
-export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad }) => {
+export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad, formRef, onValChange, onSubmitSuccess, hideSubmit = false }) => {
     const [formData, setFormData] = useState({
         nombre: '',
         email: '',
@@ -28,28 +30,28 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     const [errores, setErrores] = useState<ErroresFormulario>({});
     const [mostrarMensajeErrores, setMostrarMensajeErrores] = useState(false);
     const [formularioValido, setFormularioValido] = useState(false);
-    const [camposTocados, setCamposTocados] = useState<{ [key in CamposFormulario]?: boolean }>({});
+    const [camposTocados, setCamposTocados] = useState<{ [key: string]: boolean }>({});
     const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
     const { t } = useTranslation();
 
     // Efecto para verificar la validez del formulario cuando cambien los errores
     useEffect(() => {
-        setFormularioValido(Object.keys(errores).length === 0);
-    }, [errores]);
+        const valid = Object.keys(errores).length === 0;
+        setFormularioValido(valid);
+        if (onValChange) onValChange(valid);
+    }, [errores, onValChange]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
 
-        const campo = name as CamposFormulario;
-
         let valorFiltrado = value;
-        if (campo === 'nombre') {
+        if (name === 'nombre') {
             valorFiltrado = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
             if (valorFiltrado.length > 50) {
                 valorFiltrado = valorFiltrado.slice(0, 50);
             }
-        } else if (campo === 'telefono') {
+        } else if (name === 'telefono') {
             valorFiltrado = value.replace(/[^0-9]/g, '');
             if (valorFiltrado.length > 8) {
                 valorFiltrado = valorFiltrado.slice(0, 8);
@@ -58,25 +60,25 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
 
         setFormData(prev => ({
             ...prev,
-            [campo]: valorFiltrado,
+            [name]: valorFiltrado,
         }));
 
         // Marcar el campo como tocado
-        if (!camposTocados[campo]) {
+        if (!camposTocados[name]) {
             setCamposTocados(prev => ({
                 ...prev,
-                [campo]: true
+                [name]: true
             }));
         }
 
         // Validar el campo individual
-        validarCampoIndividual(campo, valorFiltrado);
+        validarCampoIndividual(name, valorFiltrado);
     };
 
-    const validarCampoIndividual = (campo: CamposFormulario, value: string) => {
+    const validarCampoIndividual = (name: string, value: string) => {
         const nuevosErrores = { ...errores };
 
-        switch (campo) {
+        switch (name) {
             case 'nombre':
                 if (!value.trim()) {
                     nuevosErrores.nombre = t('propertyDetail.contactForm.errors.nameRequired');
@@ -153,7 +155,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     };
 
     // Función para determinar la clase del input
-    const getInputClass = (campo: CamposFormulario, valor: string) => {
+    const getInputClass = (campo: string, valor: string) => {
         const baseClasses = "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200";
     const fueTocado = camposTocados[campo];
     const tieneError = errores[campo as keyof ErroresFormulario];
@@ -175,7 +177,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
         e.preventDefault();
         
         // Marcar todos los campos como tocados al enviar
-        const todosLosCamposTocados: { [key in CamposFormulario]: boolean } = {
+        const todosLosCamposTocados = {
             nombre: true,
             telefono: true,
             email: true,
@@ -199,6 +201,8 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
             });
             setErrores({});
             setCamposTocados({});
+
+            if (onSubmitSuccess) onSubmitSuccess();
         } else {
             setMostrarMensajeErrores(true);
             // Scroll al primer error
@@ -231,7 +235,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                 </div>
             )}
       
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
                 {/* Campo Nombre */}
                 <div>
                     <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
@@ -326,18 +330,19 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                     </div>
                 </div>
 
-                {/* Botón de enviar */}
-                <button
-                    type="submit"
-                    disabled={!formularioValido}
-                    className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
-                        formularioValido
-                            ? 'bg-[#003153] text-white hover:bg-blue-800 cursor-pointer'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                >
-                    {formularioValido ? t('propertyDetail.contactForm.send') : t('propertyDetail.contactForm.completeFields')}
-                </button>
+                {!hideSubmit && (
+                    <button
+                        type="submit"
+                        disabled={!formularioValido}
+                        className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
+                            formularioValido
+                                ? 'bg-[#003153] text-white hover:bg-blue-800 cursor-pointer'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                    >
+                        {formularioValido ? t('propertyDetail.contactForm.send') : t('propertyDetail.contactForm.completeFields')}
+                    </button>
+                )}
 
                 {/* Leyenda de campos requeridos */}
                 <p className="text-xs text-gray-500 text-center">
