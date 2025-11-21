@@ -34,7 +34,7 @@ export const AProyecto = () => {
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje('❌ La imagen es demasiado grande. Máximo 5MB');
+        setMensaje('La imagen es demasiado grande. Máximo 5MB');
         return;
       }
 
@@ -64,8 +64,8 @@ export const AProyecto = () => {
         imagenUrl: imagenUrl
       }));
 
-      console.log('📁 Imagen se guardará en:', imagenUrl);
-      console.log('📝 Nombre del archivo:', nombreArchivo);
+      console.log('Imagen se guardará en:', imagenUrl);
+      console.log('Nombre del archivo:', nombreArchivo);
       
     } catch (error) {
       console.error('Error guardando imagen local:', error);
@@ -92,12 +92,12 @@ export const AProyecto = () => {
       const file = files[0];
       
       if (!file.type.startsWith('image/')) {
-        setMensaje('❌ Por favor, selecciona un archivo de imagen válido');
+        setMensaje('selecciona un archivo de imagen válido');
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje('❌ La imagen es demasiado grande. Máximo 5MB');
+        setMensaje('La imagen es demasiado grande. Máximo 5MB');
         return;
       }
 
@@ -137,17 +137,11 @@ export const AProyecto = () => {
 
       const proyectoCreado = await proyectoService.crearProyecto(proyectoNuevo);
       
-      // Éxito
+      // exito
       const nombreArchivo = formData.imagenUrl.split('/').pop();
-      setMensaje(`✅ Proyecto creado exitosamente! Guarda la imagen como "${nombreArchivo}" en la carpeta src/imagenes/proyectos/`);
-      
-      console.log('Proyecto creado:', proyectoCreado);
-      console.log('Para completar el proceso:');
-      console.log('1. Guarda la imagen en: src/imagenes/proyectos/');
-      console.log('2. Con el nombre:', nombreArchivo);
-      console.log('3. La URL será:', formData.imagenUrl);
+      setMensaje(` Proyecto creado exitosamente! Guarda la imagen como "${nombreArchivo}" en la carpeta src/imagenes/proyectos/`);
 
-      // Limpiar formulario en caso de éxito
+      // Limpiar
       setFormData({
         titulo: '',
         descripcion: '',
@@ -176,10 +170,10 @@ export const AProyecto = () => {
           </p>
         </div>
 
-        {/* Formulario */}
+
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Campo Título */}
+
             <div>
               <label htmlFor="titulo" className="block text-sm font-medium text-gray-700 mb-2">
                 Título del Proyecto *
@@ -238,11 +232,11 @@ export const AProyecto = () => {
                       </button>
                     </div>
                     <p className="text-sm text-green-600">
-                      ✅ Imagen seleccionada. Haz clic para cambiar.
+                      Imagen seleccionada. Haz clic para cambiar.
                     </p>
                     {formData.imagenUrl && (
                       <p className="text-sm text-blue-600 bg-blue-50 p-2 rounded">
-                        📁 Se guardará como: <strong>{formData.imagenUrl.split('/').pop()}</strong>
+                        Se guardará como: <strong>{formData.imagenUrl.split('/').pop()}</strong>
                       </p>
                     )}
                   </div>
@@ -262,7 +256,6 @@ export const AProyecto = () => {
               </div>
             </div>
 
-            {/* Campo Descripción */}
             <div>
               <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
                 Descripción del Proyecto *
