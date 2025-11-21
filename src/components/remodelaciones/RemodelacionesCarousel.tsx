@@ -31,6 +31,13 @@ export const RemodelacionesCarousel = () => {
     setPage((p) => Math.min(p, Math.max(0, totalPages - 1)));
   }, [totalPages]);
 
+  // Scroll to top when page changes so upper side is visible
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [page]);
+
   const goPrev = () => setPage((p) => Math.max(0, p - 1));
   const goNext = () => setPage((p) => Math.min(totalPages - 1, p + 1));
 
@@ -111,11 +118,12 @@ export const RemodelacionesCarousel = () => {
         {/* Prev / Next buttons */}
         <div className="flex items-center justify-between mt-8">
           <button onClick={goPrev} disabled={page === 0} className={`px-4 py-2 rounded-md ${page === 0 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
-            {t('catalog.previous') || 'Anterior'}
+             {t('catalog.next') || 'Siguiente'}
           </button>
           <div className="text-sm text-gray-600">{t('remodel.pageInfo') || `Página ${page + 1} de ${totalPages}`}</div>
           <button onClick={goNext} disabled={page === totalPages - 1} className={`px-4 py-2 rounded-md ${page === totalPages - 1 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
-            {t('catalog.next') || 'Siguiente'}
+          
+             {t('catalog.previous') || 'Anterior'}
           </button>
         </div>
       </div>

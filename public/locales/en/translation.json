@@ -157,7 +157,9 @@
     "viewDetailsButton": "View Details",
     "bedrooms": "bedrooms",
     "bathrooms": "bathrooms",
-    "area": "sq m"
+    "area": "sq m",
+    "previous": "Previous",
+    "next": "Next"
   },
   "propertyDetail": {
     "backToCatalog": "Back to Catalog",

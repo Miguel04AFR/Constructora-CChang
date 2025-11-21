@@ -157,7 +157,9 @@
     "viewDetailsButton": "Ver Detalles",
     "bedrooms": "hab.",
     "bathrooms": "baños",
-    "area": "m²"
+    "area": "m²",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "propertyDetail": {
     "backToCatalog": "Volver al Catálogo",
