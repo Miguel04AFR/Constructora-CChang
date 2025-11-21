@@ -5,7 +5,11 @@ import type { Casa } from '@/src/Services/Casa';
 import { useTranslation } from 'react-i18next';
 
 interface FormularioContactoProps {
-    propiedad: Casa;
+    propiedad: Casa | { nombre: string };
+    formRef?: React.Ref<HTMLFormElement>;
+    onValChange?: (valid: boolean) => void;
+    onSubmitSuccess?: () => void;
+    hideSubmit?: boolean;
 }
 
 interface ErroresFormulario {
@@ -15,7 +19,7 @@ interface ErroresFormulario {
     mensaje?: string;
 }
 
-export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad }) => {
+export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad, formRef, onValChange, onSubmitSuccess, hideSubmit = false }) => {
     const [formData, setFormData] = useState({
         nombre: '',
         email: '',
@@ -33,8 +37,10 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
 
     // Efecto para verificar la validez del formulario cuando cambien los errores
     useEffect(() => {
-        setFormularioValido(Object.keys(errores).length === 0);
-    }, [errores]);
+        const valid = Object.keys(errores).length === 0;
+        setFormularioValido(valid);
+        if (onValChange) onValChange(valid);
+    }, [errores, onValChange]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -195,6 +201,8 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
             });
             setErrores({});
             setCamposTocados({});
+
+            if (onSubmitSuccess) onSubmitSuccess();
         } else {
             setMostrarMensajeErrores(true);
             // Scroll al primer error
@@ -227,7 +235,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                 </div>
             )}
       
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
                 {/* Campo Nombre */}
                 <div>
                     <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
@@ -322,18 +330,19 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                     </div>
                 </div>
 
-                {/* Botón de enviar */}
-                <button
-                    type="submit"
-                    disabled={!formularioValido}
-                    className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
-                        formularioValido
-                            ? 'bg-[#003153] text-white hover:bg-blue-800 cursor-pointer'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                >
-                    {formularioValido ? t('propertyDetail.contactForm.send') : t('propertyDetail.contactForm.completeFields')}
-                </button>
+                {!hideSubmit && (
+                    <button
+                        type="submit"
+                        disabled={!formularioValido}
+                        className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
+                            formularioValido
+                                ? 'bg-[#003153] text-white hover:bg-blue-800 cursor-pointer'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                    >
+                        {formularioValido ? t('propertyDetail.contactForm.send') : t('propertyDetail.contactForm.completeFields')}
+                    </button>
+                )}
 
                 {/* Leyenda de campos requeridos */}
                 <p className="text-xs text-gray-500 text-center">

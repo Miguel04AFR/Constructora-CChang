@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { remodelaciones as remodelacionesNamed } from '@/src/data/remodelaciones';
 import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
+import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
 export const RemodelacionesCarousel = () => {
   const { t } = useTranslation();
@@ -17,6 +18,11 @@ export const RemodelacionesCarousel = () => {
   const total = items.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const [page, setPage] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalRemodel, setModalRemodel] = useState<Remodelacion | null>(null);
+  const [formValido, setFormValido] = useState(false);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Keep page index in-range if items change dynamically
 
@@ -91,7 +97,10 @@ export const RemodelacionesCarousel = () => {
 
                   <div className="mt-4 flex gap-3">
                     <Link href={`/servicios/renovaciones/${r.id}`} className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">{t('catalog.viewDetailsButton') || 'Ver Detalles'}</Link>
-                    <button className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors">{t('remodel.contact') || 'Contactar'}</button>
+                    <button
+                      onClick={() => { setModalRemodel(r); setModalOpen(true); setFormValido(false); }}
+                      className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                    >{t('remodel.contact') || 'Contactar'}</button>
                   </div>
                 </div>
               </div>
@@ -110,6 +119,60 @@ export const RemodelacionesCarousel = () => {
           </button>
         </div>
       </div>
+      {/* Modal for contact form */}
+      {modalOpen && modalRemodel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setModalOpen(false)} />
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg mx-4 z-10 max-h-[70vh]">
+            <button
+              aria-label={t('close') || 'Cerrar'}
+              onClick={() => { setModalOpen(false); setModalRemodel(null); }}
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center z-20"
+            >
+              ×
+            </button>
+            <div className="p-4">
+              <h3 className="text-2xl font-bold text-[#003153] mb-2">{t('propertyDetail.contactForm.title') || 'Formulario'}</h3>
+            </div>
+
+            <div className="px-4 overflow-auto max-h-[56vh]">
+                <FormularioContacto
+                  propiedad={{ nombre: modalRemodel.nombre }}
+                  formRef={formRef}
+                  onValChange={(v) => setFormValido(v)}
+                  onSubmitSuccess={() => {
+                    setModalOpen(false);
+                    setModalRemodel(null);
+                    setShowSuccess(true);
+                    setTimeout(() => setShowSuccess(false), 3000);
+                  }}
+                  hideSubmit={true}
+                />
+            </div>
+            <div className="flex justify-end gap-3 p-4 border-t">
+              <button onClick={() => setModalOpen(false)} className="px-4 py-2 rounded bg-gray-200">{t('cancel') || 'Cancelar'}</button>
+              <button
+                onClick={() => {
+                  if (formRef.current) {
+                    // requestSubmit is preferred when available
+                    // @ts-ignore
+                    if (typeof formRef.current.requestSubmit === 'function') formRef.current.requestSubmit();
+                    else formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+                  }
+                }}
+                disabled={!formValido}
+                className={`px-4 py-2 rounded text-white ${formValido ? 'bg-[#003153] hover:bg-blue-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              >{t('accept') || 'Aceptar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Success toast */}
+      {showSuccess && (
+        <div role="status" className="fixed bottom-6 right-6 z-60 bg-green-600 text-white px-4 py-2 rounded shadow">
+          {t('propertyDetail.contactForm.successMessage') || 'Operación realizada con éxito'}
+        </div>
+      )}
     </div>
   );
 };
