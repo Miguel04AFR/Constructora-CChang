@@ -39,7 +39,7 @@ export const Servicios = () => {
             descripcion: t('services.list.supervision.description'),
             iconoUrl: '/icono-consultoria.png',
             ruta: '/servicios/catalogo', 
-            textoBoton: t('services.viewHomes')
+            textoBoton: t('services.contactSupervision')
         }
     ];
 
