@@ -103,9 +103,9 @@ export const remodelaciones: Remodelacion[] = [
             {
                 id: 1,
                 nombre: 'Pintura de alta resistencia',
-                precio: 1.25,
+                precio: 0,
                 cantidad: 200,
-                descripcion: 'Precio por m². Litros/consumo estimado según superficie.',
+                descripcion: 'Precio por m²: $1.25. Litros/consumo estimado según superficie.',
                 imagenUrl: '/remodelaciones/3/items/1.jpg'
             },
             {
@@ -117,7 +117,37 @@ export const remodelaciones: Remodelacion[] = [
                 imagenUrl: '/remodelaciones/3/items/2.jpg'
             }
         ]
+    },
+     {
+        id: 4,
+        nombre: 'Remodelación de jardín y áreas exteriores',
+        precio: 1350,
+        descripcion:
+            'Remodelación de jardín y áreas exteriores con enfoque en la sostenibilidad y el uso de materiales ecológicos.',
+    imagenUrl: '/remodelaciones/4/cover.jpg',
+        descripcionDetallada:
+            'Remodelación de jardín que incluye preparación del terreno, selección e instalación de plantas nativas, creación de senderos ecológicos y sistemas de riego eficientes. Se trabaja por metro cuadrado y se ofrecen opciones personalizadas según las necesidades del cliente.',
+        items: [
+            {
+                id: 1,
+                nombre: 'Muebles de madera preciosa',
+                precio: 150,
+                cantidad: 5,
+                descripcion: 'Muebles ligeros de madera preciosa para exteriores.',
+                imagenUrl: '/remodelaciones/4/items/1.jpg'
+            },
+            {
+                id: 2,
+                nombre: 'Decoración de jardín.',
+                precio: 300,
+                cantidad: 5,
+                descripcion: 'Elementos decorativos para el jardín.',
+                imagenUrl: '/remodelaciones/4/items/2.jpg'
+            }
+        ]
     }
 ];
 
 export default remodelaciones;
+
+// (debug logs removed)

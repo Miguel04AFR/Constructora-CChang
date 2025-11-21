@@ -73,16 +73,20 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
               <h4 className="font-semibold text-[#003153]">{it.nombre}</h4>
               <p className="text-sm text-gray-600 mt-1">{it.descripcion}</p>
 
-              <div className="mt-3 flex justify-between items-center">
-                <div className="text-sm text-gray-700">
-                  {formatCurrency(it.precio || 0)} {"/unit"}
-                </div>
-                <div className="text-sm font-medium text-gray-800">x{it.cantidad}</div>
-              </div>
+              {typeof it.precio === 'number' && it.precio > 0 ? (
+                <>
+                  <div className="mt-3 flex justify-between items-center">
+                    <div className="text-sm text-gray-700">{formatCurrency(it.precio)}{'/unit'}</div>
+                    <div className="text-sm font-medium text-gray-800">x{it.cantidad}</div>
+                  </div>
 
-              <div className="mt-2 text-right text-sm text-gray-600">
-                {t('remodel.itemTotal') || 'Total:'} {formatCurrency((it.precio || 0) * (it.cantidad || 1))}
-              </div>
+                  <div className="mt-2 text-right text-sm text-gray-600">
+                    {t('remodel.itemTotal') || 'Total:'} {formatCurrency(it.precio * (it.cantidad || 1))}
+                  </div>
+                </>
+              ) : (
+                <div className="mt-3 text-sm text-gray-700">{it.cantidad ? `Cantidad: x${it.cantidad}` : null}</div>
+              )}
             </div>
           ))}
         </div>

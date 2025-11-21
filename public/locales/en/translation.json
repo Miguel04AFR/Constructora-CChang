@@ -34,30 +34,8 @@
     "area": "Area"
   },
   "projects": {
-    "title": "Our Projects",
-    "subtitle": "Discover our most outstanding works and innovative projects",
     "previous": "Previous",
-    "next": "Next",
-    "goToProject": "Go to project {{number}}",
-    "viewProject": "View project {{name}}",
-    "list": {
-      "residential": {
-        "title": "Residential Construction",
-        "description": "Houses and buildings with the highest quality standards."
-      },
-      "renovations": {
-        "title": "Renovations and Remodeling",
-        "description": "We transform your existing spaces with modern designs."
-      },
-      "consulting": {
-        "title": "Construction Consulting",
-        "description": "Specialized advice for your construction project."
-      },
-      "supervision": {
-        "title": "Project Supervision",
-        "description": "Quality control and guaranteed compliance with deadlines."
-      }
-    }
+    "next": "Next"
   },
   "services": {
     "title": "Our Construction Services",
@@ -161,7 +139,7 @@
     }
   },
   "footer": {
-    "copyright": "&copy; 2025 Constructora CChang. All rights reserved.",
+    "copyright": "2025 Constructora CChang. All rights reserved.",
     "tagline": "Construction, Quality, Trust",
     "social": {
       "facebook": "Follow us on Facebook",
@@ -194,7 +172,6 @@
       "garage": "Garage",
       "garden": "Garden",
       "airConditioning": "Air Conditioning",
-      "wifi": "WiFi",
       "laundry": "Laundry",
       "kitchen": "Equipped Kitchen"
     },
@@ -236,29 +213,5 @@
     "itemsTitle": "Items",
     "viewDetails": "Details",
     "contact": "Buy"
-  },
-  "newUser": {
-    "title": "Create Account",
-    "subtitle": "Join Constructora CChang",
-    "name": "Name",
-    "namePlaceholder": "Your name",
-    "lastname": "Last Name",
-    "lastnamePlaceholder": "Your last name",
-    "email": "Email",
-    "yourEmail": "your@email.com",
-    "telephone": "Phone",
-    "dateOfbirth": "Date of Birth",
-    "adult": "You must be over 18 years old",
-    "password": "Password",
-    "passwordPlaceHolder": "Minimum 6 characters",
-    "confirmPassword": "Confirm Password",
-    "confirmPasswordPlaceHolder": "Repeat your password",
-    "termsPlaceHolder": "terms and conditions",
-    "and": "and the",
-    "privatePolicy": "privacy policy",
-    "creating": "Creating account...",
-    "create": "Create Account",
-    "question": "Already have an account?",
-    "getBack": "Back"
-}
+  }
 }

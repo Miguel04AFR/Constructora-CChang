@@ -8,8 +8,6 @@ interface FormularioContactoProps {
     propiedad: Casa;
 }
 
-type CamposFormulario = 'nombre' | 'email' | 'telefono' | 'mensaje';
-
 interface ErroresFormulario {
     nombre?: string;
     email?: string;
@@ -28,7 +26,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     const [errores, setErrores] = useState<ErroresFormulario>({});
     const [mostrarMensajeErrores, setMostrarMensajeErrores] = useState(false);
     const [formularioValido, setFormularioValido] = useState(false);
-    const [camposTocados, setCamposTocados] = useState<{ [key in CamposFormulario]?: boolean }>({});
+    const [camposTocados, setCamposTocados] = useState<{ [key: string]: boolean }>({});
     const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
     const { t } = useTranslation();
@@ -41,15 +39,13 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
 
-        const campo = name as CamposFormulario;
-
         let valorFiltrado = value;
-        if (campo === 'nombre') {
+        if (name === 'nombre') {
             valorFiltrado = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
             if (valorFiltrado.length > 50) {
                 valorFiltrado = valorFiltrado.slice(0, 50);
             }
-        } else if (campo === 'telefono') {
+        } else if (name === 'telefono') {
             valorFiltrado = value.replace(/[^0-9]/g, '');
             if (valorFiltrado.length > 8) {
                 valorFiltrado = valorFiltrado.slice(0, 8);
@@ -58,25 +54,25 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
 
         setFormData(prev => ({
             ...prev,
-            [campo]: valorFiltrado,
+            [name]: valorFiltrado,
         }));
 
         // Marcar el campo como tocado
-        if (!camposTocados[campo]) {
+        if (!camposTocados[name]) {
             setCamposTocados(prev => ({
                 ...prev,
-                [campo]: true
+                [name]: true
             }));
         }
 
         // Validar el campo individual
-        validarCampoIndividual(campo, valorFiltrado);
+        validarCampoIndividual(name, valorFiltrado);
     };
 
-    const validarCampoIndividual = (campo: CamposFormulario, value: string) => {
+    const validarCampoIndividual = (name: string, value: string) => {
         const nuevosErrores = { ...errores };
 
-        switch (campo) {
+        switch (name) {
             case 'nombre':
                 if (!value.trim()) {
                     nuevosErrores.nombre = t('propertyDetail.contactForm.errors.nameRequired');
@@ -153,7 +149,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     };
 
     // Función para determinar la clase del input
-    const getInputClass = (campo: CamposFormulario, valor: string) => {
+    const getInputClass = (campo: string, valor: string) => {
         const baseClasses = "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200";
     const fueTocado = camposTocados[campo];
     const tieneError = errores[campo as keyof ErroresFormulario];
@@ -175,7 +171,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
         e.preventDefault();
         
         // Marcar todos los campos como tocados al enviar
-        const todosLosCamposTocados: { [key in CamposFormulario]: boolean } = {
+        const todosLosCamposTocados = {
             nombre: true,
             telefono: true,
             email: true,

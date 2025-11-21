@@ -4,7 +4,7 @@
     "projects": "Proyectos",
     "about": "Nosotros",
     "contact": "Contacto",
-    "login": "Iniciar Sesión",
+    "login": "Login",
     "welcome": "Bienvenido, {{name}}",
     "logout": "Salir"
   },
@@ -34,30 +34,8 @@
     "area": "Superficie"
   },
   "projects": {
-    "title": "Nuestros Proyectos",
-    "subtitle": "Descubre nuestras obras más destacadas y proyectos innovadores",
     "previous": "Anterior",
-    "next": "Siguiente",
-    "goToProject": "Ir al proyecto {{number}}",
-    "viewProject": "Ver proyecto {{name}}",
-    "list": {
-      "residential": {
-        "title": "Construcción Residencial",
-        "description": "Casas y edificios con los más altos estándares de calidad."
-      },
-      "renovations": {
-        "title": "Renovaciones y Remodelaciones",
-        "description": "Transformamos tus espacios existentes con diseños modernos."
-      },
-      "consulting": {
-        "title": "Consultoría en Construcción",
-        "description": "Asesoría especializada para tu proyecto constructivo."
-      },
-      "supervision": {
-        "title": "Supervisión de Proyectos",
-        "description": "Control de calidad y cumplimiento de plazos garantizados."
-      }
-    }
+    "next": "Siguiente"
   },
   "services": {
     "title": "Nuestros Servicios de Construcción",
@@ -87,11 +65,11 @@
     "whyChoose": "¿Por qué elegir CChang?",
     "ourValues": "Nuestros Valores",
     "aboutUs": "Sobre Nosotros",
-    "contactProject": "Contáctanos para tu Proyecto",
+    "contactProject": "Contactanos para tu Proyecto",
     "yearsExperience": "Años de Experiencia",
     "multiple": "Múltiples",
     "provinces": "Provincias",
-    "description1": "CChang Constructora, empresa cubana con más de 10 años de experiencia, se especializa en proyectos para instituciones estatales y clientes privados.",
+    "description1": "CChang Constructora, empresa cubana con más de 10 anos de experiencia, se especializa en proyectos para instituciones estatales y clientes privados.",
     "description2": "Con presencia en múltiples provincias. Contamos con un equipo altamente calificado que garantiza ejecuciones eficientes y soluciones constructivas duraderas.",
     "description3": "Nuestra cartera refleja el compromiso con el desarrollo nacional y la excelencia en cada proyecto, edificando no solo estructuras sino también relaciones sólidas con nuestros clientes.",
     "values": {
@@ -114,7 +92,7 @@
     }
   },
   "contact": {
-    "title": "Contácta con nosotros por cualquier duda o consulta",
+    "title": "Contacta con nosotros para cualquier duda o consulta",
     "info": {
       "title": "Información de Contacto",
       "phone": {
@@ -147,7 +125,7 @@
         "name": "Tu nombre completo",
         "phone": "Tu número de teléfono",
         "email": "tu@email.com",
-        "message": "mensaje breve"
+        "message": "Mensaje breve"
       },
       "errors": {
         "nameRequired": "El nombre es obligatorio",
@@ -161,7 +139,7 @@
     }
   },
   "footer": {
-    "copyright": "&copy; 2025 Constructora CChang. Todos los derechos reservados.",
+    "copyright": "2025 Constructora CChang. Todos los derechos reservados.",
     "tagline": "Construcción, Calidad, Confianza",
     "social": {
       "facebook": "Síguenos en Facebook",
@@ -188,13 +166,15 @@
     "bathrooms": "Baños",
     "area": "Superficie",
     "description": "Descripción",
+    "remodel": {
+      "subtitle": "Dale nueva vida a tus espacios con nuestras remodelaciones."
+    },
     "features": {
       "title": "Características",
       "pool": "Piscina",
       "garage": "Garaje",
       "garden": "Jardín",
       "airConditioning": "Aire Acondicionado",
-      "wifi": "WiFi",
       "laundry": "Lavadero",
       "kitchen": "Cocina Equipada"
     },
@@ -207,11 +187,10 @@
       "send": "Enviar Mensaje",
       "placeholderName": "Tu nombre",
       "placeholderEmail": "tu@email.com",
-      "placeholderPhone": "+53 5622 6278",
       "placeholderMessage": "Estoy interesado en la propiedad: {{propertyName}}",
       "completeFields": "Complete los campos requeridos",
-      "characters": "caracteres",
       "requiredFields": "Campos obligatorios",
+      "characters": "caracteres",
       "errors": {
         "nameRequired": "El nombre es obligatorio",
         "nameMinLength": "El nombre debe tener al menos 2 caracteres",
@@ -236,29 +215,5 @@
     "itemsTitle": "Objetos",
     "contact": "Comprar",
     "viewDetails": "Detalles"
-  },
-  "newUser": {
-    "title": "Crear cuenta",
-    "subtitle": "Únete a Constructora CChang",
-    "name": "Nombre",
-    "namePlaceholder": "Tu nombre",
-    "lastname": "Apellido",
-    "lastnamePlaceholder": "Tus apellidos",
-    "email": "Correo electrónico",
-    "yourEmail": "tu@email.com",
-    "telephone": "Teléfono",
-    "dateOfbirth": "Fecha de Nacimiento",
-    "adult": "Debes ser mayor de 18 años",
-    "password": "Contraseña",
-    "passwordPlaceHolder": "Mínimo 6 caracteres",
-    "confirmPassword": "Confirmar Contraseña",
-    "confirmPasswordPlaceHolder": "Repite tu contraseña",
-    "termsPlaceHolder": "terminos y condiciones",
-    "and": "y la",
-    "privatePolicy": "política de privacidad",
-    "creating": "Creando cuenta...",
-    "create": "Crear Cuenta",
-    "question": "¿Ya tienes cuenta?",
-    "getBack": "Volver"
   }
 }
