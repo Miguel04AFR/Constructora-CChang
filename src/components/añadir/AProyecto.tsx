@@ -1,12 +1,11 @@
 'use client';
 import React, { useState, useRef } from 'react';
-import { Proyecto, proyectoService } from '@/src/Services/Proyecto';
+import { proyectoService } from '@/src/Services/Proyecto';
 
 export const AProyecto = () => {
   const [formData, setFormData] = useState({
     titulo: '',
     descripcion: '',
-    imagenUrl: ''
   });
 
   const [imagenFile, setImagenFile] = useState<File | null>(null);
@@ -29,7 +28,7 @@ export const AProyecto = () => {
     
     if (file) {
       if (!file.type.startsWith('image/')) {
-        setMensaje('❌ Por favor, selecciona un archivo de imagen válido');
+        setMensaje('Selecciona un archivo de imagen válido');
         return;
       }
 
@@ -43,72 +42,50 @@ export const AProyecto = () => {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
+        const imageUrl = e.target?.result as string;//convierto a Base64 pero es para mostrarle al admin la imagen que subio no para guardarla
         setImagenPreview(imageUrl);
-        
-        guardarImagenLocalmente(file);
       };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const guardarImagenLocalmente = async (file: File) => {
-    try {
-      const timestamp = Date.now();
-      const extension = file.name.split('.').pop();
-      const nombreArchivo = `proyecto-${timestamp}.${extension}`;
-      const imagenUrl = `/imagenes/proyectos/${nombreArchivo}`;
-      
-      setFormData(prev => ({
-        ...prev,
-        imagenUrl: imagenUrl
-      }));
-
-      console.log('Imagen se guardará en:', imagenUrl);
-      console.log('Nombre del archivo:', nombreArchivo);
-      
-    } catch (error) {
-      console.error('Error guardando imagen local:', error);
+      reader.readAsDataURL(file);//lo convierte
     }
   };
 
   const handleRemoveImage = () => {
     setImagenFile(null);
     setImagenPreview('');
-    setFormData(prev => ({ ...prev, imagenUrl: '' }));
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    e.preventDefault(); //con esto es que logro que pueda arrastrar archivos
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const files = e.dataTransfer.files;
+    const files = e.dataTransfer.files;// El archivos arrastrados
     if (files && files[0]) {
       const file = files[0];
       
+
+      //la misma validacion sino me da bateo
       if (!file.type.startsWith('image/')) {
         setMensaje('selecciona un archivo de imagen válido');
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Máximo 5MB');
+        setMensaje('La imagen es demasiado grande. Maximo 5MB');
         return;
       }
 
       setImagenFile(file);
       setMensaje('');
-
+      //hace lo mismo convierte a base64
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageUrl = e.target?.result as string;
         setImagenPreview(imageUrl);
-        guardarImagenLocalmente(file);
       };
       reader.readAsDataURL(file);
     }
@@ -123,35 +100,27 @@ export const AProyecto = () => {
       if (!imagenFile) {
         throw new Error('Por favor, selecciona una imagen');
       }
+      //como lo que se guara en la bd es la url de la imagen, no puedo usar la entidad proyecto como lo hice con user 
+      const datos = new FormData();
+      datos.append('titulo', formData.titulo);
+      datos.append('descripcion', formData.descripcion);
+      datos.append('imagen', imagenFile);
 
-      if (!formData.imagenUrl) {
-        throw new Error('Error procesando la imagen');
-      }
-
-      // Crear el proyecto
-      const proyectoNuevo: Proyecto = {
-        titulo: formData.titulo,
-        descripcion: formData.descripcion,
-        imagenUrl: formData.imagenUrl,
-      };
-
-      const proyectoCreado = await proyectoService.crearProyecto(proyectoNuevo);
+      //USAR EL MÉTODO DEL SERVICIO EN LUGAR DE FETCH DIRECTAMENTE
+      const proyectoCreado = await proyectoService.crearProyectoConImagen(datos);
+      //sale en oscuro pq no lo utilizo pero es que ya lo guardo en el metodo
+      setMensaje('Proyecto creado exitosamente!');
       
-      // exito
-      const nombreArchivo = formData.imagenUrl.split('/').pop();
-      setMensaje(` Proyecto creado exitosamente! Guarda la imagen como "${nombreArchivo}" en la carpeta src/imagenes/proyectos/`);
-
-      // Limpiar
+      // Limpiar formulario
       setFormData({
         titulo: '',
         descripcion: '',
-        imagenUrl: ''
       });
       handleRemoveImage();
 
     } catch (error: any) {
       console.error('Error al crear proyecto:', error);
-      setMensaje(`❌ Error: ${error.message || 'No se pudo crear el proyecto'}`);
+      setMensaje(`Error: ${error.message || 'No se pudo crear el proyecto'}`);
     } finally {
       setCargando(false);
     }
@@ -160,7 +129,7 @@ export const AProyecto = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
-        {/* Header */}
+
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
             Añadir Nuevo Proyecto
@@ -190,7 +159,6 @@ export const AProyecto = () => {
               />
             </div>
 
-            {/* Campo de subida de archivo */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Imagen del Proyecto *
@@ -228,17 +196,12 @@ export const AProyecto = () => {
                         }}
                         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                       >
-                        ×
+                        × {/* esa x se ve media rarita pero se ve asi pq es la de cerrar*/}
                       </button>
                     </div>
                     <p className="text-sm text-green-600">
                       Imagen seleccionada. Haz clic para cambiar.
                     </p>
-                    {formData.imagenUrl && (
-                      <p className="text-sm text-blue-600 bg-blue-50 p-2 rounded">
-                        Se guardará como: <strong>{formData.imagenUrl.split('/').pop()}</strong>
-                      </p>
-                    )}
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -256,6 +219,7 @@ export const AProyecto = () => {
               </div>
             </div>
 
+
             <div>
               <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
                 Descripción del Proyecto *
@@ -272,7 +236,7 @@ export const AProyecto = () => {
               />
             </div>
 
-            {/* Mensaje de estado */}
+
             {mensaje && (
               <div className={`p-3 rounded-md ${
                 mensaje.includes('✅') 
@@ -283,7 +247,7 @@ export const AProyecto = () => {
               </div>
             )}
 
-            {/* Botones de acción */}
+
             <div className="flex gap-4 pt-4">
               <button
                 type="submit"
@@ -306,7 +270,6 @@ export const AProyecto = () => {
                   setFormData({
                     titulo: '',
                     descripcion: '',
-                    imagenUrl: ''
                   });
                   handleRemoveImage();
                 }}

@@ -10,6 +10,26 @@ export interface Proyecto {
 
 export const proyectoService = {
 
+
+ async crearProyectoConImagen(formData: FormData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}/proyectos/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al crear proyecto');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error creando proyecto con imagen:', error);
+            throw error;
+        }
+    },
+
 async crearProyecto (proyecto: Proyecto) {
     
     try{
