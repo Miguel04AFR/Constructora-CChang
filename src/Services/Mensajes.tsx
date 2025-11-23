@@ -2,9 +2,11 @@ import { API_CONFIG } from "../config/env";
 import { Usuario } from "./Usuario";
 
 export interface Mensaje{
+  id?: string;
     tipo: string;
     motivo: string;
     gmail:string;
+    telefono: string
     user: Usuario;
 
 }

@@ -1,5 +1,5 @@
 'use client';
-import { Proyecto } from '@/src/Services/Proyecto';
+import { Proyecto, proyectoService } from '@/src/Services/Proyecto';
 import { Usuario, usuarioService } from '@/src/Services/Usuario';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,22 @@ export default function AdminPage() {
 
   useEffect(() => {
     obtenerUsuarios();
+    obtenerProyectos();
   }, []);
+
+  const obtenerProyectos = async () => {
+    try {
+      setCargandoProyectos(true);
+      setErrorProyectos(null);
+      const proyectoss = await proyectoService.obtenerProyectos();
+      setProyectos(proyectoss);
+    } catch (error: any) {
+      console.error('Error obteniendo usuarios:', error);
+      setErrorProyectos(error.message || 'Error al cargar usuarios');
+    } finally {
+      setCargandoProyectos(false);
+    }
+  };
 
   const obtenerUsuarios = async () => {
     try {
@@ -209,6 +224,106 @@ export default function AdminPage() {
             </div>
           </div>
         );
+      
+      case 'proyectos':
+  return (
+    <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-[#003153]">
+            Lista de Proyectos ({proyectos.length})
+          </h3>
+          <button 
+            onClick={() => setSeccionActual(<AProyecto />)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Nuevo Proyecto
+          </button>
+        </div>
+      </div>
+      
+      {cargandoProyectos && (
+        <div className="p-4 text-center">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#003153]"></div>
+          <p className="mt-2 text-gray-500">Cargando proyectos...</p>
+        </div>
+      )}
+      
+      {errorProyectos && (
+        <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-700 text-sm">Error: {errorProyectos}</p>
+          <button 
+            onClick={obtenerProyectos}
+            className="mt-2 text-red-700 hover:underline text-sm"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+      
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagen</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {proyectos.length === 0 && !cargandoProyectos && !errorProyectos ? (
+              <tr>
+                <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                  No hay proyectos creados aún.
+                  <button 
+                    onClick={() => setSeccionActual(<AProyecto />)}
+                    className="mt-2 block mx-auto text-green-600 hover:text-green-800 font-medium"
+                  >
+                    Crear primer proyecto
+                  </button>
+                </td>
+              </tr>
+            ) : (
+              proyectos.map((proyecto) => (
+                <tr key={proyecto.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex shrink-0">
+                      <img 
+                        src={`http://localhost:3001${proyecto.imagenUrl}`}
+                        alt={proyecto.titulo}
+                        className="h-12 w-16 object-cover rounded border border-gray-200"
+                        onError={(e) => {
+                          // Fallback si la imagen no carga
+                          e.currentTarget.src = '/placeholder-image.jpg';
+                          e.currentTarget.alt = 'Imagen no disponible';
+                        }}
+                      />
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{proyecto.titulo}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-500 max-w-xs truncate">
+                      {proyecto.descripcion}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                    <button className="text-red-600 hover:text-red-900">Eliminar</button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 
       case 'mensajes':
         return (
