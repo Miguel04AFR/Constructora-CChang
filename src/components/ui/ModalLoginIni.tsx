@@ -4,14 +4,16 @@ import React, { useState } from 'react'
 import type { ModalLoginProps } from '@/src/Services/ModalLoginProps';
 import { IoClose, IoMail, IoPerson, IoLockClosed, IoEye, IoEyeOff, IoCheckmarkCircle } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/src/contexts/AuthContext';
 
-export const ModalLoginIni = ({isOpen, onClose,usuario }: ModalLoginProps) => {
+export const ModalLoginIni = ({isOpen, onClose, onLoginSuccess}: ModalLoginProps) => {
 const [loginInput, setLoginInput] = useState('');
 const [password,setPassword] = useState('');
 const [showPassword, setShowPassword] = useState(false);
 const [esGmail, setesGmail] = useState(false);
 const [inicio,setInicio] = useState(false);
 const { t } = useTranslation();
+const { login } = useAuth();
 
 if(!isOpen) return null;
 
@@ -22,37 +24,42 @@ const hadleChangeLoginInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 
 const hadleSumit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if(esGmail){
-    setesGmail(true);
-    }
     Iniciar();
 }
 
 const Iniciar = () => {
   if(esGmail){
-    if(password=='123456' && loginInput=='hola@gmail.com')
+    if(password=='123456' && loginInput=='hola@gmail.com'){
       setInicio(true);
-     setTimeout(() => {
+      login(loginInput);
+      setTimeout(() => {
         setLoginInput('');
         setPassword('');
         setInicio(false);
         onClose();
-      }, 2000);
-    
-  } else {
-    if(password=='123456' && loginInput=='usuario')
-      setInicio(true);
-     setTimeout(() => {
-        setLoginInput('');
-        setPassword('');
-        setInicio(false);
-       if (usuario) {
-          usuario('usuario'); /* pasa el nombre de usuario al MenuBar */
+        // Notificar que el login fue exitoso
+        if (onLoginSuccess) {
+          onLoginSuccess();
         }
-
+      }, 1000);
+    } else {
+    }
+  } else {
+    if(password=='123456' && loginInput=='usuario'){
+      setInicio(true);
+      login(loginInput);
+      setTimeout(() => {
+        setLoginInput('');
+        setPassword('');
+        setInicio(false);
         onClose();
-      }, 2000);
+        // Notificar que el login fue exitoso
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+      }, 1000);
+    } else {
+    }
   }
 }
 

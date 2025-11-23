@@ -178,6 +178,8 @@
     "subtitle": "Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad",
     "previousHouse": "Casa anterior",
     "nextHouse": "Casa siguiente",
+    "previous": "Anterior",
+    "next": "Siguiente",
     "goToHouse": "Ver casa {{number}}",
     "viewDetails": "Ver detalles de {{name}}",
     "viewDetailsButton": "Ver Detalles",
@@ -240,13 +242,15 @@
     "subtitle": "Dale nueva vida a tus espacios con nuestros servicios de remodelación.",
     "itemsTitle": "Objetos",
     "contact": "Comprar",
+    "buy": "Contactar",
     "viewDetails": "Detalles",
     "detailTitle": "Descripción detallada del servicio",
     "price": "Precio",
     "perUnit": "/unidad",
     "itemTotal": "Total del item",
     "empty": "No hay remodelaciones disponibles",
-    "carousel": "Carrusel de remodelaciones"
+    "carousel": "Carrusel de remodelaciones",
+    "pageInfo": "Página {{page}} de {{total}}"
   },
   "newUser": {
     "title": "Crear cuenta",
@@ -288,11 +292,14 @@
     "noAccount": "¿No tienes cuenta?",
     "createAccount": "Regístrate aquí",
     "showPassword": "Mostrar contraseña",
-    "hidePassword": "Ocultar contraseña"
+    "hidePassword": "Ocultar contraseña",
+    "required": "Iniciar sesión"
   },
   "common": {
     "close": "Cerrar"
   },
+  "cancel": "Cancelar",
+  "accept": "Aceptar",
   "consulting": {
     "title": "Consultoría en Construcción",
     "subtitle": "Asesoría especializada para optimizar tu proyecto constructivo",
@@ -326,7 +333,7 @@
     "form": {
       "title": "Solicita tu Consultoría",
       "subtitle": "Completa el formulario y nos pondremos en contacto contigo en menos de 24 horas",
-      "name": "Nombre completo",
+      "name": "Nombre",
       "email": "Correo electrónico",
       "phone": "Teléfono",
       "projectType": "Tipo de proyecto",

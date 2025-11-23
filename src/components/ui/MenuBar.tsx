@@ -1,41 +1,35 @@
 'use client';
 
 import React from 'react'
-import Link from 'next/link';
 import { useState } from 'react';
-import { IoBuild, IoPersonOutline, IoBusiness, IoCall, IoInformation, IoConstruct, IoLogOutOutline } from 'react-icons/io5';
+import { IoBuild, IoPersonOutline, IoBusiness, IoCall, IoInformation, IoLogOutOutline } from 'react-icons/io5';
 import { ModalLoginIni } from './ModalLoginIni'
-import { useRouter } from 'next/navigation';//esto es para moverse
-import { usePathname } from 'next/navigation';//Jonny esto es para dectecar la pagina actual
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { LanguageSelector } from './LanguageSelector';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export const MenuBar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [estaLoginModalOpen, setEstaLoginModalOpen] = useState(false);
-  const [usuarioLogueado, setUsuarioLogueado] = useState('');
   const { t } = useTranslation();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleNavigar = (sectionId: string) => {
-    // Si estamos en la página principal
     if (pathname === '/') {
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // Si estamos en otra página, navegar a la página principal 
       router.push(`/#${sectionId}`);
     }
   };
 
-  const handleLoginU = (usuario: string) => {
-    setUsuarioLogueado(usuario);
-  };
-
   const handleCerrarSesion = () => {
-    setUsuarioLogueado('');
+    logout();
   };
 
   return (
@@ -91,7 +85,7 @@ export const MenuBar = () => {
 
         {/* Login */}
         <div className="flex items-center gap-4">
-          {!usuarioLogueado ? (
+          {!isAuthenticated ? (
             <div className='flex items-center'>
               <button 
                 onClick={() => setEstaLoginModalOpen(true)}
@@ -100,13 +94,12 @@ export const MenuBar = () => {
                 <IoPersonOutline size={20} />
                 <span className="font-medium">{t('navigation.login')}</span>
               </button>
-
             </div>
           ) : (
             <div className='flex items-center gap-3 flex-col sm:flex-row'>
               <div className='flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg border border-green-200 text-sm sm:text-base'>
                 <IoPersonOutline size={20} />
-                <span className="font-medium"> {t('navigation.welcome', { name: usuarioLogueado })}</span>
+                <span className="font-medium"> {t('navigation.welcome', { name: user })}</span>
               </div>
               <button 
                 onClick={handleCerrarSesion}
@@ -119,16 +112,15 @@ export const MenuBar = () => {
             </div>
           )}
           <div className="ml-4"> 
-                <LanguageSelector />
-              </div>
+            <LanguageSelector />
+          </div>
         </div>
       </nav>
 
       {/* Modal de Login */}
       <ModalLoginIni 
         isOpen={estaLoginModalOpen} 
-        onClose={() => setEstaLoginModalOpen(false)} 
-        usuario={handleLoginU} 
+        onClose={() => setEstaLoginModalOpen(false)}
       />
     </>
   );

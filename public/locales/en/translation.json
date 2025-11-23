@@ -178,6 +178,8 @@
     "subtitle": "Discover our exclusive selection of homes designed for your comfort",
     "previousHouse": "Previous house",
     "nextHouse": "Next house",
+    "previous": "Previous",
+    "next": "Next",
     "goToHouse": "View house {{number}}",
     "viewDetails": "View details of {{name}}",
     "viewDetailsButton": "View Details",
@@ -240,13 +242,15 @@
     "subtitle": "Give new life to your spaces with our remodeling services.",
     "itemsTitle": "Items",
     "contact": "Buy",
+    "buy": "Contact",
     "viewDetails": "Details",
     "detailTitle": "Detailed service description",
     "price": "Price",
     "perUnit": "/unit",
     "itemTotal": "Item total",
     "empty": "No renovations available",
-    "carousel": "Renovations carousel"
+    "carousel": "Renovations carousel",
+    "pageInfo": "Page {{page}} of {{total}}"
   },
   "newUser": {
     "title": "Create Account",
@@ -288,11 +292,14 @@
     "noAccount": "Don't have an account?",
     "createAccount": "Sign up here",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "required": "Sign in"
   },
   "common": {
     "close": "Close"
   },
+  "cancel": "Cancel",
+  "accept": "Accept",
   "consulting": {
     "title": "Construction Consulting",
     "subtitle": "Specialized advice to optimize your construction project",
@@ -326,7 +333,7 @@
     "form": {
       "title": "Request Your Consultation",
       "subtitle": "Complete the form and we will contact you in less than 24 hours",
-      "name": "Full name",
+      "name": "Name",
       "email": "Email",
       "phone": "Phone",
       "projectType": "Project type",

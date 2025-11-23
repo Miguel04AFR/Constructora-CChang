@@ -6,9 +6,16 @@ import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
 
 export const RemodelacionesCarousel = () => {
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
+  const [modalLoginOpen, setModalLoginOpen] = useState(false);
+  const [selectedRemodel, setSelectedRemodel] = useState<Remodelacion | null>(null);
+  const [remodelacionPendiente, setRemodelacionPendiente] = useState<Remodelacion | null>(null);
+  const remodelacionPendienteRef = useRef<Remodelacion | null>(null);
   const pageSize = 3;
   // Normalize possible shapes (named export or other shapes)
   const items: Remodelacion[] = Array.isArray(remodelacionesNamed)
@@ -24,14 +31,10 @@ export const RemodelacionesCarousel = () => {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Keep page index in-range if items change dynamically
-
-  // Keep page index in-range if items change dynamically
   useEffect(() => {
     setPage((p) => Math.min(p, Math.max(0, totalPages - 1)));
   }, [totalPages]);
 
-  // Scroll to top when page changes so upper side is visible
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -52,6 +55,48 @@ export const RemodelacionesCarousel = () => {
       return textoCortado.substring(0, ultimoEspacio) + '...';
     }
     return textoCortado + '...';
+  };
+
+  // Sincronizar la referencia con el estado
+  useEffect(() => {
+    remodelacionPendienteRef.current = remodelacionPendiente;
+  }, [remodelacionPendiente]);
+
+  // Efecto para abrir el formulario automáticamente cuando el usuario se autentica
+  useEffect(() => {
+    if (isAuthenticated && remodelacionPendiente && !modalOpen) {
+      setModalRemodel(remodelacionPendiente);
+      setModalOpen(true);
+      setRemodelacionPendiente(null);
+      remodelacionPendienteRef.current = null;
+    }
+  }, [isAuthenticated, remodelacionPendiente, modalOpen]);
+
+  const handleLoginSuccess = () => {
+    const checkAndOpen = () => {
+      const currentAuth = localStorage.getItem('user');
+      const pendingRemodelacion = remodelacionPendienteRef.current;
+      if (pendingRemodelacion && currentAuth) {
+        setModalRemodel(pendingRemodelacion);
+        setModalOpen(true);
+        setRemodelacionPendiente(null);
+        remodelacionPendienteRef.current = null;
+      }
+    };
+    setTimeout(checkAndOpen, 300);
+  };
+
+  const handleComprarClick = (remodelacion: Remodelacion) => {
+    if (!isAuthenticated) {
+      // Guardar la remodelación que el usuario quiere contactar
+      setRemodelacionPendiente(remodelacion);
+      remodelacionPendienteRef.current = remodelacion;
+      setModalLoginOpen(true);
+      return;
+    }
+    
+    setModalRemodel(remodelacion);
+    setModalOpen(true);
   };
 
   if (total === 0) {
@@ -104,10 +149,24 @@ export const RemodelacionesCarousel = () => {
 
                   <div className="mt-4 flex gap-3">
                     <Link href={`/servicios/renovaciones/${r.id}`} className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">{t('catalog.viewDetailsButton') || 'Ver Detalles'}</Link>
-                    <button
-                      onClick={() => { setModalRemodel(r); setModalOpen(true); setFormValido(false); }}
-                      className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
-                    >{t('remodel.contact') || 'Contactar'}</button>
+                    <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleComprarClick(r);
+                        }}
+                        className={`text-sm px-4 py-2 rounded-lg transition-colors cursor-pointer ${
+                            isAuthenticated 
+                                ? 'bg-[#6B21A8] text-white hover:bg-purple-800' 
+                                : 'bg-[#003153] text-white hover:bg-blue-800'
+                        }`}
+                        type="button"
+                    >
+                        {isAuthenticated 
+                            ? (t('remodel.buy') || 'Contactar') 
+                            : (t('login.required') || 'Iniciar sesión')
+                        }
+                    </button>
                   </div>
                 </div>
               </div>
@@ -118,12 +177,11 @@ export const RemodelacionesCarousel = () => {
         {/* Prev / Next buttons */}
         <div className="flex items-center justify-between mt-8">
           <button onClick={goPrev} disabled={page === 0} className={`px-4 py-2 rounded-md ${page === 0 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
-             {t('catalog.next') || 'Siguiente'}
-          </button>
-          <div className="text-sm text-gray-600">{t('remodel.pageInfo') || `Página ${page + 1} de ${totalPages}`}</div>
-          <button onClick={goNext} disabled={page === totalPages - 1} className={`px-4 py-2 rounded-md ${page === totalPages - 1 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
-          
              {t('catalog.previous') || 'Anterior'}
+          </button>
+          <div className="text-sm text-gray-600">{t('remodel.pageInfo', { page: page + 1, total: totalPages }) || `Página ${page + 1} de ${totalPages}`}</div>
+          <button onClick={goNext} disabled={page === totalPages - 1} className={`px-4 py-2 rounded-md ${page === totalPages - 1 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
+             {t('catalog.next') || 'Siguiente'}
           </button>
         </div>
       </div>
@@ -133,7 +191,7 @@ export const RemodelacionesCarousel = () => {
           <div className="absolute inset-0 bg-black opacity-40" onClick={() => setModalOpen(false)} />
           <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg mx-4 z-10 max-h-[70vh]">
             <button
-              aria-label={t('close') || 'Cerrar'}
+              aria-label={t('common.close') || 'Cerrar'}
               onClick={() => { setModalOpen(false); setModalRemodel(null); }}
               className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center z-20"
             >
@@ -181,6 +239,16 @@ export const RemodelacionesCarousel = () => {
           {t('propertyDetail.contactForm.successMessage') || 'Operación realizada con éxito'}
         </div>
       )}
+      <ModalLoginIni 
+        isOpen={modalLoginOpen}
+        onClose={() => {
+          setModalLoginOpen(false);
+          // Limpiar la remodelación pendiente si se cierra el modal sin login
+          setRemodelacionPendiente(null);
+          remodelacionPendienteRef.current = null;
+        }}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 };

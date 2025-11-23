@@ -1,3 +1,5 @@
+'use client';
+
 import { MenuBar } from '../../components/ui/MenuBar'
 import { Footer } from '../../components/ui/Footer'
 

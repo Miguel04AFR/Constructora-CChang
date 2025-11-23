@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
 
 interface FormData {
     nombre: string;
     email: string;
     telefono: string;
-    tipoProyecto: string;
-    presupuesto: string;
-    ubicacion: string;
     descripcion: string;
 }
 
@@ -17,30 +16,26 @@ interface ErroresFormulario {
     nombre?: string;
     email?: string;
     telefono?: string;
-    tipoProyecto?: string;
-    presupuesto?: string;
-    ubicacion?: string;
     descripcion?: string;
 }
 
-type CamposFormulario = keyof FormData;
-
 export const FormularioConsultoria = () => {
     const { t } = useTranslation();
+    const { isAuthenticated } = useAuth();
+    const [modalLoginOpen, setModalLoginOpen] = useState(false);
+    const formDataPendienteRef = useRef<FormData | null>(null);
+
     const [formData, setFormData] = useState<FormData>({
         nombre: '',
         email: '',
         telefono: '',
-        tipoProyecto: '',
-        presupuesto: '',
-        ubicacion: '',
         descripcion: ''
     });
 
     const [errores, setErrores] = useState<ErroresFormulario>({});
     const [mostrarMensajeErrores, setMostrarMensajeErrores] = useState(false);
     const [formularioValido, setFormularioValido] = useState(false);
-    const [camposTocados, setCamposTocados] = useState<{ [key in CamposFormulario]?: boolean }>({});
+    const [camposTocados, setCamposTocados] = useState<{ [key: string]: boolean }>({});
     const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
     // Efecto para verificar la validez del formulario
@@ -48,17 +43,25 @@ export const FormularioConsultoria = () => {
         setFormularioValido(Object.keys(errores).length === 0);
     }, [errores]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    // Efecto para enviar automáticamente cuando el usuario se autentica
+    useEffect(() => {
+        if (isAuthenticated && formDataPendienteRef.current) {
+            const pendingData = formDataPendienteRef.current;
+            formDataPendienteRef.current = null;
+            enviarFormulario(pendingData);
+        }
+    }, [isAuthenticated]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        const campo = name as CamposFormulario;
 
         let valorFiltrado = value;
-        if (campo === 'nombre') {
+        if (name === 'nombre') {
             valorFiltrado = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
             if (valorFiltrado.length > 50) {
                 valorFiltrado = valorFiltrado.slice(0, 50);
             }
-        } else if (campo === 'telefono') {
+        } else if (name === 'telefono') {
             valorFiltrado = value.replace(/[^0-9]/g, '');
             if (valorFiltrado.length > 8) {
                 valorFiltrado = valorFiltrado.slice(0, 8);
@@ -67,25 +70,25 @@ export const FormularioConsultoria = () => {
 
         setFormData(prev => ({
             ...prev,
-            [campo]: valorFiltrado,
+            [name]: valorFiltrado,
         }));
 
         // Marcar el campo como tocado
-        if (!camposTocados[campo]) {
+        if (!camposTocados[name]) {
             setCamposTocados(prev => ({
                 ...prev,
-                [campo]: true
+                [name]: true
             }));
         }
 
         // Validar el campo individual
-        validarCampoIndividual(campo, valorFiltrado);
+        validarCampoIndividual(name, valorFiltrado);
     };
 
-    const validarCampoIndividual = (campo: CamposFormulario, value: string) => {
+    const validarCampoIndividual = (name: string, value: string) => {
         const nuevosErrores = { ...errores };
 
-        switch (campo) {
+        switch (name) {
             case 'nombre':
                 if (!value.trim()) {
                     nuevosErrores.nombre = t('consulting.form.errors.nameRequired');
@@ -111,30 +114,6 @@ export const FormularioConsultoria = () => {
                     nuevosErrores.email = t('consulting.form.errors.emailInvalid');
                 } else {
                     delete nuevosErrores.email;
-                }
-                break;
-
-            case 'tipoProyecto':
-                if (!value.trim()) {
-                    nuevosErrores.tipoProyecto = t('consulting.form.errors.projectTypeRequired');
-                } else {
-                    delete nuevosErrores.tipoProyecto;
-                }
-                break;
-
-            case 'presupuesto':
-                if (!value.trim()) {
-                    nuevosErrores.presupuesto = t('consulting.form.errors.budgetRequired');
-                } else {
-                    delete nuevosErrores.presupuesto;
-                }
-                break;
-
-            case 'ubicacion':
-                if (!value.trim()) {
-                    nuevosErrores.ubicacion = t('consulting.form.errors.locationRequired');
-                } else {
-                    delete nuevosErrores.ubicacion;
                 }
                 break;
 
@@ -173,18 +152,6 @@ export const FormularioConsultoria = () => {
             nuevosErrores.telefono = t('consulting.form.errors.phoneInvalid');
         }
 
-        if (!formData.tipoProyecto.trim()) {
-            nuevosErrores.tipoProyecto = t('consulting.form.errors.projectTypeRequired');
-        }
-
-        if (!formData.presupuesto.trim()) {
-            nuevosErrores.presupuesto = t('consulting.form.errors.budgetRequired');
-        }
-
-        if (!formData.ubicacion.trim()) {
-            nuevosErrores.ubicacion = t('consulting.form.errors.locationRequired');
-        }
-
         if (!formData.descripcion.trim()) {
             nuevosErrores.descripcion = t('consulting.form.errors.descriptionRequired');
         } else if (formData.descripcion.trim().length < 20) {
@@ -198,7 +165,7 @@ export const FormularioConsultoria = () => {
     };
 
     // Función para determinar la clase del input
-    const getInputClass = (campo: CamposFormulario, valor: string) => {
+    const getInputClass = (campo: string, valor: string) => {
         const baseClasses = "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200";
         const fueTocado = camposTocados[campo];
         const tieneError = errores[campo as keyof ErroresFormulario];
@@ -216,62 +183,75 @@ export const FormularioConsultoria = () => {
         return `${baseClasses} ${estadoClase}`;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        // Marcar todos los campos como tocados al enviar
-        const todosLosCamposTocados: { [key in CamposFormulario]: boolean } = {
-            nombre: true,
-            telefono: true,
-            email: true,
-            tipoProyecto: true,
-            presupuesto: true,
-            ubicacion: true,
-            descripcion: true
-        };
-        setCamposTocados(todosLosCamposTocados);
-
-        if (validarFormularioCompleto()) {
-            setMensajeEnviado(true);
-            setMostrarMensajeErrores(false);
-            
-            // 🚀 AQUÍ IRÍA LA LÓGICA DE ENVÍO DEL FORMULARIO
-            console.log('Formulario de consultoría enviado:', formData);
-            // Ejemplo de implementación:
-            // try {
-            //   await enviarFormularioConsultoria(formData);
-            //   setMensajeEnviado(true);
-            // } catch (error) {
-            //   console.error('Error al enviar formulario:', error);
-            // }
-            
-            // Limpiar formulario
-            setFormData({
-                nombre: '',
-                email: '',
-                telefono: '',
-                tipoProyecto: '',
-                presupuesto: '',
-                ubicacion: '',
-                descripcion: ''
-            });
-            setErrores({});
-            setCamposTocados({});
-        } else {
-            setMostrarMensajeErrores(true);
-            // Scroll al primer error
-            const primerError = document.querySelector('.border-red-500');
-            if (primerError) {
-                primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const handleLoginSuccess = () => {
+        const checkAndSubmit = () => {
+            const currentAuth = localStorage.getItem('user');
+            const pendingData = formDataPendienteRef.current;
+            if (pendingData && currentAuth) {
+                enviarFormulario(pendingData);
+                formDataPendienteRef.current = null;
             }
-        }
+        };
+        setTimeout(checkAndSubmit, 300);
+    };
+
+    const enviarFormulario = (datos: FormData) => {
+        setMensajeEnviado(true);
+        setMostrarMensajeErrores(false);
+        
+        // 🚀 AQUÍ IRÍA LA LÓGICA DE ENVÍO DEL FORMULARIO
+        
+        // Limpiar formulario
+        setFormData({
+            nombre: '',
+            email: '',
+            telefono: '',
+            descripcion: ''
+        });
+        setErrores({});
+        setCamposTocados({});
 
         setTimeout(() => {
             setMensajeEnviado(false);
         }, 5000);
     };
 
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        // Marcar todos los campos como tocados al enviar
+        const todosLosCamposTocados = {
+            nombre: true,
+            telefono: true,
+            email: true,
+            descripcion: true
+        };
+        setCamposTocados(todosLosCamposTocados);
+
+        if (!validarFormularioCompleto()) {
+            setMostrarMensajeErrores(true);
+            // Scroll al primer error
+            const primerError = document.querySelector('.border-red-500');
+            if (primerError) {
+                primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // Verificar autenticación antes de enviar
+        if (!isAuthenticated) {
+            // Guardar el formulario pendiente y abrir el modal de login
+            formDataPendienteRef.current = { ...formData };
+            setModalLoginOpen(true);
+            return;
+        }
+
+        // Si está autenticado, enviar directamente
+        enviarFormulario(formData);
+    };
+
     return (
+        <>
         <form onSubmit={handleSubmit} className="space-y-6">
             {mensajeEnviado && (
                 <div className='mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded text-sm'>
@@ -356,86 +336,8 @@ export const FormularioConsultoria = () => {
                     )}
                 </div>
 
-                {/* Campo Tipo de Proyecto */}
-                <div>
-                    <label htmlFor="tipoProyecto" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('consulting.form.projectType')} *
-                    </label>
-                    <select
-                        id="tipoProyecto"
-                        name="tipoProyecto"
-                        value={formData.tipoProyecto}
-                        onChange={handleChange}
-                        className={getInputClass('tipoProyecto', formData.tipoProyecto)}
-                        required
-                    >
-                        <option value="">{t('consulting.form.selectProjectType')}</option>
-                        <option value="residencial">{t('consulting.form.projectTypes.residential')}</option>
-                        <option value="comercial">{t('consulting.form.projectTypes.commercial')}</option>
-                        <option value="industrial">{t('consulting.form.projectTypes.industrial')}</option>
-                        <option value="remodelacion">{t('consulting.form.projectTypes.remodeling')}</option>
-                        <option value="otros">{t('consulting.form.projectTypes.other')}</option>
-                    </select>
-                    {errores.tipoProyecto && camposTocados.tipoProyecto && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                            <span className="mr-1">⚠</span>
-                            {errores.tipoProyecto}
-                        </p>
-                    )}
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Campo Presupuesto */}
-                <div>
-                    <label htmlFor="presupuesto" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('consulting.form.budget')} *
-                    </label>
-                    <select
-                        id="presupuesto"
-                        name="presupuesto"
-                        value={formData.presupuesto}
-                        onChange={handleChange}
-                        className={getInputClass('presupuesto', formData.presupuesto)}
-                        required
-                    >
-                        <option value="">{t('consulting.form.selectBudget')}</option>
-                        <option value="menos-10k">{t('consulting.form.budgets.lessThan10k')}</option>
-                        <option value="10k-50k">{t('consulting.form.budgets.10kTo50k')}</option>
-                        <option value="50k-100k">{t('consulting.form.budgets.50kTo100k')}</option>
-                        <option value="100k-500k">{t('consulting.form.budgets.100kTo500k')}</option>
-                        <option value="mas-500k">{t('consulting.form.budgets.moreThan500k')}</option>
-                    </select>
-                    {errores.presupuesto && camposTocados.presupuesto && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                            <span className="mr-1">⚠</span>
-                            {errores.presupuesto}
-                        </p>
-                    )}
-                </div>
-
-                {/* Campo Ubicación */}
-                <div>
-                    <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('consulting.form.location')} *
-                    </label>
-                    <input
-                        type="text"
-                        id="ubicacion"
-                        name="ubicacion"
-                        value={formData.ubicacion}
-                        onChange={handleChange}
-                        className={getInputClass('ubicacion', formData.ubicacion)}
-                        placeholder={t('consulting.form.placeholderLocation')}
-                        required
-                    />
-                    {errores.ubicacion && camposTocados.ubicacion && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                            <span className="mr-1">⚠</span>
-                            {errores.ubicacion}
-                        </p>
-                    )}
-                </div>
+                {/* Espacio vacío para mantener el grid */}
+                <div></div>
             </div>
 
             {/* Campo Descripción */}
@@ -482,5 +384,16 @@ export const FormularioConsultoria = () => {
                 * {t('consulting.form.requiredFields')}
             </p>
         </form>
+
+            {/* Modal de Login - Fuera del form para evitar formularios anidados */}
+            <ModalLoginIni 
+                isOpen={modalLoginOpen}
+                onClose={() => {
+                    setModalLoginOpen(false);
+                    formDataPendienteRef.current = null;
+                }}
+                onLoginSuccess={handleLoginSuccess}
+            />
+        </>
     );
 };

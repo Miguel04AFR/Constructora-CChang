@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { FormularioContacto } from '@/src/Services/FormularioContacto';
 import { IoCall, IoLocation, IoLogoWhatsapp, IoMail } from 'react-icons/io5';
-import { useTranslation } from 'react-i18next'; 
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni'; 
 
 export const Contactanos = () => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
+  const [modalLoginOpen, setModalLoginOpen] = useState(false);
+  const contactoPendienteRef = useRef<FormularioContacto | null>(null);
 
   const [contacto, setContacto] = useState<FormularioContacto>({
     nombre: '',
@@ -25,6 +30,15 @@ export const Contactanos = () => {
   useEffect(() => {
     setFormularioValido(Object.keys(errores).length === 0);
   }, [errores]);
+
+  // Efecto para enviar automáticamente cuando el usuario se autentica
+  useEffect(() => {
+    if (isAuthenticated && contactoPendienteRef.current) {
+      const pendingContacto = contactoPendienteRef.current;
+      contactoPendienteRef.current = null;
+      enviarFormulario(pendingContacto);
+    }
+  }, [isAuthenticated]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -134,6 +148,36 @@ export const Contactanos = () => {
     return Object.keys(nuevosErrores).length === 0;
   };
 
+  const handleLoginSuccess = () => {
+    const checkAndSubmit = () => {
+      const currentAuth = localStorage.getItem('user');
+      const pendingContacto = contactoPendienteRef.current;
+      if (pendingContacto && currentAuth) {
+        // Enviar el formulario guardado
+        enviarFormulario(pendingContacto);
+        contactoPendienteRef.current = null;
+      }
+    };
+    setTimeout(checkAndSubmit, 300);
+  };
+
+  const enviarFormulario = (datosContacto: FormularioContacto) => {
+    setMensajeEnviado(true);
+    setMostrarMensajeErrores(false);
+    setContacto({
+      nombre: '',
+      telefono: '',
+      email: '',
+      mensaje: ''
+    });
+    setErrores({});
+    setCamposTocados({});
+    
+    setTimeout(() => {
+      setMensajeEnviado(false);
+    }, 5000);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -146,24 +190,21 @@ export const Contactanos = () => {
     };
     setCamposTocados(todosLosCamposTocados);
 
-    if (validarFormulario()) {
-      setMensajeEnviado(true);
-      setMostrarMensajeErrores(false);
-      setContacto({
-        nombre: '',
-        telefono: '',
-        email: '',
-        mensaje: ''
-      });
-      setErrores({});
-      setCamposTocados({});
-    } else {
+    if (!validarFormulario()) {
       setMostrarMensajeErrores(true);
+      return;
     }
 
-    setTimeout(() => {
-      setMensajeEnviado(false);
-    }, 5000);
+    // Verificar autenticación antes de enviar
+    if (!isAuthenticated) {
+      // Guardar el formulario pendiente y abrir el modal de login
+      contactoPendienteRef.current = { ...contacto };
+      setModalLoginOpen(true);
+      return;
+    }
+
+    // Si está autenticado, enviar directamente
+    enviarFormulario(contacto);
   };
 
   // Función para determinar la clase del input
@@ -368,6 +409,16 @@ export const Contactanos = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de Login */}
+      <ModalLoginIni 
+        isOpen={modalLoginOpen}
+        onClose={() => {
+          setModalLoginOpen(false);
+          contactoPendienteRef.current = null;
+        }}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }

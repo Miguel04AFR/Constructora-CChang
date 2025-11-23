@@ -1,14 +1,41 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { remodelaciones } from '@/src/data/remodelaciones';
 import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
+import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
 export const RemodelacionesContainer = () => {
     const { t } = useTranslation();
     const router = useRouter();
+    const { isAuthenticated, user } = useAuth(); // Usar directamente el contexto
+    
+    const [modalLoginOpen, setModalLoginOpen] = useState(false);
+    const [modalContactoOpen, setModalContactoOpen] = useState(false);
+    const [remodelacionSeleccionada, setRemodelacionSeleccionada] = useState<Remodelacion | null>(null);
+    const [remodelacionPendiente, setRemodelacionPendiente] = useState<Remodelacion | null>(null);
+    const remodelacionPendienteRef = React.useRef<Remodelacion | null>(null);
+    const formRef = React.useRef<HTMLFormElement>(null);
+    const [formValido, setFormValido] = useState(false);
+
+    // Sincronizar la referencia con el estado
+    React.useEffect(() => {
+        remodelacionPendienteRef.current = remodelacionPendiente;
+    }, [remodelacionPendiente]);
+
+    // Efecto para abrir el formulario automáticamente cuando el usuario se autentica
+    // y hay una remodelación pendiente
+    useEffect(() => {
+        if (isAuthenticated && remodelacionPendiente && !modalContactoOpen) {
+            setRemodelacionSeleccionada(remodelacionPendiente);
+            setModalContactoOpen(true);
+            setRemodelacionPendiente(null);
+        }
+    }, [isAuthenticated, remodelacionPendiente, modalContactoOpen]);
 
     const formatCurrency = (value: number) => {
         try {
@@ -20,6 +47,42 @@ export const RemodelacionesContainer = () => {
 
     const computeItemsTotal = (items: { precio?: number; cantidad?: number }[] = []) =>
         items.reduce((sum, it) => sum + (it.precio || 0) * (it.cantidad || 1), 0);
+
+    const handleContactarClick = (remodelacion: Remodelacion) => {
+        if (!isAuthenticated) {
+            // Guardar la remodelación que el usuario quiere contactar
+            setRemodelacionPendiente(remodelacion);
+            remodelacionPendienteRef.current = remodelacion;
+            setModalLoginOpen(true);
+            return;
+        }
+        
+        setRemodelacionSeleccionada(remodelacion);
+        setModalContactoOpen(true);
+    };
+
+    const handleLoginSuccess = () => {
+        // Esperar un momento para que el estado de autenticación se actualice
+        // Usar la referencia para obtener el valor actual
+        const checkAndOpen = () => {
+            const currentAuth = localStorage.getItem('user');
+            const pendingRemodelacion = remodelacionPendienteRef.current;
+            // Si hay una remodelación pendiente, abrir el formulario
+            if (pendingRemodelacion && currentAuth) {
+                setRemodelacionSeleccionada(pendingRemodelacion);
+                setModalContactoOpen(true);
+                setRemodelacionPendiente(null);
+                remodelacionPendienteRef.current = null;
+            }
+        };
+        // Intentar después de un pequeño delay para asegurar que el estado se haya actualizado
+        setTimeout(checkAndOpen, 300);
+    };
+
+    const handleEnvioExitoso = () => {
+        setModalContactoOpen(false);
+        setRemodelacionSeleccionada(null);
+    };
 
     if (remodelaciones.length === 0) {
         return (
@@ -38,6 +101,18 @@ export const RemodelacionesContainer = () => {
                 <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">
                     {t('remodel.subtitle') || 'Conoce nuestras opciones de remodelación y paquetes.'}
                 </p>
+
+                {/* Estado de autenticación visible */}
+                <div className={`mb-4 p-3 rounded text-center text-sm ${
+                    isAuthenticated 
+                    ? 'bg-green-100 text-green-800 border border-green-300' 
+                    : 'bg-blue-100 text-blue-800 border border-blue-300'
+                }`}>
+                    {isAuthenticated 
+                        ? '✅ Estás autenticado - Puedes contactar' 
+                        : '🔒 Inicia sesión para contactar sobre remodelaciones'
+                    }
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {remodelaciones.map((r: Remodelacion) => {
@@ -76,21 +151,34 @@ export const RemodelacionesContainer = () => {
                                 </ul>
                             </details>
 
-                                                        <div className="flex justify-between items-center">
-                                                                <button
-                                                                    onClick={() => {
-                                                                        const path = `/servicios/renovaciones/${encodeURIComponent(String(r.id))}`;
-                                                                        // debug log in browser console to help trace empty id issues
-                                                                        // eslint-disable-next-line no-console
-                                                                        console.log('navegando a', path);
-                                                                        router.push(path);
-                                                                    }}
-                                                                    className="text-sm bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
-                                                                >
-                                                                    {t('remodel.viewDetails') || 'Ver detalles'}
-                                                                </button>
-                                <button className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors">
-                                    {t('remodel.contact') || 'Contactar'}
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={() => {
+                                        const path = `/servicios/renovaciones/${encodeURIComponent(String(r.id))}`;
+                                        router.push(path);
+                                    }}
+                                    className="text-sm bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                                >
+                                    {t('remodel.viewDetails') || 'Ver detalles'}
+                                </button>
+                                
+                                <button 
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleContactarClick(r);
+                                    }}
+                                    className={`text-sm px-4 py-2 rounded-lg transition-colors cursor-pointer ${
+                                        isAuthenticated 
+                                            ? 'bg-[#6B21A8] text-white hover:bg-purple-800' 
+                                            : 'bg-[#003153] text-white hover:bg-blue-800'
+                                    }`}
+                                    type="button"
+                                >
+                                    {isAuthenticated 
+                                        ? (t('remodel.contact') || 'Contactar') 
+                                        : (t('login.required') || 'Iniciar sesión')
+                                    }
                                 </button>
                             </div>
                         </div>
@@ -98,6 +186,47 @@ export const RemodelacionesContainer = () => {
                     })}
                 </div>
             </div>
+
+            {/* Modal de Login */}
+            <ModalLoginIni 
+                isOpen={modalLoginOpen}
+                onClose={() => {
+                    setModalLoginOpen(false);
+                    // Limpiar la remodelación pendiente si se cierra el modal sin login
+                    setRemodelacionPendiente(null);
+                }}
+                onLoginSuccess={handleLoginSuccess}
+            />
+
+            {/* Modal de Formulario de Contacto */}
+            {modalContactoOpen && remodelacionSeleccionada && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black opacity-40" onClick={() => setModalContactoOpen(false)} />
+                    <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg mx-4 z-10 max-h-[90vh] overflow-y-auto">
+                        <button
+                            aria-label={t('common.close') || 'Cerrar'}
+                            onClick={() => setModalContactoOpen(false)}
+                            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center z-20"
+                        >
+                            ×
+                        </button>
+                        
+                        <div className="p-6">
+                            <h3 className="text-2xl font-bold text-[#003153] mb-4">
+                                {t('propertyDetail.contactForm.title') || 'Contactar sobre remodelación'}
+                            </h3>
+                            
+                            <FormularioContacto
+                                propiedad={{ nombre: remodelacionSeleccionada.nombre }}
+                                formRef={formRef}
+                                onValChange={setFormValido}
+                                onSubmitSuccess={handleEnvioExitoso}
+                                hideSubmit={false}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

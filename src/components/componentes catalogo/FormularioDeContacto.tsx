@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Casa } from '@/src/Services/Casa';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
 
 interface FormularioContactoProps {
     propiedad: Casa | { nombre: string };
@@ -20,6 +22,11 @@ interface ErroresFormulario {
 }
 
 export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad, formRef, onValChange, onSubmitSuccess, hideSubmit = false }) => {
+    const { t } = useTranslation();
+    const { isAuthenticated } = useAuth();
+    const [modalLoginOpen, setModalLoginOpen] = useState(false);
+    const formDataPendienteRef = useRef<typeof formData | null>(null);
+
     const [formData, setFormData] = useState({
         nombre: '',
         email: '',
@@ -33,14 +40,21 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     const [camposTocados, setCamposTocados] = useState<{ [key: string]: boolean }>({});
     const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
-    const { t } = useTranslation();
-
     // Efecto para verificar la validez del formulario cuando cambien los errores
     useEffect(() => {
         const valid = Object.keys(errores).length === 0;
         setFormularioValido(valid);
         if (onValChange) onValChange(valid);
     }, [errores, onValChange]);
+
+    // Efecto para enviar automáticamente cuando el usuario se autentica
+    useEffect(() => {
+        if (isAuthenticated && formDataPendienteRef.current) {
+            const pendingData = formDataPendienteRef.current;
+            formDataPendienteRef.current = null;
+            enviarFormulario(pendingData);
+        }
+    }, [isAuthenticated]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -157,8 +171,8 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
     // Función para determinar la clase del input
     const getInputClass = (campo: string, valor: string) => {
         const baseClasses = "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200";
-    const fueTocado = camposTocados[campo];
-    const tieneError = errores[campo as keyof ErroresFormulario];
+        const fueTocado = camposTocados[campo];
+        const tieneError = errores[campo as keyof ErroresFormulario];
         const tieneValor = valor.trim() !== '';
 
         let estadoClase = '';
@@ -173,9 +187,44 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
         return `${baseClasses} ${estadoClase}`;
     };
 
+    const handleLoginSuccess = () => {
+        const checkAndSubmit = () => {
+            const currentAuth = localStorage.getItem('user');
+            const pendingData = formDataPendienteRef.current;
+            if (pendingData && currentAuth) {
+                enviarFormulario(pendingData);
+                formDataPendienteRef.current = null;
+            }
+        };
+        setTimeout(checkAndSubmit, 300);
+    };
+
+    const enviarFormulario = (datos: typeof formData) => {
+        setMensajeEnviado(true);
+        setMostrarMensajeErrores(false);
+
+        // Aquí iría la lógica para enviar el formulario
+
+        // Limpiar formulario
+        setFormData({
+            nombre: '',
+            email: '',
+            telefono: '',
+            mensaje: ''
+        });
+        setErrores({});
+        setCamposTocados({});
+
+        if (onSubmitSuccess) onSubmitSuccess();
+
+        setTimeout(() => {
+            setMensajeEnviado(false);
+        }, 5000);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         // Marcar todos los campos como tocados al enviar
         const todosLosCamposTocados = {
             nombre: true,
@@ -185,36 +234,26 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
         };
         setCamposTocados(todosLosCamposTocados);
 
-        if (validarFormularioCompleto()) {
-            setMensajeEnviado(true);
-            setMostrarMensajeErrores(false);
-            
-            // Aquí iría la lógica para enviar el formulario
-            console.log('Formulario enviado:', formData);
-            
-            // Limpiar formulario
-            setFormData({
-                nombre: '',
-                email: '',
-                telefono: '',
-                mensaje: ''
-            });
-            setErrores({});
-            setCamposTocados({});
-
-            if (onSubmitSuccess) onSubmitSuccess();
-        } else {
+        if (!validarFormularioCompleto()) {
             setMostrarMensajeErrores(true);
             // Scroll al primer error
             const primerError = document.querySelector('.border-red-500');
             if (primerError) {
                 primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
+            return;
         }
 
-        setTimeout(() => {
-            setMensajeEnviado(false);
-        }, 5000);
+        // Verificar autenticación antes de enviar
+        if (!isAuthenticated) {
+            // Guardar el formulario pendiente y abrir el modal de login
+            formDataPendienteRef.current = { ...formData };
+            setModalLoginOpen(true);
+            return;
+        }
+
+        // Si está autenticado, enviar directamente
+        enviarFormulario(formData);
     };
 
     return (
@@ -234,7 +273,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                     {t('propertyDetail.contactForm.errorMessage')}
                 </div>
             )}
-      
+
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
                 {/* Campo Nombre */}
                 <div>
@@ -315,7 +354,7 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                         value={formData.mensaje}
                         onChange={handleChange}
                         rows={4}
-                        className={getInputClass('mensaje', formData.mensaje)}
+                        className={`${getInputClass('mensaje', formData.mensaje)} resize-none`}
                         placeholder={t('propertyDetail.contactForm.placeholderMessage', { propertyName: propiedad.nombre })}
                         required
                     />
@@ -334,11 +373,10 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                     <button
                         type="submit"
                         disabled={!formularioValido}
-                        className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
-                            formularioValido
+                        className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${formularioValido
                                 ? 'bg-[#003153] text-white hover:bg-blue-800 cursor-pointer'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
+                            }`}
                     >
                         {formularioValido ? t('propertyDetail.contactForm.send') : t('propertyDetail.contactForm.completeFields')}
                     </button>
@@ -349,6 +387,16 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
                     * {t('propertyDetail.contactForm.requiredFields')}
                 </p>
             </form>
+
+            {/* Modal de Login */}
+            <ModalLoginIni
+                isOpen={modalLoginOpen}
+                onClose={() => {
+                    setModalLoginOpen(false);
+                    formDataPendienteRef.current = null;
+                }}
+                onLoginSuccess={handleLoginSuccess}
+            />
         </div>
     );
 };
