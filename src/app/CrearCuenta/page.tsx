@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { usuarioService, type Usuario } from '@/src/Services/Usuario';
@@ -21,6 +21,31 @@ export default function CrearCuenta() {
   });
   const [estaCargando, setEstaCargando] = useState(false);
   const [mostrarExito, setMostrarExito] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [termsScrolledToBottom, setTermsScrolledToBottom] = useState(false);
+  const [privacyScrolledToBottom, setPrivacyScrolledToBottom] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const termsRef = React.useRef<HTMLDivElement | null>(null);
+  const privacyRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (showTermsModal && termsRef.current) {
+      const el = termsRef.current;
+      if (el.scrollHeight <= el.clientHeight + 1) setTermsScrolledToBottom(true);
+      else setTermsScrolledToBottom(false);
+    }
+  }, [showTermsModal]);
+
+  React.useEffect(() => {
+    if (showPrivacyModal && privacyRef.current) {
+      const el = privacyRef.current;
+      if (el.scrollHeight <= el.clientHeight + 1) setPrivacyScrolledToBottom(true);
+      else setPrivacyScrolledToBottom(false);
+    }
+  }, [showPrivacyModal]);
 
   const abrirCalendario = () => {
     const inputFecha = document.querySelector('#fechaNacimiento') as HTMLInputElement;
@@ -257,22 +282,49 @@ export default function CrearCuenta() {
               type="checkbox"
               name="aceptaTerminos"
               checked={formData.aceptaTerminos}
-              onChange={manejarCambio}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                // If trying to check, enforce that both modals were accepted
+                if (checked) {
+                  if (termsAccepted && privacyAccepted) {
+                    setFormData(prev => ({ ...prev, aceptaTerminos: true }));
+                    setAlertMessage('');
+                  } else {
+                    // Determine which message to show
+                    if (!termsAccepted && !privacyAccepted) {
+                      setAlertMessage('Debes leer y aceptar los Términos y condiciones y la Política de privacidad.');
+                    } else if (!termsAccepted) {
+                      setAlertMessage('Debes leer y aceptar los Términos y condiciones.');
+                    } else if (!privacyAccepted) {
+                      setAlertMessage('Debes leer y aceptar la Política de privacidad.');
+                    }
+                    // Do not set the checkbox
+                    setFormData(prev => ({ ...prev, aceptaTerminos: false }));
+                  }
+                } else {
+                  // allow unchecking anytime
+                  setFormData(prev => ({ ...prev, aceptaTerminos: false }));
+                  setAlertMessage('');
+                }
+              }}
               required
               aria-label="Acepto los términos y condiciones y la política de privacidad"
               className="w-4 h-4 text-[#003153] border-gray-300 rounded focus:ring-[#003153] mt-1"
             />
             <label className="text-sm text-gray-600">
               {t('newUser.termsPlaceHolder')}{' '}
-              <Link href="/terminos" className="text-[#003153] hover:underline">
+              <button type="button" onClick={() => { setShowTermsModal(true); setTermsScrolledToBottom(false); }} className="inline-block w-auto text-[#003153] hover:underline px-0 py-0">
                 {t('newUser.termsPlaceHolder')}
-              </Link>{' '}
+              </button>{' '}
               {t('newUser.and')}{' '}
-              <Link href="/privacidad" className="text-[#003153] hover:underline">
+              <button type="button" onClick={() => { setShowPrivacyModal(true); setPrivacyScrolledToBottom(false); }} className="inline-block w-auto text-[#003153] hover:underline px-0 py-0">
                 {t('newUser.privatePolicy')}
-              </Link>
+              </button>
             </label>
           </div>
+          {alertMessage && (
+            <div className="text-sm text-red-600 mt-2">{alertMessage}</div>
+          )}
 
           <button
             type="submit"
@@ -293,6 +345,94 @@ export default function CrearCuenta() {
           </div>
         </form>
       </div>
+      {/* Terms Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setShowTermsModal(false)} />
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl mx-4 z-10 max-h-[80vh]">
+            <div className="p-4 flex justify-between items-start">
+              <h2 className="text-xl font-bold text-[#003153]">Términos y condiciones</h2>
+            </div>
+            <div
+              ref={termsRef}
+              className="p-4 overflow-auto max-h-[64vh] text-sm text-gray-700 space-y-4"
+              onScroll={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                if (el.scrollHeight - el.scrollTop <= el.clientHeight + 10) {
+                  setTermsScrolledToBottom(true);
+                }
+              }}
+            >
+              {/* Expanded made-up terms content */}
+              <p>1. Introducción: Estos términos regulan el uso de los servicios proporcionados por Constructora CChang. Al aceptar, usted declara que ha leído y entendido las condiciones.</p>
+              <p>2. Alcance: Nuestra supervisión incluye inspecciones, reportes y coordinación, según los paquetes contratados. No incluye suministros ni mano de obra directa salvo que se acuerde.</p>
+              <p>3. Responsabilidades: La empresa supervisora informará y recomendará, pero no sustituye las responsabilidades legales del contratista.</p>
+              <p>4. Pago y facturación: Los servicios se facturan según alcance y plazos. Cualquier modificación puede generar costos adicionales.</p>
+              <p>5. Confidencialidad: Los datos compartidos se tratarán con confidencialidad y conforme a la política de privacidad.</p>
+              <p>6. Limitación de responsabilidad: Constructora CChang no será responsable de daños derivados de información inexacta proporcionada por terceros.</p>
+              <p>7. Fuerza mayor: No seremos responsables por retrasos ocasionados por causas fuera de nuestro control razonable.</p>
+              <p>8. Subcontratación: Podemos subcontratar tareas específicas manteniendo responsabilidad final ante el cliente.</p>
+              <p>9. Comunicación: Todas las notificaciones se realizarán por correo electrónico o teléfono registrados.</p>
+              <p>10. Modificaciones: Nos reservamos el derecho de actualizar estos términos; las versiones aplicables serán las publicadas en el sitio.</p>
+              <p className="pt-8">Al llegar al final de este documento se habilitará el botón "Acepto".</p>
+            </div>
+            <div className="p-4 flex justify-end gap-3 border-t">
+              <button onClick={() => setShowTermsModal(false)} className="px-4 py-2 rounded bg-gray-200">Cerrar</button>
+              <button
+                onClick={() => { setTermsAccepted(true); setShowTermsModal(false); setAlertMessage(''); }}
+                disabled={!termsScrolledToBottom}
+                className={`px-4 py-2 rounded ${termsScrolledToBottom ? 'bg-[#003153] text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              >
+                Acepto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Privacy Modal */}
+      {showPrivacyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setShowPrivacyModal(false)} />
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl mx-4 z-10 max-h-[80vh]">
+            <div className="p-4 flex justify-between items-start">
+              <h2 className="text-xl font-bold text-[#003153]">Política de privacidad</h2>
+            </div>
+            <div
+              ref={privacyRef}
+              className="p-4 overflow-auto max-h-[64vh] text-sm text-gray-700 space-y-4"
+              onScroll={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                if (el.scrollHeight - el.scrollTop <= el.clientHeight + 10) {
+                  setPrivacyScrolledToBottom(true);
+                }
+              }}
+            >
+              {/* Expanded made-up privacy content */}
+              <p>1. Recolección: Recopilamos datos personales necesarios para la prestación del servicio (nombre, contacto, datos de obra).</p>
+              <p>2. Uso: Los datos se usan para comunicación, facturación y cumplimiento contractual.</p>
+              <p>3. Conservación: Conservamos los datos durante el tiempo necesario para fines contractuales y legales.</p>
+              <p>4. Derechos: Usted puede solicitar acceso, rectificación o eliminación de sus datos según la ley aplicable.</p>
+              <p>5. Terceros: No compartimos información comercial con terceros sin su consentimiento, salvo proveedores necesarios para la prestación del servicio.</p>
+              <p>6. Seguridad: Implementamos medidas razonables para proteger la información.</p>
+              <p>7. Transferencias internacionales: Cuando sea necesario, podemos transferir datos a proveedores ubicados en otras jurisdicciones, siempre con las salvaguardas adecuadas.</p>
+              <p>8. Cookies: Empleamos cookies para mejorar la experiencia; puede gestionar sus preferencias en su navegador.</p>
+              <p>9. Contacto: Para consultas sobre privacidad puede escribir a privacidad@constructora.example.</p>
+              <p className="pt-8">Al llegar al final de este documento se habilitará el botón "Acepto".</p>
+            </div>
+            <div className="p-4 flex justify-end gap-3 border-t">
+              <button onClick={() => setShowPrivacyModal(false)} className="px-4 py-2 rounded bg-gray-200">Cerrar</button>
+              <button
+                onClick={() => { setPrivacyAccepted(true); setShowPrivacyModal(false); setAlertMessage(''); }}
+                disabled={!privacyScrolledToBottom}
+                className={`px-4 py-2 rounded ${privacyScrolledToBottom ? 'bg-[#003153] text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              >
+                Acepto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
         {mostrarExito && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 text-center">

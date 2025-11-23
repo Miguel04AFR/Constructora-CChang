@@ -1,12 +1,3 @@
-export interface Item {
-    id: number;
-    nombre: string;
-    precio: number;
-    cantidad: number;
-    descripcion?: string;
-    imagenUrl?: string;
-}
-
 export interface Remodelacion {
     id: number;
     nombre: string;
@@ -14,7 +5,9 @@ export interface Remodelacion {
     descripcion: string;
     descripcionDetallada?: string;
     imagenUrl?: string;
-    items: Item[];
+    // items are now an array of strings with the format:
+    // "Name; Description; Image path."
+    items: string[];
 }
 
 export default Remodelacion;

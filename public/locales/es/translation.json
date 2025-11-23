@@ -296,7 +296,8 @@
     "required": "Iniciar sesión"
   },
   "common": {
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "cancel": "Cancelar"
   },
   "cancel": "Cancelar",
   "accept": "Aceptar",

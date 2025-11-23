@@ -6,7 +6,9 @@
     "contact": "Contact",
     "login": "Login",
     "welcome": "Welcome, {{name}}",
-    "logout": "Logout"
+    "logout": "Logout",
+    "logoutConfirmTitle": "Logout confirmation",
+    "logoutConfirm": "Are you sure you want to log out?"
   },
   "hero": {
     "title": "CChang",
@@ -296,7 +298,8 @@
     "required": "Sign in"
   },
   "common": {
-    "close": "Close"
+    "close": "Close",
+    "cancel": "Cancel"
   },
   "cancel": "Cancel",
   "accept": "Accept",

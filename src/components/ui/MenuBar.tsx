@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react'
-import { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react'
 import { IoBuild, IoPersonOutline, IoBusiness, IoCall, IoInformation, IoLogOutOutline } from 'react-icons/io5';
 import { ModalLoginIni } from './ModalLoginIni'
 import { useRouter } from 'next/navigation';
@@ -17,6 +16,9 @@ export const MenuBar = () => {
   const { t } = useTranslation();
   const { isAuthenticated, user, logout } = useAuth();
 
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const confirmBtnRef = useRef<HTMLButtonElement | null>(null);
+
   const handleNavigar = (sectionId: string) => {
     if (pathname === '/') {
       const element = document.getElementById(sectionId);
@@ -29,8 +31,22 @@ export const MenuBar = () => {
   };
 
   const handleCerrarSesion = () => {
-    logout();
+    setShowLogoutConfirm(true);
   };
+
+  const confirmarCerrarSesion = () => {
+    logout();
+    setShowLogoutConfirm(false);
+  };
+
+  useEffect(() => {
+    if (!showLogoutConfirm) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowLogoutConfirm(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showLogoutConfirm]);
 
   return (
     <>
@@ -122,6 +138,27 @@ export const MenuBar = () => {
         isOpen={estaLoginModalOpen} 
         onClose={() => setEstaLoginModalOpen(false)}
       />
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">{t('navigation.logoutConfirmTitle') || 'Confirmar cierre de sesión'}</h3>
+            <p className="text-sm text-gray-600 mb-6">{t('navigation.logoutConfirm') || '¿Estás seguro que deseas cerrar sesión?'}</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setShowLogoutConfirm(false)} className="px-4 py-2 rounded bg-gray-200">{t('common.cancel') || 'Cancelar'}</button>
+              <button
+                ref={confirmBtnRef}
+                onClick={confirmarCerrarSesion}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                {t('navigation.logout') || 'Cerrar sesión'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

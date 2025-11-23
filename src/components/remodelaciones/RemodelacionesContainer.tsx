@@ -45,8 +45,15 @@ export const RemodelacionesContainer = () => {
         }
     };
 
-    const computeItemsTotal = (items: { precio?: number; cantidad?: number }[] = []) =>
-        items.reduce((sum, it) => sum + (it.precio || 0) * (it.cantidad || 1), 0);
+    // Items are strings with format: "Name; Description; Image path."
+    const parseItemString = (itemStr: string) => {
+        if (!itemStr) return { name: '', description: '', image: '' };
+        const parts = itemStr.split(';');
+        const name = (parts[0] || '').trim();
+        const description = (parts[1] || '').trim();
+        const image = (parts[2] || '').trim();
+        return { name, description, image };
+    };
 
     const handleContactarClick = (remodelacion: Remodelacion) => {
         if (!isAuthenticated) {
@@ -116,8 +123,7 @@ export const RemodelacionesContainer = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {remodelaciones.map((r: Remodelacion) => {
-                        const itemsTotal = computeItemsTotal(r.items || []);
-                        const displayTotal = itemsTotal > 0 ? itemsTotal : r.precio;
+                        const displayTotal = r.precio;
 
                         return (
                         <div key={r.id} className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
@@ -139,15 +145,21 @@ export const RemodelacionesContainer = () => {
                             <details className="mb-4 text-sm text-gray-700">
                                 <summary className="cursor-pointer font-medium">{t('remodel.itemsTitle') || 'Incluye'}</summary>
                                 <ul className="mt-2 space-y-2">
-                                    {r.items.map((it) => (
-                                        <li key={it.id} className="border-l-2 border-gray-200 pl-3">
-                                            <div className="flex justify-between">
-                                                <span className="font-medium">{it.nombre} x{it.cantidad}</span>
-                                                <span className="text-gray-600">{formatCurrency(it.precio || 0)} /unit — {formatCurrency((it.precio || 0) * (it.cantidad || 1))}</span>
-                                            </div>
-                                            {it.descripcion && <p className="text-xs text-gray-500">{it.descripcion}</p>}
-                                        </li>
-                                    ))}
+                                    {r.items.map((it, idx) => {
+                                        const parsed = parseItemString(it);
+                                        return (
+                                            <li key={`${r.id}-item-${idx}`} className="border-l-2 border-gray-200 pl-3 flex gap-3 items-start">
+                                                {parsed.image ? (
+                                                    // eslint-disable-next-line @next/next/no-img-element
+                                                    <img src={parsed.image} alt={parsed.name} className="w-16 h-12 object-cover rounded" />
+                                                ) : null}
+                                                <div>
+                                                    <div className="font-medium">{parsed.name}</div>
+                                                    {parsed.description && <p className="text-xs text-gray-500">{parsed.description}</p>}
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             </details>
 
