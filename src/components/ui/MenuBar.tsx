@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useEffect } from 'react'
-import Link from 'next/link';
-import { useState } from 'react';
-import { IoBuild, IoPersonOutline, IoBusiness, IoCall, IoInformation, IoConstruct, IoLogOutOutline } from 'react-icons/io5';
-import { ModalLoginIni } from './ModalLoginIni'
-import { useRouter } from 'next/navigation';//esto es para moverse
-import { usePathname } from 'next/navigation';//Jonny esto es para dectecar la pagina actual
+import React, { useState, useRef, useEffect } from 'react';
+import { IoBuild, IoPersonOutline, IoBusiness, IoCall, IoInformation, IoLogOutOutline } from 'react-icons/io5';
+import { ModalLoginIni } from './ModalLoginIni';
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { LanguageSelector } from './LanguageSelector';
 import { useTranslation } from 'react-i18next';
 import { authService } from '@/src/auth/auth';
@@ -16,9 +14,12 @@ export const MenuBar = () => {
   const router = useRouter();
   const [estaLoginModalOpen, setEstaLoginModalOpen] = useState(false);
   const [usuarioLogueado, setUsuarioLogueado] = useState('');
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const confirmBtnRef = useRef<HTMLButtonElement | null>(null);
   const { t } = useTranslation();
 
-    useEffect(() => {
+  //Sincronizar con localStorage al cargar
+  useEffect(() => {
     const user = authService.getCurrentUser();
     if (user && authService.isAuthenticated()) {
       setUsuarioLogueado(user.nombre);
@@ -26,14 +27,12 @@ export const MenuBar = () => {
   }, []);
 
   const handleNavigar = (sectionId: string) => {
-    // Si estamos en la página principal
     if (pathname === '/') {
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // Si estamos en otra página, navegar a la página principal 
       router.push(`/#${sectionId}`);
     }
   };
@@ -43,10 +42,24 @@ export const MenuBar = () => {
   };
 
   const handleCerrarSesion = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmarCerrarSesion = () => {
     authService.logout();
     setUsuarioLogueado('');
-     router.refresh();
+    setShowLogoutConfirm(false);
+    router.refresh();
   };
+
+  useEffect(() => {
+    if (!showLogoutConfirm) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowLogoutConfirm(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showLogoutConfirm]);
 
   return (
     <>
@@ -110,7 +123,6 @@ export const MenuBar = () => {
                 <IoPersonOutline size={20} />
                 <span className="font-medium">{t('navigation.login')}</span>
               </button>
-
             </div>
           ) : (
             <div className='flex items-center gap-3 flex-col sm:flex-row'>
@@ -129,8 +141,8 @@ export const MenuBar = () => {
             </div>
           )}
           <div className="ml-4"> 
-                <LanguageSelector />
-              </div>
+            <LanguageSelector />
+          </div>
         </div>
       </nav>
 
@@ -140,6 +152,36 @@ export const MenuBar = () => {
         onClose={() => setEstaLoginModalOpen(false)} 
         usuario={handleLoginU} 
       />
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-40" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              {t('navigation.logoutConfirmTitle') || 'Confirmar cierre de sesión'}
+            </h3>
+            <p className="text-sm text-gray-600 mb-6">
+              {t('navigation.logoutConfirm') || '¿Estás seguro que deseas cerrar sesión?'}
+            </p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setShowLogoutConfirm(false)} 
+                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 transition-colors"
+              >
+                {t('common.cancel') || 'Cancelar'}
+              </button>
+              <button
+                ref={confirmBtnRef}
+                onClick={confirmarCerrarSesion}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors"
+              >
+                {t('navigation.logout') || 'Cerrar sesión'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
-}
+};

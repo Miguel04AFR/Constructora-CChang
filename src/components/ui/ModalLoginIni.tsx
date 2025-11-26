@@ -35,7 +35,7 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
     setError('');
   };
 
-   const hadleSumit = async (e: React.FormEvent) => {
+  const hadleSumit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setCargando(true);
@@ -69,12 +69,12 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
 
         onClose();
 
-        //Redirigir basado en la verificación real
+        // Redirigir basado en la verificación real
         if (esAdmin) {
           router.push('/admin');
         } else {
-          //dejar en la actual
-          router.refresh(); // Recargar la página para actualizar estado
+          // Recargar la página para actualizar estado
+          router.refresh();
         }
         
       }, 2000);

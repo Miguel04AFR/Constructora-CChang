@@ -6,19 +6,21 @@ import { useRouter } from 'next/navigation';
 import { AProyecto } from '@/src/components/añadir/AProyecto';
 
 export default function AdminPage() {
-  const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');/*para que sepa en que seccion estoy*/
+  const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
   const [menuAbierto, setMenuAbierto] = useState(false);
-  {/* cuando un estado cambia se renderiza la pagina completa por eso no es necesario llamar a renderContenido*/}
   const router = useRouter();
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
+  const [mensajes, setMensajes] = useState<any[]>([]); 
 
   const [cargandoUsuarios, setCargandoUsuarios] = useState(false);
   const [cargandoProyectos, setCargandoProyectos] = useState(false);
+  const [cargandoMensajes, setCargandoMensajes] = useState(false); 
 
   const [errorUsuarios, setErrorUsuarios] = useState<string | null>(null);
   const [errorProyectos, setErrorProyectos] = useState<string | null>(null);
+  const [errorMensajes, setErrorMensajes] = useState<string | null>(null); 
 
   useEffect(() => {
     obtenerUsuarios();
@@ -50,6 +52,73 @@ export default function AdminPage() {
       setErrorUsuarios(error.message || 'Error al cargar usuarios');
     } finally {
       setCargandoUsuarios(false);
+    }
+  };
+
+  // Función para cargar mensajes (por ahora crea mensajes estáticos)
+  const obtenerMensajes = async () => {
+    try {
+      setCargandoMensajes(true);
+      setErrorMensajes(null);
+      
+      // Simular carga de mensajes con datos estáticos
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const mensajesEstaticos = [
+        {
+          id: 1,
+          remitente: 'Juan Pérez',
+          email: 'juan.perez@example.com',
+          asunto: 'Consulta sobre remodelación de cocina',
+          contenido: 'Buenos días, estoy interesado en realizar una remodelación completa de mi cocina. Me gustaría conocer los precios y opciones disponibles.',
+          fecha: new Date().toLocaleDateString('es-ES'),
+          tipo: 'remodelacion'
+        },
+        {
+          id: 2,
+          remitente: 'María González',
+          email: 'maria.gonzalez@example.com',
+          asunto: 'Solicitud de consultoría para proyecto residencial',
+          contenido: 'Necesito asesoría para un proyecto de construcción residencial. El proyecto incluye una casa de dos pisos con aproximadamente 150m². ¿Podrían ayudarme con la planificación?',
+          fecha: new Date(Date.now() - 86400000).toLocaleDateString('es-ES'),
+          tipo: 'consultoria'
+        },
+        {
+          id: 3,
+          remitente: 'Carlos Rodríguez',
+          email: 'carlos.rodriguez@example.com',
+          asunto: 'Interés en propiedad del catálogo',
+          contenido: 'Vi la propiedad "Casa Moderna" en su catálogo y me interesa mucho. ¿Podrían proporcionarme más información sobre la ubicación exacta y las características adicionales?',
+          fecha: new Date(Date.now() - 172800000).toLocaleDateString('es-ES'),
+          tipo: 'contacto'
+        },
+        {
+          id: 4,
+          remitente: 'Ana Martínez',
+          email: 'ana.martinez@example.com',
+          asunto: 'Presupuesto para renovación de baños',
+          contenido: 'Tengo 3 baños que necesitan renovación completa. Me gustaría recibir un presupuesto detallado con las opciones de materiales y acabados disponibles.',
+          fecha: new Date(Date.now() - 259200000).toLocaleDateString('es-ES'),
+          tipo: 'remodelacion'
+        },
+        {
+          id: 5,
+          remitente: 'Roberto Silva',
+          email: 'roberto.silva@example.com',
+          asunto: 'Consulta general sobre servicios',
+          contenido: 'Me gustaría conocer todos los servicios que ofrecen y si tienen disponibilidad para proyectos en la provincia de Matanzas.',
+          fecha: new Date(Date.now() - 345600000).toLocaleDateString('es-ES'),
+          tipo: 'contacto'
+        }
+      ];
+      
+      setMensajes(mensajesEstaticos);
+      
+    } catch (error: any) {
+      console.error('Error obteniendo mensajes:', error);
+      setErrorMensajes(error.message || 'Error al cargar mensajes');
+    } finally {
+      setCargandoMensajes(false);
     }
   };
 
@@ -256,6 +325,90 @@ export default function AdminPage() {
     </div>
   );
 
+      case 'mensajes':
+        return (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-[#003153]">
+                  Bandeja de Entrada
+                </h3>
+              </div>
+            </div>
+            
+            {cargandoMensajes && (
+              <div className="p-8 text-center">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#003153]"></div>
+                <p className="mt-2 text-gray-500">Conectando con la bandeja de entrada...</p>
+              </div>
+            )}
+            
+            {errorMensajes && (
+              <div className="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-red-700">Error: {errorMensajes}</p>
+                </div>
+                <button 
+                  onClick={obtenerMensajes}
+                  className="mt-2 text-red-700 hover:underline text-sm"
+                >
+                  Reintentar conexión
+                </button>
+              </div>
+            )}
+            
+            {!cargandoMensajes && !errorMensajes && (
+              <div className="p-6">
+                {mensajes.length === 0 ? (
+                  <div className="text-center py-12">
+                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <h4 className="text-lg font-medium text-gray-600 mb-2">No hay mensajes</h4>
+                    <p className="text-gray-500 text-sm max-w-md mx-auto">
+                      Los mensajes recibidos a través de los formularios de contacto aparecerán aquí.
+                      Haz clic en el botón para cargar los mensajes.
+                    </p>
+                    <button 
+                      onClick={obtenerMensajes}
+                      className="mt-4 bg-[#003153] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                    >
+                      Cargar mensajes
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {mensajes.map((mensaje) => (
+                      <div key={mensaje.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h5 className="font-semibold text-gray-800">{mensaje.remitente}</h5>
+                            <p className="text-sm text-gray-600">{mensaje.asunto}</p>
+                          </div>
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                            {mensaje.fecha}
+                          </span>
+                        </div>
+                        <p className="text-gray-700 text-sm line-clamp-2">
+                          {mensaje.contenido}
+                        </p>
+                        <div className="mt-3 flex gap-2">
+                          <button className="text-blue-600 hover:text-blue-800 text-sm">Responder</button>
+                          <button className="text-gray-600 hover:text-gray-800 text-sm">Marcar como leído</button>
+                          <button className="text-red-600 hover:text-red-800 text-sm">Eliminar</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+
       case 'anadir':
         return (
           <div className="bg-white rounded-lg shadow p-6">
@@ -291,7 +444,7 @@ export default function AdminPage() {
               </div>
 
               {/* Añadir Proyecto */}
-              <div //el border-dashed es lo que hacen que sea discontinuos las rallitas de los bordes (epico)
+              <div
                 className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-green-500 hover:bg-green-50 transition-all duration-200 cursor-pointer group"
                 onClick={() => setSeccionActual(<AProyecto />)}
               >
@@ -311,7 +464,7 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Añadir Remodelación jose esta te toca hacer el componente*/}
+              {/* Añadir Remodelación */}
               <div 
                 className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 cursor-pointer group"
                 onClick={() => navegarAFormulario('remodelacion')}
@@ -361,6 +514,19 @@ export default function AdminPage() {
                 <p className="text-2xl font-bold text-purple-600">{proyectos.length}</p>
               </div>
             </div>
+
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                <h4 className="font-semibold text-orange-800"> Mensajes Pendientes</h4>
+                <p className="text-2xl font-bold text-orange-600">{mensajes.length}</p>
+                <button 
+                  onClick={() => setSeccionActual('mensajes')}
+                  className="mt-2 text-orange-700 hover:text-orange-900 text-sm font-medium"
+                >
+                  Ver bandeja de entrada →
+                </button>
+              </div>
+            </div>
           </div>
         );
     }
@@ -392,6 +558,7 @@ export default function AdminPage() {
           <button 
             onClick={() => setMenuAbierto(false)}
             className="p-2 text-white hover:bg-blue-700 rounded-lg"
+            aria-label="Cerrar menú"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -414,7 +581,7 @@ export default function AdminPage() {
                   seccionActual === 'dashboard' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
                 }`}
               >
-                Dashboard
+                📊 Dashboard
               </button>
             </li>
             <li>
@@ -424,7 +591,7 @@ export default function AdminPage() {
                   seccionActual === 'clientes' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
                 }`}
               >
-                Clientes
+                👥 Clientes
               </button>
             </li>
             <li>
@@ -434,7 +601,7 @@ export default function AdminPage() {
                   seccionActual === 'Casas' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
                 }`}
               >
-                Casas
+                🏠 Casas
               </button>
             </li>
             <li>
@@ -444,10 +611,23 @@ export default function AdminPage() {
                   seccionActual === 'proyectos' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
                 }`}
               >
-                Proyectos
+                📋 Proyectos
               </button>
             </li>
-             {/* Añadir */}
+            <li>
+              <button 
+                onClick={() => {
+                  setSeccionActual('mensajes');
+                  obtenerMensajes(); // Cargar mensajes al hacer clic
+                }}
+                className={`w-full text-left px-4 py-2 rounded-lg ${
+                  seccionActual === 'mensajes' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
+                }`}
+              >
+                📧 Bandeja de Entrada
+              </button>
+            </li>
+            {/* Añadir */}
             <li>
               <button 
                 onClick={() => setSeccionActual('anadir')}
@@ -455,7 +635,7 @@ export default function AdminPage() {
                   seccionActual === 'anadir' ? 'bg-green-600 text-white' : 'hover:bg-green-600 text-blue-100'
                 }`}
               >
-               Añadir Contenido
+               ➕ Añadir Contenido
               </button>
             </li>
           </ul>
@@ -471,6 +651,7 @@ export default function AdminPage() {
               <button 
                 onClick={() => setMenuAbierto(!menuAbierto)}
                 className="lg:hidden mr-4 p-2 rounded-md text-gray-600 hover:bg-gray-100"
+                aria-label="Abrir menú"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -481,12 +662,13 @@ export default function AdminPage() {
                   <>
                     {seccionActual === 'dashboard' && 'Dashboard'}
                     {seccionActual === 'clientes' && 'Clientes Registrados'}
-                    {seccionActual === 'servicios' && 'Gestión de Servicios'}
+                    {seccionActual === 'Casas' && 'Gestión de Casas'}
                     {seccionActual === 'proyectos' && 'Proyectos'}
+                    {seccionActual === 'mensajes' && 'Bandeja de Entrada'} 
                     {seccionActual === 'anadir' && 'Añadir Nuevo Contenido'}
                   </>
                 ) : (
-                  'Crear Nuevo Proyecto' // Cuando seccionActual es un componente
+                  'Crear Nuevo Proyecto'
                 )}
               </h2>
             </div>

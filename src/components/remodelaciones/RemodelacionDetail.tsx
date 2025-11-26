@@ -20,6 +20,15 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
   };
 
   const itemsTotal = (remodelacion.items || []).reduce((s, it) => s + (it.precio || 0) * (it.cantidad || 1), 0);
+  // items are strings with format: "Name; Description; Image path."
+  const parseItemString = (itemStr: string) => {
+    if (!itemStr) return { name: '', description: '', image: '' };
+    const parts = itemStr.split(';');
+    const name = (parts[0] || '').trim();
+    const description = (parts[1] || '').trim();
+    const image = (parts[2] || '').trim();
+    return { name, description, image };
+  };
 
   return (
   <div className="min-h-screen bg-gray-50 pt-24 pb-12">
@@ -49,7 +58,7 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
               )}
 
               <div className="mt-4">
-                <span className="text-2xl font-bold text-[#6B21A8]">{formatCurrency(remodelacion.precio || itemsTotal)}</span>
+                <span className="text-2xl font-bold text-[#6B21A8]">{formatCurrency(remodelacion.precio)}</span>
                 <span className="text-sm text-gray-500 ml-2">{t('catalog.price') || 'Precio'}</span>
               </div>
             </div>
@@ -59,36 +68,24 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
         <h3 className="text-xl font-bold text-[#003153] mb-4">{t('remodel.itemsTitle') || 'Items incluidos'}</h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(remodelacion.items || []).map((it) => (
-            <div key={it.id} className="bg-white rounded-lg shadow p-4">
-              <div className="h-36 bg-gray-100 rounded overflow-hidden mb-3">
-                {it.imagenUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={it.imagenUrl} alt={it.nombre} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
-                )}
+          {(remodelacion.items || []).map((it, idx) => {
+            const parsed = parseItemString(it);
+            return (
+              <div key={`${remodelacion.id}-item-${idx}`} className="bg-white rounded-lg shadow p-4">
+                <div className="h-36 bg-gray-100 rounded overflow-hidden mb-3">
+                  {parsed.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={parsed.image} alt={parsed.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                  )}
+                </div>
+
+                <h4 className="font-semibold text-[#003153]">{parsed.name}</h4>
+                <p className="text-sm text-gray-600 mt-1">{parsed.description}</p>
               </div>
-
-              <h4 className="font-semibold text-[#003153]">{it.nombre}</h4>
-              <p className="text-sm text-gray-600 mt-1">{it.descripcion}</p>
-
-              {typeof it.precio === 'number' && it.precio > 0 ? (
-                <>
-                  <div className="mt-3 flex justify-between items-center">
-                    <div className="text-sm text-gray-700">{formatCurrency(it.precio)}{'/unit'}</div>
-                    <div className="text-sm font-medium text-gray-800">x{it.cantidad}</div>
-                  </div>
-
-                  <div className="mt-2 text-right text-sm text-gray-600">
-                    {t('remodel.itemTotal') || 'Total:'} {formatCurrency(it.precio * (it.cantidad || 1))}
-                  </div>
-                </>
-              ) : (
-                <div className="mt-3 text-sm text-gray-700">{it.cantidad ? `Cantidad: x${it.cantidad}` : null}</div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
