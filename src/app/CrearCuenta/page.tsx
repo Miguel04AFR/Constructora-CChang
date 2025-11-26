@@ -69,6 +69,8 @@ export default function CrearCuenta() {
     setEstaCargando(true);
 
     const fechaNacimiento = new Date(formData.fechaNacimiento);
+    fechaNacimiento.setMinutes(fechaNacimiento.getMinutes() + fechaNacimiento.getTimezoneOffset());//con esto logro que no salga la hora
+    
     const hoy = new Date();
     const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
     

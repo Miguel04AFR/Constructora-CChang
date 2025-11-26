@@ -106,7 +106,7 @@ export const AProyecto = () => {
       datos.append('descripcion', formData.descripcion);
       datos.append('imagen', imagenFile);
 
-      //USAR EL MÉTODO DEL SERVICIO EN LUGAR DE FETCH DIRECTAMENTE
+
       const proyectoCreado = await proyectoService.crearProyectoConImagen(datos);
       //sale en oscuro pq no lo utilizo pero es que ya lo guardo en el metodo
       setMensaje('Proyecto creado exitosamente!');
@@ -239,7 +239,7 @@ export const AProyecto = () => {
 
             {mensaje && (
               <div className={`p-3 rounded-md ${
-                mensaje.includes('✅') 
+                mensaje.includes('exitosamente') 
                   ? 'bg-green-50 text-green-700 border border-green-200' 
                   : 'bg-red-50 text-red-700 border border-red-200'
               }`}>

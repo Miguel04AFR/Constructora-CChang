@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { IoBuild, IoPersonOutline, IoBusiness, IoCall, IoInformation, IoConstruct, IoLogOutOutline } from 'react-icons/io5';
@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';//esto es para moverse
 import { usePathname } from 'next/navigation';//Jonny esto es para dectecar la pagina actual
 import { LanguageSelector } from './LanguageSelector';
 import { useTranslation } from 'react-i18next';
+import { authService } from '@/src/auth/auth';
 
 export const MenuBar = () => {
   const pathname = usePathname();
@@ -16,6 +17,13 @@ export const MenuBar = () => {
   const [estaLoginModalOpen, setEstaLoginModalOpen] = useState(false);
   const [usuarioLogueado, setUsuarioLogueado] = useState('');
   const { t } = useTranslation();
+
+    useEffect(() => {
+    const user = authService.getCurrentUser();
+    if (user && authService.isAuthenticated()) {
+      setUsuarioLogueado(user.nombre);
+    }
+  }, []);
 
   const handleNavigar = (sectionId: string) => {
     // Si estamos en la página principal
@@ -35,7 +43,9 @@ export const MenuBar = () => {
   };
 
   const handleCerrarSesion = () => {
+    authService.logout();
     setUsuarioLogueado('');
+     router.refresh();
   };
 
   return (
