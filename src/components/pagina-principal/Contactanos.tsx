@@ -6,6 +6,7 @@ import { IoCall, IoLocation, IoLogoWhatsapp, IoMail } from 'react-icons/io5';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni'; 
+import { mensajeService } from '@/src/Services/Mensajes';
 
 export const Contactanos = () => {
   const { t } = useTranslation();
@@ -161,8 +162,21 @@ export const Contactanos = () => {
     setTimeout(checkAndSubmit, 300);
   };
 
-  const enviarFormulario = (datosContacto: FormularioContacto) => {
+const enviarFormulario = async (datosContacto: FormularioContacto) => {
     setMensajeEnviado(true);
+
+    try {
+
+      const mensajeParaEnviar = {
+        tipo: 'consulta',
+        motivo: datosContacto.mensaje,
+        gmail: datosContacto.email,
+        telefono: datosContacto.telefono
+      };
+
+
+      await mensajeService.crearMensaje(mensajeParaEnviar);
+
     setMostrarMensajeErrores(false);
     setContacto({
       nombre: '',
@@ -173,12 +187,16 @@ export const Contactanos = () => {
     setErrores({});
     setCamposTocados({});
     
-    setTimeout(() => {
+      } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+      setMostrarMensajeErrores(true);
+      //mostrar un mensaje de error específico
+    } finally {
       setMensajeEnviado(false);
-    }, 5000);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Marcar todos los campos como tocados al enviar
@@ -203,11 +221,11 @@ export const Contactanos = () => {
       return;
     }
 
-    // Si está autenticado, enviar directamente
-    enviarFormulario(contacto);
+    // Si esta autenticado, enviar directamente
+    await enviarFormulario(contacto);
   };
 
-  // Función para determinar la clase del input
+  // Funcion para determinar la clase del input
   const getInputClass = (campo: string, valor: string) => {
     const fueTocado = camposTocados[campo];
     const tieneError = errores[campo];

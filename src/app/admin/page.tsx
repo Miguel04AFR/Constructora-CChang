@@ -4,6 +4,7 @@ import { Usuario, usuarioService } from '@/src/Services/Usuario';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AProyecto } from '@/src/components/añadir/AProyecto';
+import { mensajeService } from '@/src/Services/Mensajes';
 
 export default function AdminPage() {
   const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
@@ -25,6 +26,7 @@ export default function AdminPage() {
   useEffect(() => {
     obtenerUsuarios();
     obtenerProyectos();
+    obtenerMensajes();
   }, []);
 
   const obtenerProyectos = async () => {
@@ -60,59 +62,10 @@ export default function AdminPage() {
     try {
       setCargandoMensajes(true);
       setErrorMensajes(null);
-      
-      // Simular carga de mensajes con datos estáticos
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mensajesEstaticos = [
-        {
-          id: 1,
-          remitente: 'Juan Pérez',
-          email: 'juan.perez@example.com',
-          asunto: 'Consulta sobre remodelación de cocina',
-          contenido: 'Buenos días, estoy interesado en realizar una remodelación completa de mi cocina. Me gustaría conocer los precios y opciones disponibles.',
-          fecha: new Date().toLocaleDateString('es-ES'),
-          tipo: 'remodelacion'
-        },
-        {
-          id: 2,
-          remitente: 'María González',
-          email: 'maria.gonzalez@example.com',
-          asunto: 'Solicitud de consultoría para proyecto residencial',
-          contenido: 'Necesito asesoría para un proyecto de construcción residencial. El proyecto incluye una casa de dos pisos con aproximadamente 150m². ¿Podrían ayudarme con la planificación?',
-          fecha: new Date(Date.now() - 86400000).toLocaleDateString('es-ES'),
-          tipo: 'consultoria'
-        },
-        {
-          id: 3,
-          remitente: 'Carlos Rodríguez',
-          email: 'carlos.rodriguez@example.com',
-          asunto: 'Interés en propiedad del catálogo',
-          contenido: 'Vi la propiedad "Casa Moderna" en su catálogo y me interesa mucho. ¿Podrían proporcionarme más información sobre la ubicación exacta y las características adicionales?',
-          fecha: new Date(Date.now() - 172800000).toLocaleDateString('es-ES'),
-          tipo: 'contacto'
-        },
-        {
-          id: 4,
-          remitente: 'Ana Martínez',
-          email: 'ana.martinez@example.com',
-          asunto: 'Presupuesto para renovación de baños',
-          contenido: 'Tengo 3 baños que necesitan renovación completa. Me gustaría recibir un presupuesto detallado con las opciones de materiales y acabados disponibles.',
-          fecha: new Date(Date.now() - 259200000).toLocaleDateString('es-ES'),
-          tipo: 'remodelacion'
-        },
-        {
-          id: 5,
-          remitente: 'Roberto Silva',
-          email: 'roberto.silva@example.com',
-          asunto: 'Consulta general sobre servicios',
-          contenido: 'Me gustaría conocer todos los servicios que ofrecen y si tienen disponibilidad para proyectos en la provincia de Matanzas.',
-          fecha: new Date(Date.now() - 345600000).toLocaleDateString('es-ES'),
-          tipo: 'contacto'
-        }
-      ];
-      
-      setMensajes(mensajesEstaticos);
+      const mensajess = await mensajeService.obtenerMensajes();
+      setMensajes(mensajess);
+
+      // fecha: new Date(Date.now() - 345600000).toLocaleDateString('es-ES'),
       
     } catch (error: any) {
       console.error('Error obteniendo mensajes:', error);
@@ -325,89 +278,133 @@ export default function AdminPage() {
     </div>
   );
 
-      case 'mensajes':
-        return (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-[#003153]">
-                  Bandeja de Entrada
-                </h3>
-              </div>
+     case 'mensajes':
+  // Función para formatear la fecha si viene del backend
+  const formatearFech = (fechaString?: string) => {
+    if (!fechaString) return new Date().toLocaleDateString('es-ES');
+    try {
+      return new Date(fechaString).toLocaleDateString('es-ES');
+    } catch {
+      return new Date().toLocaleDateString('es-ES');
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-[#003153]">
+            Bandeja de Entrada ({mensajes.length})
+          </h3>
+          <button 
+            onClick={obtenerMensajes}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Actualizar
+          </button>
+        </div>
+      </div>
+      
+      {cargandoMensajes && (
+        <div className="p-8 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#003153]"></div>
+          <p className="mt-2 text-gray-500">Cargando mensajes...</p>
+        </div>
+      )}
+      
+      {errorMensajes && (
+        <div className="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center">
+            <svg className="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-red-700">Error: {errorMensajes}</p>
+          </div>
+          <button 
+            onClick={obtenerMensajes}
+            className="mt-2 text-red-700 hover:underline text-sm"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+      
+      {!cargandoMensajes && !errorMensajes && (
+        <div className="p-6">
+          {mensajes.length === 0 ? (
+            <div className="text-center py-12">
+              <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <h4 className="text-lg font-medium text-gray-600 mb-2">No hay mensajes</h4>
+              <p className="text-gray-500 text-sm max-w-md mx-auto">
+                No se encontraron mensajes en la bandeja de entrada.
+              </p>
             </div>
-            
-            {cargandoMensajes && (
-              <div className="p-8 text-center">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#003153]"></div>
-                <p className="mt-2 text-gray-500">Conectando con la bandeja de entrada...</p>
-              </div>
-            )}
-            
-            {errorMensajes && (
-              <div className="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center">
-                  <svg className="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <p className="text-red-700">Error: {errorMensajes}</p>
-                </div>
-                <button 
-                  onClick={obtenerMensajes}
-                  className="mt-2 text-red-700 hover:underline text-sm"
-                >
-                  Reintentar conexión
-                </button>
-              </div>
-            )}
-            
-            {!cargandoMensajes && !errorMensajes && (
-              <div className="p-6">
-                {mensajes.length === 0 ? (
-                  <div className="text-center py-12">
-                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <h4 className="text-lg font-medium text-gray-600 mb-2">No hay mensajes</h4>
-                    <p className="text-gray-500 text-sm max-w-md mx-auto">
-                      Los mensajes recibidos a través de los formularios de contacto aparecerán aquí.
-                      Haz clic en el botón para cargar los mensajes.
+          ) : (
+            <div className="space-y-4">
+              {mensajes.map((mensaje) => (
+                <div key={mensaje.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h5 className="font-semibold text-gray-800">
+                          {mensaje.user ? `${mensaje.user.nombre} ${mensaje.user.apellido}` : 'Remitente anónimo'}
+                        </h5>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {mensaje.tipo}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-1">
+                        <strong>Email:</strong> {mensaje.gmail}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <strong>Teléfono:</strong> {mensaje.telefono}
+                      </p>
+                    </div>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded shrink-0">
+                      {formatearFech(mensaje.createdAt)}
+                    </span>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded p-3 mt-2">
+                    <h6 className="text-sm font-medium text-gray-700 mb-1">Motivo de contacto:</h6>
+                    <p className="text-gray-700 text-sm whitespace-pre-wrap">
+                      {mensaje.motivo}
                     </p>
-                    <button 
-                      onClick={obtenerMensajes}
-                      className="mt-4 bg-[#003153] text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors"
-                    >
-                      Cargar mensajes
+                  </div>
+
+                  <div className="mt-3 flex gap-2 flex-wrap">
+                    <button className="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Responder
+                    </button>
+                    <button className="text-green-600 hover:text-green-800 text-sm flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Marcar como atendido
+                    </button>
+                    <button className="text-red-600 hover:text-red-800 text-sm flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Eliminar
                     </button>
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    {mensajes.map((mensaje) => (
-                      <div key={mensaje.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h5 className="font-semibold text-gray-800">{mensaje.remitente}</h5>
-                            <p className="text-sm text-gray-600">{mensaje.asunto}</p>
-                          </div>
-                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                            {mensaje.fecha}
-                          </span>
-                        </div>
-                        <p className="text-gray-700 text-sm line-clamp-2">
-                          {mensaje.contenido}
-                        </p>
-                        <div className="mt-3 flex gap-2">
-                          <button className="text-blue-600 hover:text-blue-800 text-sm">Responder</button>
-                          <button className="text-gray-600 hover:text-gray-800 text-sm">Marcar como leído</button>
-                          <button className="text-red-600 hover:text-red-800 text-sm">Eliminar</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
       case 'anadir':
         return (
