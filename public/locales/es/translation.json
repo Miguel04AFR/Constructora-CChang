@@ -241,7 +241,6 @@
   "remodel": {
     "subtitle": "Dale nueva vida a tus espacios con nuestros servicios de remodelación.",
     "itemsTitle": "Objetos",
-<<<<<<< Updated upstream
     "contact": "Comprar",
     "buy": "Contactar",
     "viewDetails": "Detalles",
@@ -383,9 +382,5 @@
         "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres"
       }
     }
-=======
-    "contact": "Contactar",
-    "viewDetails": "Detalles"
->>>>>>> Stashed changes
   }
 }
