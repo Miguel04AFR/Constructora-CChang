@@ -301,6 +301,27 @@
     "close": "Close",
     "cancel": "Cancel"
   },
+  "form": {
+    "name": "Name",
+    "placeholderName": "Your name",
+    "email": "Email",
+    "placeholderEmail": "your@email.com",
+    "phone": "Phone",
+    "placeholderPhone": "+53 5622 6278",
+    "errors": {
+      "nameRequired": "Name is required",
+      "nameInvalid": "Name can only contain letters and spaces",
+      "phoneInvalid": "Phone must have 8 numeric digits",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "messageRequired": "Message is required",
+      "messageMinLength": "Message must have at least 10 characters",
+      "messageMaxLength": "Message cannot exceed 500 characters",
+      "descriptionRequired": "Description is required",
+      "descriptionMinLength": "Description must have at least 20 characters",
+      "descriptionMaxLength": "Description cannot exceed 1000 characters"
+    }
+  },
   "cancel": "Cancel",
   "accept": "Accept",
   "consulting": {

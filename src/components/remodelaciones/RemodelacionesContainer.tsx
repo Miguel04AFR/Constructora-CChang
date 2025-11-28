@@ -45,14 +45,17 @@ export const RemodelacionesContainer = () => {
         }
     };
 
-    // Items are strings with format: "Name; Description; Image path."
+    // Items are strings with format: "Name : Description"
     const parseItemString = (itemStr: string) => {
-        if (!itemStr) return { name: '', description: '', image: '' };
-        const parts = itemStr.split(';');
-        const name = (parts[0] || '').trim();
-        const description = (parts[1] || '').trim();
-        const image = (parts[2] || '').trim();
-        return { name, description, image };
+        if (!itemStr) return { name: '', description: '' };
+        // split on first ':' to allow ':' inside the description
+        const idx = itemStr.indexOf(':');
+        if (idx === -1) {
+            return { name: itemStr.trim(), description: '' };
+        }
+        const name = itemStr.slice(0, idx).trim();
+        const description = itemStr.slice(idx + 1).trim();
+        return { name, description };
     };
 
     const handleContactarClick = (remodelacion: Remodelacion) => {
@@ -148,15 +151,9 @@ export const RemodelacionesContainer = () => {
                                     {r.items.map((it, idx) => {
                                         const parsed = parseItemString(it);
                                         return (
-                                            <li key={`${r.id}-item-${idx}`} className="border-l-2 border-gray-200 pl-3 flex gap-3 items-start">
-                                                {parsed.image ? (
-                                                    // eslint-disable-next-line @next/next/no-img-element
-                                                    <img src={parsed.image} alt={parsed.name} className="w-16 h-12 object-cover rounded" />
-                                                ) : null}
-                                                <div>
-                                                    <div className="font-medium">{parsed.name}</div>
-                                                    {parsed.description && <p className="text-xs text-gray-500">{parsed.description}</p>}
-                                                </div>
+                                            <li key={`${r.id}-item-${idx}`} className="border-l-2 border-gray-200 pl-3">
+                                                <div className="font-medium text-sm text-[#003153]">{parsed.name}</div>
+                                                {parsed.description && <p className="text-xs text-gray-500 mt-1">{parsed.description}</p>}
                                             </li>
                                         );
                                     })}
@@ -174,23 +171,20 @@ export const RemodelacionesContainer = () => {
                                     {t('remodel.viewDetails') || 'Ver detalles'}
                                 </button>
                                 
-                                <button 
+                                <button
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
                                         handleContactarClick(r);
                                     }}
                                     className={`text-sm px-4 py-2 rounded-lg transition-colors cursor-pointer ${
-                                        isAuthenticated 
-                                            ? 'bg-[#6B21A8] text-white hover:bg-purple-800' 
+                                        isAuthenticated
+                                            ? 'bg-[#6B21A8] text-white hover:bg-purple-800'
                                             : 'bg-[#003153] text-white hover:bg-blue-800'
                                     }`}
                                     type="button"
                                 >
-                                    {isAuthenticated 
-                                        ? (t('remodel.contact') || 'Contactar') 
-                                        : (t('login.required') || 'Iniciar sesión')
-                                    }
+                                    {t('remodel.buy') || 'Contactar'}
                                 </button>
                             </div>
                         </div>
