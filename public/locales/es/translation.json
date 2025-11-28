@@ -299,6 +299,27 @@
     "close": "Cerrar",
     "cancel": "Cancelar"
   },
+  "form": {
+    "name": "Nombre",
+    "placeholderName": "Tu nombre",
+    "email": "Email",
+    "placeholderEmail": "tu@email.com",
+    "phone": "Teléfono",
+    "placeholderPhone": "+53 5622 6278",
+    "errors": {
+      "nameRequired": "El nombre es obligatorio",
+      "nameInvalid": "El nombre solo puede contener letras y espacios",
+      "phoneInvalid": "El teléfono debe tener 8 dígitos numéricos",
+      "emailRequired": "El email es obligatorio",
+      "emailInvalid": "Por favor, ingresa un email válido",
+      "messageRequired": "El mensaje es obligatorio",
+      "messageMinLength": "El mensaje debe tener al menos 10 caracteres",
+      "messageMaxLength": "El mensaje no puede exceder 500 caracteres",
+      "descriptionRequired": "La descripción es obligatoria",
+      "descriptionMinLength": "La descripción debe tener al menos 20 caracteres",
+      "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres"
+    }
+  },
   "cancel": "Cancelar",
   "accept": "Aceptar",
   "consulting": {
