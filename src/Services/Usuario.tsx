@@ -3,7 +3,7 @@ import { Mensaje } from './Mensajes';
 import { authService } from '../auth/auth';
 
 export interface Usuario {
-  id?: string; // Opcional porque se genera al crear
+  id?: number; // Opcional porque se genera al crear
   nombre: string;
   apellido: string;
   gmail: string;
@@ -20,7 +20,6 @@ export const usuarioService = {
       const responde = await fetch(`${API_CONFIG.BASE_URL}/users`, {
         method: 'POST',
         headers: {
-          // 'Authorization': `Bearer ${token}`
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -66,6 +65,10 @@ export const usuarioService = {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Error al eliminar usuario');
       }
+
+       if (response.status === 204) {
+      return { success: true, message: 'Usuario eliminado correctamente' };
+    }
 
       return await response.json();
     } catch (error) {

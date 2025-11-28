@@ -5,6 +5,8 @@ import type { Casa } from '@/src/Services/Casa';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
+import type { FormularioContacto } from '@/src/Services/FormularioContacto';
+import { mensajeService } from '@/src/Services/Mensajes';
 
 interface FormularioContactoProps {
     propiedad: Casa | { nombre: string };
@@ -21,13 +23,13 @@ interface ErroresFormulario {
     mensaje?: string;
 }
 
-export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad, formRef, onValChange, onSubmitSuccess, hideSubmit = false }) => {
+export const FormularioDeContactos: React.FC<FormularioContactoProps> = ({ propiedad, formRef, onValChange, onSubmitSuccess, hideSubmit = false }) => {
     const { t } = useTranslation();
     const { isAuthenticated } = useAuth();
     const [modalLoginOpen, setModalLoginOpen] = useState(false);
     const formDataPendienteRef = useRef<typeof formData | null>(null);
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormularioContacto>({
         nombre: '',
         email: '',
         telefono: '',
@@ -198,28 +200,40 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propieda
         };
         setTimeout(checkAndSubmit, 300);
     };
-
-    const enviarFormulario = (datos: typeof formData) => {
+ 
+   const enviarFormulario = async (datosContacto: FormularioContacto) => {
         setMensajeEnviado(true);
-        setMostrarMensajeErrores(false);
+        
+        try {
+            const mensajeParaEnviar = {
+                tipo: 'Venta de casa',
+                motivo: datosContacto.mensaje,
+                gmail: datosContacto.email,
+                telefono: datosContacto.telefono
+            };
+        
+            await mensajeService.crearMensaje(mensajeParaEnviar);
 
-        // Aquí iría la lógica para enviar el formulario
+            setMostrarMensajeErrores(false);
+            setFormData({
+                nombre: '',
+                email: '',
+                telefono: '',
+                mensaje: ''
+            });
+            setErrores({});
+            setCamposTocados({});
 
-        // Limpiar formulario
-        setFormData({
-            nombre: '',
-            email: '',
-            telefono: '',
-            mensaje: ''
-        });
-        setErrores({});
-        setCamposTocados({});
+            if (onSubmitSuccess) {
+                onSubmitSuccess();
+            }
 
-        if (onSubmitSuccess) onSubmitSuccess();
-
-        setTimeout(() => {
+        } catch (error) {
+            console.error('Error al enviar mensaje:', error);
+            setMostrarMensajeErrores(true);
+        } finally {
             setMensajeEnviado(false);
-        }, 5000);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {

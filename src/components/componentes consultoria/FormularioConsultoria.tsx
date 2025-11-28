@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
+import { mensajeService } from '@/src/Services/Mensajes';
 
 interface FormData {
     nombre: string;
@@ -195,25 +196,35 @@ export const FormularioConsultoria = () => {
         setTimeout(checkAndSubmit, 300);
     };
 
-    const enviarFormulario = (datos: FormData) => {
+    const enviarFormulario = async (datos: FormData) => {
         setMensajeEnviado(true);
-        setMostrarMensajeErrores(false);
-        
-        // 🚀 AQUÍ IRÍA LA LÓGICA DE ENVÍO DEL FORMULARIO
-        
-        // Limpiar formulario
-        setFormData({
-            nombre: '',
-            email: '',
-            telefono: '',
-            descripcion: ''
-        });
-        setErrores({});
-        setCamposTocados({});
 
-        setTimeout(() => {
+        try {
+            const mensajeParaEnviar = {
+                tipo: 'Consultoria de construccion',
+                motivo: datos.descripcion,
+                gmail: datos.email,
+                telefono: datos.telefono
+            };
+
+            await mensajeService.crearMensaje(mensajeParaEnviar);
+
+            setMostrarMensajeErrores(false);
+            setFormData({
+                nombre: '',
+                email: '',
+                telefono: '',
+                descripcion: ''
+            });
+            setErrores({});
+            setCamposTocados({});
+
+        } catch (error) {
+            console.error('Error al enviar mensaje:', error);
+            setMostrarMensajeErrores(true);
+        } finally {
             setMensajeEnviado(false);
-        }, 5000);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -252,138 +263,138 @@ export const FormularioConsultoria = () => {
 
     return (
         <>
-        <form onSubmit={handleSubmit} className="space-y-6">
-            {mensajeEnviado && (
-                <div className='mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded text-sm'>
-                    {t('consulting.form.successMessage')}
-                </div>
-            )}
-
-            {mostrarMensajeErrores && !formularioValido && (
-                <div className='mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm'>
-                    {t('consulting.form.errorMessage')}
-                </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Campo Nombre */}
-                <div>
-                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('consulting.form.name')} *
-                    </label>
-                    <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        value={formData.nombre}
-                        onChange={handleChange}
-                        className={getInputClass('nombre', formData.nombre)}
-                        placeholder={t('consulting.form.placeholderName')}
-                        required
-                    />
-                    {errores.nombre && camposTocados.nombre && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                            <span className="mr-1">⚠</span>
-                            {errores.nombre}
-                        </p>
-                    )}
-                </div>
-
-                {/* Campo Email */}
-                <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('consulting.form.email')} *
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className={getInputClass('email', formData.email)}
-                        placeholder={t('consulting.form.placeholderEmail')}
-                        required
-                    />
-                    {errores.email && camposTocados.email && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                            <span className="mr-1">⚠</span>
-                            {errores.email}
-                        </p>
-                    )}
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Campo Teléfono */}
-                <div>
-                    <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('consulting.form.phone')}
-                    </label>
-                    <input
-                        type="tel"
-                        id="telefono"
-                        name="telefono"
-                        value={formData.telefono}
-                        onChange={handleChange}
-                        className={getInputClass('telefono', formData.telefono)}
-                        placeholder={t('consulting.form.placeholderPhone')}
-                    />
-                    {errores.telefono && camposTocados.telefono && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                            <span className="mr-1">⚠</span>
-                            {errores.telefono}
-                        </p>
-                    )}
-                </div>
-
-                {/* Espacio vacío para mantener el grid */}
-                <div></div>
-            </div>
-
-            {/* Campo Descripción */}
-            <div>
-                <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('consulting.form.description')} *
-                </label>
-                <textarea
-                    id="descripcion"
-                    name="descripcion"
-                    value={formData.descripcion}
-                    onChange={handleChange}
-                    rows={6}
-                    className={`${getInputClass('descripcion', formData.descripcion)} resize-none`}
-                    placeholder={t('consulting.form.placeholderDescription')}
-                    required
-                />
-                {errores.descripcion && camposTocados.descripcion && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                        <span className="mr-1">⚠</span>
-                        {errores.descripcion}
-                    </p>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {mensajeEnviado && (
+                    <div className='mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded text-sm'>
+                        {t('consulting.form.successMessage')}
+                    </div>
                 )}
-                <div className="mt-1 text-xs text-gray-500 text-right">
-                    {formData.descripcion.length}/1000 {t('consulting.form.characters')}
+
+                {mostrarMensajeErrores && !formularioValido && (
+                    <div className='mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm'>
+                        {t('consulting.form.errorMessage')}
+                    </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Campo Nombre */}
+                    <div>
+                        <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
+                            {t('consulting.form.name')} *
+                        </label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            value={formData.nombre}
+                            onChange={handleChange}
+                            className={getInputClass('nombre', formData.nombre)}
+                            placeholder={t('consulting.form.placeholderName')}
+                            required
+                        />
+                        {errores.nombre && camposTocados.nombre && (
+                            <p className="mt-1 text-sm text-red-600 flex items-center">
+                                <span className="mr-1">⚠</span>
+                                {errores.nombre}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Campo Email */}
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                            {t('consulting.form.email')} *
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className={getInputClass('email', formData.email)}
+                            placeholder={t('consulting.form.placeholderEmail')}
+                            required
+                        />
+                        {errores.email && camposTocados.email && (
+                            <p className="mt-1 text-sm text-red-600 flex items-center">
+                                <span className="mr-1">⚠</span>
+                                {errores.email}
+                            </p>
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            {/* Botón de enviar */}
-            <button
-                type="submit"
-                disabled={!formularioValido}
-                className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
-                    formularioValido
-                        ? 'bg-[#003153] text-white hover:bg-blue-800 cursor-pointer'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-            >
-                {formularioValido ? t('consulting.form.send') : t('consulting.form.completeFields')}
-            </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Campo Teléfono */}
+                    <div>
+                        <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1">
+                            {t('consulting.form.phone')}
+                        </label>
+                        <input
+                            type="tel"
+                            id="telefono"
+                            name="telefono"
+                            value={formData.telefono}
+                            onChange={handleChange}
+                            className={getInputClass('telefono', formData.telefono)}
+                            placeholder={t('consulting.form.placeholderPhone')}
+                        />
+                        {errores.telefono && camposTocados.telefono && (
+                            <p className="mt-1 text-sm text-red-600 flex items-center">
+                                <span className="mr-1">⚠</span>
+                                {errores.telefono}
+                            </p>
+                        )}
+                    </div>
 
-            {/* Leyenda de campos requeridos */}
-            <p className="text-xs text-gray-500 text-center">
-                * {t('consulting.form.requiredFields')}
-            </p>
-        </form>
+                    {/* Espacio vacío para mantener el grid */}
+                    <div></div>
+                </div>
+
+                {/* Campo Descripción */}
+                <div>
+                    <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-1">
+                        {t('consulting.form.description')} *
+                    </label>
+                    <textarea
+                        id="descripcion"
+                        name="descripcion"
+                        value={formData.descripcion}
+                        onChange={handleChange}
+                        rows={6}
+                        className={`${getInputClass('descripcion', formData.descripcion)} resize-none`}
+                        placeholder={t('consulting.form.placeholderDescription')}
+                        required
+                    />
+                    {errores.descripcion && camposTocados.descripcion && (
+                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                            <span className="mr-1">⚠</span>
+                            {errores.descripcion}
+                        </p>
+                    )}
+                    <div className="mt-1 text-xs text-gray-500 text-right">
+                        {formData.descripcion.length}/1000 {t('consulting.form.characters')}
+                    </div>
+                </div>
+
+                {/* Botón de enviar */}
+                <button
+                    type="submit"
+                    disabled={!formularioValido}
+                    className={`w-full py-3 px-4 rounded-md transition-colors font-medium ${
+                        formularioValido
+                            ? 'bg-[#003153] text-white hover:bg-blue-800 cursor-pointer'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                >
+                    {formularioValido ? t('consulting.form.send') : t('consulting.form.completeFields')}
+                </button>
+
+                {/* Leyenda de campos requeridos */}
+                <p className="text-xs text-gray-500 text-center">
+                    * {t('consulting.form.requiredFields')}
+                </p>
+            </form>
 
             {/* Modal de Login - Fuera del form para evitar formularios anidados */}
             <ModalLoginIni 

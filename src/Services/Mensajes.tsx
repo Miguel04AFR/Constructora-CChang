@@ -1,3 +1,4 @@
+import { authService } from "../auth/auth";
 import { API_CONFIG } from "../config/env";
 import { Usuario } from "./Usuario";
 
@@ -12,7 +13,7 @@ export interface Mensaje{
     export const mensajeService = {
       async crearMensaje(mensaje: Mensaje) {
         try {
-          const token = localStorage.getItem('token'); 
+          const token = authService.getToken(); 
 
           if (!token) {
       throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
@@ -50,7 +51,7 @@ export interface Mensaje{
     
       async obtenerMensajes() {
         try {
-          const token = localStorage.getItem('token'); 
+          const token = authService.getToken();
           const response = await fetch(`${API_CONFIG.BASE_URL}/mensajes`, { 
         headers: {
           'Authorization': `Bearer ${token}` 
@@ -66,5 +67,37 @@ export interface Mensaje{
           console.error('Error obteniendo usuarios:', error);
           throw error;
         }
-      }
+      },
+
+      async eliminarMensaje(id: number) {
+          try {
+      
+             const token = authService.getToken();
+            
+            if (!token) {
+              throw new Error('No estás autenticado');
+            }
+            const response = await fetch(`${API_CONFIG.BASE_URL}/mensajes/${id}`, {
+              method: 'DELETE',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+      
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || 'Error al eliminar mensaje');
+            }
+      
+             if (response.status === 204) {
+            return { success: true, message: 'Mensaje eliminado correctamente' };
+          }
+      
+            return await response.json();
+          } catch (error) {
+            console.error('Error en mensajeService:', error);
+            throw error;
+          }
+        },
     }

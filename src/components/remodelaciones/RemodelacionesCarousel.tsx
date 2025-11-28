@@ -5,7 +5,7 @@ import { remodelaciones as remodelacionesNamed } from '@/src/data/remodelaciones
 import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
+import { FormularioDeContactos } from '@/src/components/componentes catalogo/FormularioDeContacto';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
 
@@ -202,7 +202,7 @@ export const RemodelacionesCarousel = () => {
             </div>
 
             <div className="px-4 overflow-auto max-h-[56vh]">
-                <FormularioContacto
+                <FormularioDeContactos
                   propiedad={{ nombre: modalRemodel.nombre }}
                   formRef={formRef}
                   onValChange={(v) => setFormValido(v)}
