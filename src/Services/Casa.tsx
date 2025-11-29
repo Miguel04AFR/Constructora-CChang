@@ -3,7 +3,7 @@ import { API_CONFIG } from "../config/env";
 export interface Casa {
     id?: string;
     nombre: string;
-    imagenUrl: string;
+    imagenUrls: string[];
     precio: number;
     ubicacion: string;
     habitaciones: number;
@@ -13,6 +13,25 @@ export interface Casa {
 }
 
  export const casaService = {
+      async crearCasaConImagen(formData: FormData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}/casas/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al crear casa');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error creando casa con imagen:', error);
+            throw error;
+        }
+    },
+
       async crearUsuario(casa: Casa) {
         try {
           const responde = await fetch(`${API_CONFIG.BASE_URL}/users`, {

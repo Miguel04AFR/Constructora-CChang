@@ -71,7 +71,6 @@ export const authService = {
   isAdmin(): boolean {
     const user = this.getCurrentUser();
     if (!user) return false;
-    
     const adminEmails = ['admin@constructora.com', 'personal@gmail.com'];
     return adminEmails.includes(user.gmail);
   },

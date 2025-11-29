@@ -1,9 +1,11 @@
 'use client';
 import { Proyecto, proyectoService } from '@/src/Services/Proyecto';
 import { Usuario, usuarioService } from '@/src/Services/Usuario';
+import { Casa, casaService } from '@/src/Services/Casa';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AProyecto } from '@/src/components/añadir/AProyecto';
+import { ACasa } from '@/src/components/añadir/ACasa';
 import { mensajeService } from '@/src/Services/Mensajes';
 
 export default function AdminPage() {
@@ -13,19 +15,23 @@ export default function AdminPage() {
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
-  const [mensajes, setMensajes] = useState<any[]>([]); 
+  const [casas, setCasas] = useState<Casa[]>([]);
+  const [mensajes, setMensajes] = useState<any[]>([]);
 
   const [cargandoUsuarios, setCargandoUsuarios] = useState(false);
   const [cargandoProyectos, setCargandoProyectos] = useState(false);
-  const [cargandoMensajes, setCargandoMensajes] = useState(false); 
+  const [cargandoCasas, setCargandoCasas] = useState(false);
+  const [cargandoMensajes, setCargandoMensajes] = useState(false);
 
   const [errorUsuarios, setErrorUsuarios] = useState<string | null>(null);
   const [errorProyectos, setErrorProyectos] = useState<string | null>(null);
-  const [errorMensajes, setErrorMensajes] = useState<string | null>(null); 
+  const [errorCasas, setErrorCasas] = useState<string | null>(null);
+  const [errorMensajes, setErrorMensajes] = useState<string | null>(null);
 
   useEffect(() => {
     obtenerUsuarios();
     obtenerProyectos();
+    obtenerCasas();
     obtenerMensajes();
   }, []);
 
@@ -66,12 +72,26 @@ export default function AdminPage() {
       setMensajes(mensajess);
 
       // fecha: new Date(Date.now() - 345600000).toLocaleDateString('es-ES'),
-      
+
     } catch (error: any) {
       console.error('Error obteniendo mensajes:', error);
       setErrorMensajes(error.message || 'Error al cargar mensajes');
     } finally {
       setCargandoMensajes(false);
+    }
+  };
+
+  const obtenerCasas = async () => {
+    try {
+      setCargandoCasas(true);
+      setErrorCasas(null);
+      const casass = await casaService.obtenerCasas();
+      setCasas(casass);
+    } catch (error: any) {
+      console.error('Error obteniendo casas:', error);
+      setErrorCasas(error.message || 'Error al cargar casas');
+    } finally {
+      setCargandoCasas(false);
     }
   };
 
@@ -177,7 +197,113 @@ export default function AdminPage() {
             </div>
           </div>
         );
-      
+
+      case 'Casas':
+        return (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-[#003153]">
+                  Lista de Casas ({casas.length})
+                </h3>
+                <button
+                  onClick={() => setSeccionActual(<ACasa />)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Nueva Casa
+                </button>
+              </div>
+            </div>
+
+            {cargandoCasas && (
+              <div className="p-4 text-center">
+                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#003153]"></div>
+                <p className="mt-2 text-gray-500">Cargando casas...</p>
+              </div>
+            )}
+
+            {errorCasas && (
+              <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700 text-sm">Error: {errorCasas}</p>
+                <button
+                  onClick={obtenerCasas}
+                  className="mt-2 text-red-700 hover:underline text-sm"
+                >
+                  Reintentar
+                </button>
+              </div>
+            )}
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagen</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {casas.length === 0 && !cargandoCasas && !errorCasas ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                        No hay casas registradas aún.
+                        <button
+                          onClick={() => setSeccionActual(<ACasa />)}
+                          className="mt-2 block mx-auto text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                          Crear primera casa
+                        </button>
+                      </td>
+                    </tr>
+                  ) : (
+                    casas.map((casa) => (
+                      <tr key={casa.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex shrink-0">
+                            <img
+                              src={`http://localhost:3001${casa.imagenUrl}`}
+                              alt={casa.titulo}
+                              className="h-12 w-16 object-cover rounded border border-gray-200"
+                              onError={(e) => {
+                                // Fallback si la imagen no carga
+                                e.currentTarget.src = '/placeholder-image.jpg';
+                                e.currentTarget.alt = 'Imagen no disponible';
+                              }}
+                            />
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{casa.titulo}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-500 max-w-xs truncate">
+                            {casa.descripcion}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            ${casa.precio?.toLocaleString() || 'N/A'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                          <button className="text-red-600 hover:text-red-900">Eliminar</button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
       case 'proyectos':
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -420,9 +546,9 @@ export default function AdminPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Añadir Casa */}
-              <div 
+              <div
                 className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 cursor-pointer group"
-                onClick={() => navegarAFormulario('casa')}
+                onClick={() => setSeccionActual(<ACasa />)}
               >
                 <div className="text-center">
                   <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
@@ -503,7 +629,7 @@ export default function AdminPage() {
               
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <h4 className="font-semibold text-green-800"> Casas Registradas</h4>
-                <p className="text-2xl font-bold text-green-600">0</p>
+                <p className="text-2xl font-bold text-green-600">{casas.length}</p>
               </div>
               
               <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
@@ -661,11 +787,11 @@ export default function AdminPage() {
                     {seccionActual === 'clientes' && 'Clientes Registrados'}
                     {seccionActual === 'Casas' && 'Gestión de Casas'}
                     {seccionActual === 'proyectos' && 'Proyectos'}
-                    {seccionActual === 'mensajes' && 'Bandeja de Entrada'} 
+                    {seccionActual === 'mensajes' && 'Bandeja de Entrada'}
                     {seccionActual === 'anadir' && 'Añadir Nuevo Contenido'}
                   </>
                 ) : (
-                  'Crear Nuevo Proyecto'
+                  (seccionActual as any).type?.name === 'ACasa' ? 'Crear Nueva Casa' : 'Crear Nuevo Proyecto'
                 )}
               </h2>
             </div>
