@@ -78,12 +78,12 @@ export const Servicios = () => {
                                     <p className="text-gray-600 leading-relaxed">
                                         {servicio.descripcion}
                                     </p>
-                                    <div className="flex items-center gap-6 mt-4">
-                                        <p className="text-[#003153] font-medium hover:text-blue-800 transition-colors">
+                                    <div className="flex items-center gap-6 mt-4 justify-between w-full">
+                                        <p className="text-[#003153] font-medium hover:text-blue-800 transition-colors whitespace-nowrap mr-4">
                                             {t('services.moreInfo')}
                                         </p>
                                         <Link href={servicio.ruta}>
-                                            <button className="text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-10">
+                                            <button className="text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-6 w-40 sm:w-44 md:w-52 text-center">
                                                 {servicio.textoBoton}
                                             </button>
                                         </Link>

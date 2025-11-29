@@ -1,4 +1,5 @@
 'use client';
+import { API_CONFIG } from '@/src/config/env';
 import { Proyecto, proyectoService } from '@/src/Services/Proyecto';
 import { Usuario, usuarioService } from '@/src/Services/Usuario';
 import { Casa, casaService } from '@/src/Services/Casa';
@@ -95,6 +96,36 @@ export default function AdminPage() {
     }
   };
 
+  const eliminarUsu = async (id: number) => {
+    try {
+     const usuarioEliminado = await usuarioService.eliminarUsuario(id);
+      obtenerUsuarios(); // Refrescar la lista después de eliminar
+  }
+    catch (error) {
+      console.error('Error eliminando usuario:', error);
+    }
+  }
+
+  const eliminarPro = async (id: number) => {
+    try {
+     const proyectoEliminado = await proyectoService.eliminarProyecto(id);
+      obtenerProyectos(); // Refrescar la lista después de eliminar
+  }
+    catch (error) {
+      console.error('Error eliminando proyecto:', error);
+    }
+  }
+
+  const eliminarMen = async (id: number) => {
+    try {
+     const mensajeEliminado = await mensajeService.eliminarMensaje(id);
+      obtenerMensajes(); // Refrescar la lista después de eliminar
+  }
+    catch (error) {
+      console.error('Error eliminando mensaje:', error);
+    }
+  }
+
   // navegar a los tarjetas
   const navegarAFormulario = (tipo: string) => {
     router.push(`/admin/anadir/${tipo}`);
@@ -119,7 +150,7 @@ export default function AdminPage() {
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-[#003153]">
-                  Lista de Clientes ({usuarios.length})
+                  Lista de Clientes ({usuarios.length - 1})
                 </h3>
               </div>
             </div>
@@ -164,6 +195,7 @@ export default function AdminPage() {
                     </tr>
                   ) : (
                     usuarios.map((usuario) => (
+                      (usuario.gmail !== 'admin@constructora.com' ) && (
                       <tr key={usuario.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {usuario.id}
@@ -187,10 +219,11 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
-                          <button className="text-red-600 hover:text-red-900">Eliminar</button>
+                          <button onClick={() => usuario.id && eliminarUsu(usuario.id)} className="text-red-600 hover:text-red-900">Eliminar</button>
+                          {/*sino le pongo la validacion de usuario.id no me deja*/}
                         </td>
                       </tr>
-                    ))
+                    )))
                   )}
                 </tbody>
               </table>
@@ -267,7 +300,7 @@ export default function AdminPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex shrink-0">
                             <img
-                              src={`http://localhost:3001${casa.imagenUrl}`}
+                              src={`http://localhost:3001${casa.imagenUrls}`}
                               alt={casa.titulo}
                               className="h-12 w-16 object-cover rounded border border-gray-200"
                               onError={(e) => {
@@ -372,7 +405,7 @@ export default function AdminPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex shrink-0">
                       <img 
-                        src={`http://localhost:3001${proyecto.imagenUrl}`}
+                        src={`${API_CONFIG.BASE_URL}${proyecto.imagenUrl}`}
                         alt={proyecto.titulo}
                         className="h-12 w-16 object-cover rounded border border-gray-200"
                         onError={(e) => {
@@ -393,7 +426,7 @@ export default function AdminPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
-                    <button className="text-red-600 hover:text-red-900">Eliminar</button>
+                    <button onClick={() => proyecto.id && eliminarPro(proyecto.id)} className="text-red-600 hover:text-red-900">Eliminar</button>
                   </td>
                 </tr>
               ))
@@ -516,7 +549,7 @@ export default function AdminPage() {
                       </svg>
                       Marcar como atendido
                     </button>
-                    <button className="text-red-600 hover:text-red-800 text-sm flex items-center">
+                    <button onClick={() => mensaje.id && eliminarMen(mensaje.id)} className="text-red-600 hover:text-red-800 text-sm flex items-center">
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
@@ -624,7 +657,7 @@ export default function AdminPage() {
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h4 className="font-semibold text-blue-800"> Total Clientes</h4>
-                <p className="text-2xl font-bold text-blue-600">{usuarios.length}</p>
+                <p className="text-2xl font-bold text-blue-600">{usuarios.length - 1 }</p>
               </div>
               
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
@@ -797,14 +830,14 @@ export default function AdminPage() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">Admin User</span>
-              <button className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800">
+              <button onClick={() =>   router.back() } className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800">
                 Cerrar Sesión
               </button>
             </div>
           </div>
         </header>
 
-        {/* Content Area dinámica */}
+        {/* Content Area dinamica */}
         <main className="flex-1 p-6 bg-gray-50">
           {renderContenido()}
         </main>
