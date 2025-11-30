@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AProyecto } from '@/src/components/añadir/AProyecto';
 import { ACasa } from '@/src/components/añadir/ACasa';
+import { ARemodelacion } from '@/src/components/añadir/ARemodelacion';
 import { mensajeService } from '@/src/Services/Mensajes';
 
 export default function AdminPage() {
@@ -301,7 +302,7 @@ export default function AdminPage() {
                           <div className="flex shrink-0">
                             <img
                               src={`http://localhost:3001${casa.imagenUrls}`}
-                              alt={casa.titulo}
+                              alt={casa.nombre}
                               className="h-12 w-16 object-cover rounded border border-gray-200"
                               onError={(e) => {
                                 // Fallback si la imagen no carga
@@ -312,7 +313,7 @@ export default function AdminPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{casa.titulo}</div>
+                          <div className="text-sm font-medium text-gray-900">{casa.nombre}</div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-sm text-gray-500 max-w-xs truncate">
@@ -621,9 +622,9 @@ export default function AdminPage() {
               </div>
 
               {/* Añadir Remodelación */}
-              <div 
+              <div
                 className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 cursor-pointer group"
-                onClick={() => navegarAFormulario('remodelacion')}
+                onClick={() => setSeccionActual(<ARemodelacion />)}
               >
                 <div className="text-center">
                   <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
