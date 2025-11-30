@@ -72,8 +72,7 @@ export const authService = {
     const user = this.getCurrentUser();
     if (!user) return false;
     
-    const adminEmails = ['admin@constructora.com', 'personal@gmail.com'];
-    return adminEmails.includes(user.gmail);
+    return user.role === 'admin';
   },
 
   //Para obtener headers autenticados
@@ -83,5 +82,17 @@ export const authService = {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` })
     };
-  }
+  },
+
+  VerificarRole(roleName: string): boolean {
+  const user = this.getCurrentUser();
+  if (!user) return false;
+  return user.role === roleName;
+},
+
+  // Para obtener el rol actual
+getCurrentRole(): string | null {
+  const user = this.getCurrentUser();
+  return user ? user.role : null;
+}
 };

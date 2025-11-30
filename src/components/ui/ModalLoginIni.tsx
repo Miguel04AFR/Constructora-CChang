@@ -53,8 +53,6 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
       });
 
       // Usar authService para verificar si es admin
-      const esAdmin = authService.isAdmin();
-
       setInicio(true);
       
       setTimeout(() => {
@@ -70,14 +68,14 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         onClose();
 
         // Redirigir basado en la verificación real
-        if (esAdmin) {
-          router.push('/admin');
-        } else {
-          // Recargar la página para actualizar estado
-          router.refresh();
-        }
-        
-      }, 2000);
+        if (result.user.role === 'admin') {
+        router.push('/admin');
+      } else {
+        // Recargar la página para actualizar estado
+        router.refresh();
+      }
+      
+    }, 2000);
       
     } catch (error: any) {
       setCargando(false);

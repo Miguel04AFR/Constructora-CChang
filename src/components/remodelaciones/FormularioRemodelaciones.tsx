@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
+import { mensajeService } from '@/src/Services/Mensajes';
 
 interface Props {
   propiedad?: { nombre?: string };
@@ -130,21 +131,38 @@ export const FormularioRemodelaciones: React.FC<Props> = ({ propiedad, formRef, 
     setTimeout(checkAndSubmit, 300);
   };
 
-  const enviarFormulario = (datos: any) => {
-    setMensajeEnviado(true);
-    setMostrarMensajeErrores(false);
-
-    // TODO: enviar al servidor o manejar el envío según el proyecto
-
-    // Limpiar
-    setFormData(initialData);
-    setErrores({});
-    setCamposTocados({});
-
-    if (onSubmitSuccess) onSubmitSuccess();
-
-    setTimeout(() => setMensajeEnviado(false), 5000);
-  };
+  const enviarFormulario = async (datos: any) => {
+          setMensajeEnviado(true);
+  
+          try {
+              const mensajeParaEnviar = {
+                  tipo: 'Supervision de proyecto',
+                  motivo: datos.descripcion,
+                  gmail: datos.email,
+                  telefono: datos.telefono
+              };
+  
+              await mensajeService.crearMensaje(mensajeParaEnviar);
+  
+              setMostrarMensajeErrores(false);
+              setFormData({
+                  nombre: '',
+                  email: '',
+                  telefono: '',
+                  descripcion: ''
+              });
+              setErrores({});
+              setCamposTocados({});
+  
+              if (onSubmitSuccess) onSubmitSuccess();
+  
+          } catch (error) {
+              console.error('Error al enviar mensaje:', error);
+              setMostrarMensajeErrores(true);
+          } finally {
+              setMensajeEnviado(false);
+          }
+      };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

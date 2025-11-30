@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
+import FormularioRemodelaciones from './FormularioRemodelaciones';
 
 export const RemodelacionesCarousel = () => {
   const { t } = useTranslation();
@@ -151,7 +152,7 @@ export const RemodelacionesCarousel = () => {
             </div>
 
             <div className="px-4 overflow-auto max-h-[56vh]">
-                <FormularioContacto
+                <FormularioRemodelaciones
                   propiedad={{ nombre: modalRemodel.nombre }}
                   formRef={formRef}
                   onValChange={(v) => setFormValido(v)}
