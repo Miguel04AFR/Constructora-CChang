@@ -1,95 +1,93 @@
 import { authService } from "../auth/auth";
 import { API_CONFIG } from "../config/env";
 
-export interface Casa {
-    id?: string;
+export interface Remodelacion {
+    id: number;
     nombre: string;
-    imagenUrls: string[];
     precio: number;
-    ubicacion: string;
-    habitaciones: number;
-    banos: number;
-    metrosCuadrados: number;
     descripcion: string;
+    descripcionDetallada?: string;
+    imagenUrl?: string;
+    items: string[];
 }
 
-export const casaService = {
-    async crearCasaConImagen(formData: FormData) {
+export const remodelacionService = {
+    async crearRemodelacionConImagen(formData: FormData) {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas/upload`, {
+            const token = authService.getToken();
+
+            if (!token) {
+                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
+            }
+
+            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones/upload`, {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
                 body: formData,
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al crear casa');
+                throw new Error(errorData.message || 'Error al crear remodelación');
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Error creando casa con imagen:', error);
+            console.error('Error creando remodelación con imagen:', error);
             throw error;
         }
     },
 
-    async crearCasa(casa: Casa) {
+    async crearRemodelacion(remodelacion: Omit<Remodelacion, 'id'>) {
         try {
-            const token = authService.getToken(); 
-            
+            const token = authService.getToken();
+
             if (!token) {
                 throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
             }
 
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas`, {
+            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    id: casa.id,
-                    nombre: casa.nombre,
-                    precio: casa.precio,
-                    ubicacion: casa.ubicacion,
-                    habitaciones: casa.habitaciones,
-                    banos: casa.banos,
-                    metrosCuadrados: casa.metrosCuadrados,
-                    descripcion: casa.descripcion,
-                }),
+                body: JSON.stringify(remodelacion),
             });
-            
+
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al crear casa');
+                throw new Error(errorData.message || 'Error al crear remodelación');
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Error en casaService:', error);
+            console.error('Error en remodelacionService:', error);
             throw error;
         }
     },
 
-    async obtenerCasas() {
+    async obtenerRemodelaciones() {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas`);
+            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones`);
             return await response.json();
         } catch (error) {
-            console.error('Error obteniendo casas:', error);
+            console.error('Error obteniendo remodelaciones:', error);
             throw error;
         }
     },
 
-    async eliminarCasa(id: number) {
+    async eliminarRemodelacion(id: number) {
         try {
             const token = authService.getToken();
-            
+
             if (!token) {
                 throw new Error('No estás autenticado');
             }
-            
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas/${id}`, {
+
+            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -99,17 +97,19 @@ export const casaService = {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al eliminar casa');
+                throw new Error(errorData.message || 'Error al eliminar remodelación');
             }
 
             if (response.status === 204) {
-                return { success: true, message: 'Casa eliminada correctamente' };
+                return { success: true, message: 'Remodelación eliminada correctamente' };
             }
 
             return await response.json();
         } catch (error) {
-            console.error('Error en casaService:', error);
+            console.error('Error en remodelacionService:', error);
             throw error;
         }
     },
-}
+};
+
+export default Remodelacion;

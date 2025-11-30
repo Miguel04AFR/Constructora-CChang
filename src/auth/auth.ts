@@ -71,8 +71,9 @@ export const authService = {
   isAdmin(): boolean {
     const user = this.getCurrentUser();
     if (!user) return false;
-    
+       
     return user.role === 'admin';
+
   },
 
   //Para obtener headers autenticados

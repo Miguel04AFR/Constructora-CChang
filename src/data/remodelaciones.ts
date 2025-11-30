@@ -6,7 +6,7 @@ export const remodelaciones: Remodelacion[] = [
         nombre: 'Remodelación de Cocina Integral',
         precio: 8500,
         descripcion: 'Renovación completa de cocina: mobiliario, encimeras y distribución.',
-    imagenUrl: '/remodelaciones/1/cover.jpg',
+        imagenUrl: '/remodelaciones/1/cover.jpg',
         descripcionDetallada:
             'Proyecto integral de cocina que incluye diseño personalizado, fabricación e instalación de muebles, encimeras de alta calidad, instalaciones eléctricas y de fontanería, y selección de acabados. Ideal para renovar la funcionalidad y estética de su cocina.',
         items: [
@@ -21,7 +21,7 @@ export const remodelaciones: Remodelacion[] = [
         nombre: 'Remodelación de Baño Principal',
         precio: 4500,
         descripcion: 'Actualización de acabados, grifería y distribución para baño principal.',
-    imagenUrl: '/remodelaciones/2/cover.jpg',
+        imagenUrl: '/remodelaciones/2/cover.jpg',
         descripcionDetallada:
             'Remodelación completa del baño principal con cambio de revestimientos, instalación de sanitarios y grifería moderna, mejora del sistema de agua y renovación de la iluminación y ventilación para mayor confort y eficiencia.',
         items: [
@@ -39,7 +39,7 @@ export const remodelaciones: Remodelacion[] = [
         precio: 750,
         descripcion:
             'Pintura completa de la fachada exterior con materiales resistentes al clima. El precio indicado es por metro cuadrado en el item correspondiente.',
-    imagenUrl: '/remodelaciones/3/cover.jpg',
+        imagenUrl: '/remodelaciones/3/cover.jpg',
         descripcionDetallada:
             'Pintura de fachada que incluye preparación de superficies, aplicación de imprimantes y recubrimientos de alta durabilidad. Se trabaja por metro cuadrado y se ofrecen opciones de color y acabado según las necesidades del cliente.',
         items: [
@@ -47,13 +47,13 @@ export const remodelaciones: Remodelacion[] = [
             'Preparación de superficie : Limpieza, reparación de grietas y tratamiento de zonas dañadas, incluyendo sellado y acondicionamiento para asegurar adherencia y durabilidad de la pintura.'
         ]
     },
-     {
+    {
         id: 4,
         nombre: 'Remodelación de jardín y áreas exteriores',
         precio: 1350,
         descripcion:
             'Remodelación de jardín y áreas exteriores con enfoque en la sostenibilidad y el uso de materiales ecológicos.',
-    imagenUrl: '/remodelaciones/4/cover.jpg',
+        imagenUrl: '/remodelaciones/4/cover.jpg',
         descripcionDetallada:
             'Remodelación de jardín que incluye preparación del terreno, selección e instalación de plantas nativas, creación de senderos ecológicos y sistemas de riego eficientes. Se trabaja por metro cuadrado y se ofrecen opciones personalizadas según las necesidades del cliente.',
         items: [
@@ -64,5 +64,3 @@ export const remodelaciones: Remodelacion[] = [
 ];
 
 export default remodelaciones;
-
-// (debug logs removed)
