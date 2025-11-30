@@ -8,7 +8,7 @@ export interface Remodelacion {
     descripcion: string;
     descripcionDetallada?: string;
     imagenUrl?: string;
-    items: string[];
+    accesorios: string[];
 }
 
 export const remodelacionService = {

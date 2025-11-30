@@ -301,7 +301,7 @@ export default function AdminPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex shrink-0">
                             <img
-                              src={`http://localhost:3001${casa.imagenUrls}`}
+                              src={`${API_CONFIG.BASE_URL}${casa.imagenUrl[0]}`}
                               alt={casa.nombre}
                               className="h-12 w-16 object-cover rounded border border-gray-200"
                               onError={(e) => {

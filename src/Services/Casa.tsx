@@ -4,7 +4,7 @@ import { API_CONFIG } from "../config/env";
 export interface Casa {
     id?: string;
     nombre: string;
-    imagenUrls: string[];
+    imagenUrl: string[];
     precio: number;
     ubicacion: string;
     habitaciones: number;
@@ -16,10 +16,23 @@ export interface Casa {
 export const casaService = {
     async crearCasaConImagen(formData: FormData) {
         try {
+            const token = authService.getToken(); 
+            
+            if (!token) {
+                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
+            }
+
             const response = await fetch(`${API_CONFIG.BASE_URL}/casas/upload`, {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+
+                },
                 body: formData,
+                
             });
+
+            console.log('Response status:', response.status);
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -45,7 +58,6 @@ export const casaService = {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     id: casa.id,

@@ -132,8 +132,7 @@ export const ACasa = () => {
       datos.append('metrosCuadrados', formData.metrosCuadrados);
       datos.append('descripcion', formData.descripcion);
 
-      // Append each image file
-      imagenFiles.forEach((file, index) => {
+      imagenFiles.forEach((file, index) => {//como es mas de una imagen, se usa un forEach
         datos.append('imagen', file);
       });
 
