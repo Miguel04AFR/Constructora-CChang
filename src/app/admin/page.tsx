@@ -65,7 +65,6 @@ export default function AdminPage() {
     }
   };
 
-  // Función para cargar mensajes (por ahora crea mensajes estáticos)
   const obtenerMensajes = async () => {
     try {
       setCargandoMensajes(true);
@@ -121,6 +120,16 @@ export default function AdminPage() {
     try {
      const mensajeEliminado = await mensajeService.eliminarMensaje(id);
       obtenerMensajes(); // Refrescar la lista después de eliminar
+  }
+    catch (error) {
+      console.error('Error eliminando mensaje:', error);
+    }
+  }
+
+  const eliminarCasa = async (id: number) => {
+    try {
+     const  casaEliminado = await casaService.eliminarCasa(id);
+      obtenerCasas(); // Refrescar la lista después de eliminar
   }
     catch (error) {
       console.error('Error eliminando mensaje:', error);
@@ -327,7 +336,7 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
-                          <button className="text-red-600 hover:text-red-900">Eliminar</button>
+                          <button onClick={ () =>  casa.id && eliminarCasa(Number(casa.id))}className="text-red-600 hover:text-red-900">Eliminar</button>
                         </td>
                       </tr>
                     ))
