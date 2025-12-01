@@ -125,40 +125,31 @@ export const casaService = {
         }
     },
 
-    async actualizarCasa(id: string, casa: Partial<Casa>) {
-        try {
-            const token = authService.getToken();
 
-            if (!token) {
-                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
-            }
-
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
+    async updateCasa(id: number, updateData: Partial<Casa>) {
+              try {
+                const token = authService.getToken();
+          
+                const response = await fetch(`${API_CONFIG.BASE_URL}/casas/${id}`, {
+                  method: 'PATCH',
+                   headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    nombre: casa.nombre,
-                    precio: casa.precio,
-                    ubicacion: casa.ubicacion,
-                    habitaciones: casa.habitaciones,
-                    banos: casa.banos,
-                    metrosCuadrados: casa.metrosCuadrados,
-                    descripcion: casa.descripcion,
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al actualizar casa');
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('Error actualizando casa:', error);
-            throw error;
-        }
-    },
+                  body: JSON.stringify(updateData),
+                });
+          
+                if (!response.ok) {
+                  const errorData = await response.json();
+                  throw new Error(errorData.message || 'Error al actualizar casa');
+                }
+          
+                return await response.json();
+              } catch (error) {
+                console.error('Error en casaService:', error);
+                throw error;
+              }
+              
+          
+            },
 }
