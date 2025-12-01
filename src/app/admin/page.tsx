@@ -11,6 +11,8 @@ import { ARemodelacion } from '@/src/components/añadir/ARemodelacion';
 import { mensajeService } from '@/src/Services/Mensajes';
 import remodelaciones from '@/src/data/remodelaciones';
 import Remodelacion, { remodelacionService } from '@/src/Services/Remodelacion';
+import { authService } from '@/src/auth/auth';
+import { AscenderUsuario } from '@/src/components/ascender/ascenderUsuario';
 
 export default function AdminPage() {
   const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
@@ -995,6 +997,18 @@ export default function AdminPage() {
                ➕ Añadir Contenido
               </button>
             </li>
+            {authService.VerificarRole('superAdmin') && (
+      <li>
+    <button 
+      onClick={() => setSeccionActual(<AscenderUsuario />)}
+      className={`w-full text-left px-4 py-2 rounded-lg ${
+        seccionActual === 'ascender' ? 'bg-red-600 text-white' : 'hover:bg-red-600 text-blue-100'
+         }`}
+       >
+         Ascender Usuario
+         </button>
+     </li>
+          )}
           </ul>
         </nav>
       </div>
@@ -1024,6 +1038,7 @@ export default function AdminPage() {
                     {seccionActual === 'remodelaciones' && 'Gestión de Remodelaciones'}
                     {seccionActual === 'mensajes' && 'Bandeja de Entrada'}
                     {seccionActual === 'anadir' && 'Añadir Nuevo Contenido'}
+                    {seccionActual === 'ascender' && 'Ascender Usuario a Admin'}
                   </>
                 ) : (
                   (seccionActual as any).type?.name === 'ACasa' ? 'Crear Nueva Casa' : 'Crear Nuevo Proyecto'
