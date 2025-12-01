@@ -100,7 +100,7 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
         <h3 className="text-xl font-bold text-[#003153] mb-4">{t('remodel.itemsTitle') || 'Items incluidos'}</h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(remodelacion.items || []).map((it, idx) => {
+          {(remodelacion.accesorios || []).map((it, idx) => {
             const parsed = parseItemString(it);
             return (
               <div key={`${remodelacion.id}-item-${idx}`} className="bg-white rounded-lg shadow p-4">
