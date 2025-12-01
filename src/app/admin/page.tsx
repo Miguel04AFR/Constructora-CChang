@@ -9,6 +9,8 @@ import { AProyecto } from '@/src/components/añadir/AProyecto';
 import { ACasa } from '@/src/components/añadir/ACasa';
 import { ARemodelacion } from '@/src/components/añadir/ARemodelacion';
 import { mensajeService } from '@/src/Services/Mensajes';
+import remodelaciones from '@/src/data/remodelaciones';
+import Remodelacion, { remodelacionService } from '@/src/Services/Remodelacion';
 
 export default function AdminPage() {
   const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
@@ -19,22 +21,26 @@ export default function AdminPage() {
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
   const [casas, setCasas] = useState<Casa[]>([]);
   const [mensajes, setMensajes] = useState<any[]>([]);
+  const [remodelaciones, setRemodelaciones] = useState<Remodelacion[]>([])
 
   const [cargandoUsuarios, setCargandoUsuarios] = useState(false);
   const [cargandoProyectos, setCargandoProyectos] = useState(false);
   const [cargandoCasas, setCargandoCasas] = useState(false);
   const [cargandoMensajes, setCargandoMensajes] = useState(false);
+  const [cargandoRemodelaciones, setCargandoRemodelaciones] = useState(false);
 
   const [errorUsuarios, setErrorUsuarios] = useState<string | null>(null);
   const [errorProyectos, setErrorProyectos] = useState<string | null>(null);
   const [errorCasas, setErrorCasas] = useState<string | null>(null);
   const [errorMensajes, setErrorMensajes] = useState<string | null>(null);
+  const [errorRemodelaciones, setErrorRemodelaciones] = useState<string | null>(null);
 
   useEffect(() => {
     obtenerUsuarios();
     obtenerProyectos();
     obtenerCasas();
     obtenerMensajes();
+    obtenerRemodelaciones();
   }, []);
 
   const obtenerProyectos = async () => {
@@ -96,6 +102,20 @@ export default function AdminPage() {
     }
   };
 
+  const obtenerRemodelaciones = async () => {
+    try {
+      setCargandoRemodelaciones(true);
+      setErrorRemodelaciones(null);
+      const remodelacioness = await remodelacionService.obtenerRemodelaciones();
+      setRemodelaciones(remodelacioness);
+    } catch (error: any) {
+      console.error('Error obteniendo remodelaciones:', error);
+      setErrorCasas(error.message || 'Error al cargar remodelaciones');
+    } finally {
+      setCargandoRemodelaciones(false);
+    }
+  };
+
   const eliminarUsu = async (id: number) => {
     try {
      const usuarioEliminado = await usuarioService.eliminarUsuario(id);
@@ -130,6 +150,16 @@ export default function AdminPage() {
     try {
      const  casaEliminado = await casaService.eliminarCasa(id);
       obtenerCasas(); // Refrescar la lista después de eliminar
+  }
+    catch (error) {
+      console.error('Error eliminando mensaje:', error);
+    }
+  }
+
+   const eliminarRemodelacion = async (id: number) => {
+    try {
+     const  remodelacionEliminado = await remodelacionService.eliminarRemodelacion(id);
+      obtenerRemodelaciones(); // Refrescar la lista después de eliminar
   }
     catch (error) {
       console.error('Error eliminando mensaje:', error);
@@ -654,6 +684,141 @@ export default function AdminPage() {
           </div>
         );
 
+          case 'remodelaciones':
+        return (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-[#003153]">
+                  Lista de Remodelaciones ({remodelaciones.length})
+                </h3>
+                <button
+                  onClick={() => setSeccionActual(<ARemodelacion />)}
+                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Nueva Remodelación
+                </button>
+              </div>
+            </div>
+
+            {cargandoRemodelaciones && (
+              <div className="p-4 text-center">
+                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#003153]"></div>
+                <p className="mt-2 text-gray-500">Cargando remodelaciones...</p>
+              </div>
+            )}
+
+            {errorRemodelaciones && (
+              <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700 text-sm">Error: {errorRemodelaciones}</p>
+                <button
+                  onClick={obtenerRemodelaciones}
+                  className="mt-2 text-red-700 hover:underline text-sm"
+                >
+                  Reintentar
+                </button>
+              </div>
+            )}
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagen</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accesorios</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {remodelaciones.length === 0 && !cargandoRemodelaciones && !errorRemodelaciones ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                        No hay remodelaciones registradas aún.
+                        <button
+                          onClick={() => setSeccionActual(<ARemodelacion />)}
+                          className="mt-2 block mx-auto text-purple-600 hover:text-purple-800 font-medium"
+                        >
+                          Crear primera remodelación
+                        </button>
+                      </td>
+                    </tr>
+                  ) : (
+                    remodelaciones.map((remodelacion) => (
+                      <tr key={remodelacion.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex shrink-0">
+                            <img
+                              src={`${API_CONFIG.BASE_URL}${remodelacion.imagenUrl?.[0] || '/placeholder-image.jpg'}`}
+                              alt={remodelacion.nombre}
+                              className="h-12 w-16 object-cover rounded border border-gray-200"
+                              onError={(e) => {
+                                // Fallback si la imagen no carga
+                                e.currentTarget.src = '/placeholder-image.jpg';
+                                e.currentTarget.alt = 'Imagen no disponible';
+                              }}
+                            />
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{remodelacion.nombre}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-500 max-w-xs truncate">
+                            {remodelacion.descripcion}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            ${remodelacion.precio?.toLocaleString() || 'N/A'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-500 max-w-xs">
+                            {remodelacion.accesorios && remodelacion.accesorios.length > 0 ? (
+                              <div className="flex flex-wrap gap-1">
+                                {remodelacion.accesorios.slice(0, 2).map((accesorio, index) => (
+                                  <span 
+                                    key={index}
+                                    className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
+                                  >
+                                    {accesorio}
+                                  </span>
+                                ))}
+                                {remodelacion.accesorios.length > 2 && (
+                                  <span className="inline-block bg-gray-200 text-gray-600 px-2 py-1 rounded text-xs">
+                                    +{remodelacion.accesorios.length - 2} más
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-gray-400 text-xs">Sin accesorios</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                          <button 
+                            onClick={() => remodelacion.id && eliminarRemodelacion(remodelacion.id)} 
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
       default: // dashboard
         return (
           <div className="bg-white rounded-lg shadow p-6">
@@ -679,7 +844,11 @@ export default function AdminPage() {
                 <h4 className="font-semibold text-purple-800"> Proyectos Activos</h4>
                 <p className="text-2xl font-bold text-purple-600">{proyectos.length}</p>
               </div>
+
+              
             </div>
+
+            
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
@@ -692,6 +861,17 @@ export default function AdminPage() {
                   Ver bandeja de entrada →
                 </button>
               </div>
+
+                <div className="bg-pink-50 p-4 rounded-lg border border-pink-200">
+          <h4 className="font-semibold text-pink-800"> Remodelaciones</h4>
+          <p className="text-2xl font-bold text-pink-600">{remodelaciones.length}</p>
+          <button 
+            onClick={() => setSeccionActual('remodelaciones')}
+            className="mt-2 text-pink-700 hover:text-pink-900 text-sm font-medium"
+          >
+            Ver remodelaciones →
+          </button>
+        </div>
             </div>
           </div>
         );
@@ -780,6 +960,16 @@ export default function AdminPage() {
                 📋 Proyectos
               </button>
             </li>
+             <li>
+      <button 
+        onClick={() => setSeccionActual('remodelaciones')}
+        className={`w-full text-left px-4 py-2 rounded-lg ${
+          seccionActual === 'remodelaciones' ? 'bg-purple-600 text-white' : 'hover:bg-purple-600 text-blue-100'
+        }`}
+      >
+        🛠️ Remodelaciones
+      </button>
+    </li>
             <li>
               <button 
                 onClick={() => {
@@ -789,6 +979,7 @@ export default function AdminPage() {
                 className={`w-full text-left px-4 py-2 rounded-lg ${
                   seccionActual === 'mensajes' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
                 }`}
+                
               >
                 📧 Bandeja de Entrada
               </button>
@@ -830,6 +1021,7 @@ export default function AdminPage() {
                     {seccionActual === 'clientes' && 'Clientes Registrados'}
                     {seccionActual === 'Casas' && 'Gestión de Casas'}
                     {seccionActual === 'proyectos' && 'Proyectos'}
+                    {seccionActual === 'remodelaciones' && 'Gestión de Remodelaciones'}
                     {seccionActual === 'mensajes' && 'Bandeja de Entrada'}
                     {seccionActual === 'anadir' && 'Añadir Nuevo Contenido'}
                   </>

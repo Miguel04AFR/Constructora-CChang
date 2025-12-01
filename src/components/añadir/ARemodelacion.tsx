@@ -8,10 +8,10 @@ export const ARemodelacion = () => {
     precio: '',
     descripcion: '',
     descripcionDetallada: '',
-    items: [] as string[],
+    accesorios: [] as string[],
   });
 
-  const [currentItem, setCurrentItem] = useState('');
+  const [currentAccesorios, setCurrentAccesorios] = useState('');
   const [imagenFile, setImagenFile] = useState<File | null>(null);
   const [imagenPreview, setImagenPreview] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,28 +19,40 @@ export const ARemodelacion = () => {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleAddItem = () => {
-    if (currentItem.trim()) {
+    
+    // Validacion especial para precio
+    if (name === 'precio') {
+      // Permitir solo numeros
+      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: value
+        }));
+      }
+    } else {
       setFormData(prev => ({
         ...prev,
-        items: [...prev.items, currentItem.trim()]
+        [name]: value
       }));
-      setCurrentItem('');
     }
   };
 
-  const handleRemoveItem = (index: number) => {
+  const handleAddaccesorios = () => {
+    if (currentAccesorios.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        accesorios: [...prev.accesorios, currentAccesorios.trim()]
+      }));
+      setCurrentAccesorios('');
+    }
+  };
+
+  const handleRemoveaccesorios = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      items: prev.items.filter((_, i) => i !== index)
+      accesorios: prev.accesorios.filter((_, i) => i !== index)
     }));
   };
 
@@ -120,18 +132,23 @@ export const ARemodelacion = () => {
         throw new Error('Por favor, selecciona una imagen');
       }
 
-      if (formData.items.length === 0) {
-        throw new Error('Por favor, añade al menos un item');
+      if (formData.accesorios.length === 0) {
+        throw new Error('Por favor, añade al menos un accesorios');
       }
+
+     const precioFloat = parseFloat(formData.precio);
+    if (isNaN(precioFloat) || precioFloat <= 0) {
+      throw new Error('El precio debe ser un número positivo');
+    }
 
       const datos = new FormData();
       datos.append('nombre', formData.nombre);
-      datos.append('precio', formData.precio);
+      datos.append('precio', parseFloat(formData.precio).toString());
       datos.append('descripcion', formData.descripcion);
       datos.append('descripcionDetallada', formData.descripcionDetallada);
       datos.append('imagen', imagenFile);
-      formData.items.forEach((item, index) => {
-        datos.append(`items[${index}]`, item);
+      formData.accesorios.forEach((accesorios, index) => {
+        datos.append(`accesorios[${index}]`, accesorios);
       });
 
       const remodelacionCreada = await remodelacionService.crearRemodelacionConImagen(datos);
@@ -143,7 +160,7 @@ export const ARemodelacion = () => {
         precio: '',
         descripcion: '',
         descripcionDetallada: '',
-        items: [],
+        accesorios: [],
       });
       handleRemoveImage();
 
@@ -236,32 +253,32 @@ export const ARemodelacion = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Items de la Remodelación *
+                accesorios de la Remodelación *
               </label>
               <div className="flex gap-2 mb-4">
                 <input
                   type="text"
-                  value={currentItem}
-                  onChange={(e) => setCurrentItem(e.target.value)}
+                  value={currentAccesorios}
+                  onChange={(e) => setCurrentAccesorios(e.target.value)}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  placeholder="Añade un item..."
+                  placeholder="Añade un accesorios..."
                 />
                 <button
                   type="button"
-                  onClick={handleAddItem}
+                  onClick={handleAddaccesorios}
                   className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                 >
                   Añadir
                 </button>
               </div>
-              {formData.items.length > 0 && (
+              {formData.accesorios.length > 0 && (
                 <div className="space-y-2">
-                  {formData.items.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-                      <span className="text-sm">{item}</span>
+                  {formData.accesorios.map((accesorio, index) => (
+                    <div key={index} className="flex accesorios-center justify-between bg-gray-100 p-2 rounded-md">
+                      <span className="text-sm">{accesorio}</span>
                       <button
                         type="button"
-                        onClick={() => handleRemoveItem(index)}
+                        onClick={() => handleRemoveaccesorios(index)}
                         className="text-red-500 hover:text-red-700 text-sm"
                       >
                         ×
@@ -307,7 +324,7 @@ export const ARemodelacion = () => {
                           e.stopPropagation();
                           handleRemoveImage();
                         }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex accesorios-center justify-center text-sm hover:bg-red-600"
                       >
                         ×
                       </button>
@@ -349,7 +366,7 @@ export const ARemodelacion = () => {
                 className="flex-1 bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {cargando ? (
-                  <div className="flex items-center justify-center">
+                  <div className="flex accesorios-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                     Creando...
                   </div>
@@ -366,7 +383,7 @@ export const ARemodelacion = () => {
                     precio: '',
                     descripcion: '',
                     descripcionDetallada: '',
-                    items: [],
+                    accesorios: [],
                   });
                   handleRemoveImage();
                 }}

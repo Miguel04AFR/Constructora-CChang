@@ -68,7 +68,7 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         onClose();
 
         // Redirigir basado en la verificación real
-        if (result.user.role === 'admin') {
+        if (result.user.role === 'admin' || result.user.role === 'superAdmin') {
         router.push('/admin');
       } else {
         // Recargar la página para actualizar estado

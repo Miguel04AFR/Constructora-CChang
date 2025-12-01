@@ -72,7 +72,7 @@ export const authService = {
     const user = this.getCurrentUser();
     if (!user) return false;
        
-    return user.role === 'admin';
+    return user.role === 'admin' || user.role === 'superAdmin';
 
   },
 
