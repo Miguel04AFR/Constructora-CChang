@@ -124,4 +124,31 @@ export const casaService = {
             throw error;
         }
     },
+
+    async updateCasa(id: number, updateData: Partial<Casa>) {
+              try {
+                const token = authService.getToken();
+          
+                const response = await fetch(`${API_CONFIG.BASE_URL}/casas/${id}`, {
+                  method: 'PATCH',
+                   headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+                  body: JSON.stringify(updateData),
+                });
+          
+                if (!response.ok) {
+                  const errorData = await response.json();
+                  throw new Error(errorData.message || 'Error al actualizar casa');
+                }
+          
+                return await response.json();
+              } catch (error) {
+                console.error('Error en casaService:', error);
+                throw error;
+              }
+              
+          
+            },
 }

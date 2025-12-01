@@ -2,6 +2,7 @@ import { API_CONFIG } from '@/src/config/env'; // URL del backend
 import { Mensaje } from './Mensajes';
 import { authService } from '../auth/auth';
 import { AscenderUsuario } from '../components/ascender/ascenderUsuario';
+import { updateTag } from 'next/cache';
 
 export interface Usuario {
   id?: number; // Opcional porque se genera al crear
@@ -119,7 +120,7 @@ export const usuarioService = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      // ✅ No necesita body porque todo va en la URL
+      //No necesita body porque todo va en la URL
     });
 
     if (!response.ok) {
@@ -151,5 +152,32 @@ export const usuarioService = {
     console.error('Error ascendiendo usuario:', error);
     throw error;
   }
-}
+},
+
+async updateUsuario(id: number, updateData: Partial<Usuario>) {
+    try {
+      const token = authService.getToken();
+
+      const response = await fetch(`${API_CONFIG.BASE_URL}/users/${id}`, {
+        method: 'PATCH',
+         headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+        body: JSON.stringify(updateData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al actualizar usuario');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error en usuarioService:', error);
+      throw error;
+    }
+    
+
+  },
 };

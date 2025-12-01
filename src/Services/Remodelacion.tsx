@@ -110,6 +110,33 @@ export const remodelacionService = {
             throw error;
         }
     },
+
+    async updateRemodelacion(id: number, updateData: Partial<Remodelacion>) {
+        try {
+          const token = authService.getToken();
+    
+          const response = await fetch(`${API_CONFIG.BASE_URL}/remodelacion/${id}`, {
+            method: 'PATCH',
+             headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+            body: JSON.stringify(updateData),
+          });
+    
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al actualizar remodelacion');
+          }
+    
+          return await response.json();
+        } catch (error) {
+          console.error('Error en remodelacionService:', error);
+          throw error;
+        }
+        
+    
+      },
 };
 
 export default Remodelacion;

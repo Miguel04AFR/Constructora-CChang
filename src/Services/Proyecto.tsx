@@ -123,5 +123,32 @@ async eliminarProyecto(id: number) {
     }
   },
 
+   async updateProyecto(id: number, updateData: Partial<Proyecto>) {
+          try {
+            const token = authService.getToken();
+      
+            const response = await fetch(`${API_CONFIG.BASE_URL}/proyectos/${id}`, {
+              method: 'PATCH',
+               headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+              body: JSON.stringify(updateData),
+            });
+      
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || 'Error al actualizar proyecto');
+            }
+      
+            return await response.json();
+          } catch (error) {
+            console.error('Error en proyectoService:', error);
+            throw error;
+          }
+          
+      
+        },
+
 
 }
