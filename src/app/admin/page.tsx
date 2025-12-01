@@ -13,6 +13,8 @@ import remodelaciones from '@/src/data/remodelaciones';
 import Remodelacion, { remodelacionService } from '@/src/Services/Remodelacion';
 import { authService } from '@/src/auth/auth';
 import { AscenderUsuario } from '@/src/components/ascender/ascenderUsuario';
+import { EProyecto } from '@/src/components/editar/EProyecto';
+import { ERemodelacion } from '@/src/components/editar/ERemodelacion';
 
 export default function AdminPage() {
   const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
@@ -379,7 +381,7 @@ export default function AdminPage() {
           </div>
         );
 
-      case 'proyectos':
+     case 'proyectos':
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
@@ -467,7 +469,21 @@ export default function AdminPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                    <button 
+                      onClick={() => setSeccionActual(
+                        <EProyecto 
+                          proyectoId={proyecto.id} 
+                          onCancel={() => setSeccionActual('proyectos')}
+                          onSuccess={() => {
+                            setSeccionActual('proyectos');
+                            obtenerProyectos(); // Refrescar la lista
+                          }}
+                        />
+                      )} 
+                      className="text-blue-600 hover:text-blue-900 mr-3"
+                    >
+                      Editar
+                    </button>
                     <button onClick={() => proyecto.id && eliminarPro(proyecto.id)} className="text-red-600 hover:text-red-900">Eliminar</button>
                   </td>
                 </tr>
@@ -687,139 +703,153 @@ export default function AdminPage() {
         );
 
           case 'remodelaciones':
-        return (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-[#003153]">
-                  Lista de Remodelaciones ({remodelaciones.length})
-                </h3>
-                <button
-                  onClick={() => setSeccionActual(<ARemodelacion />)}
-                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center"
-                >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Nueva Remodelación
-                </button>
-              </div>
-            </div>
+  return (
+    <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-[#003153]">
+            Lista de Remodelaciones ({remodelaciones.length})
+          </h3>
+          <button
+            onClick={() => setSeccionActual(<ARemodelacion />)}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Nueva Remodelación
+          </button>
+        </div>
+      </div>
 
-            {cargandoRemodelaciones && (
-              <div className="p-4 text-center">
-                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#003153]"></div>
-                <p className="mt-2 text-gray-500">Cargando remodelaciones...</p>
-              </div>
+      {cargandoRemodelaciones && (
+        <div className="p-4 text-center">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#003153]"></div>
+          <p className="mt-2 text-gray-500">Cargando remodelaciones...</p>
+        </div>
+      )}
+
+      {errorRemodelaciones && (
+        <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-700 text-sm">Error: {errorRemodelaciones}</p>
+          <button
+            onClick={obtenerRemodelaciones}
+            className="mt-2 text-red-700 hover:underline text-sm"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagen</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accesorios</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {remodelaciones.length === 0 && !cargandoRemodelaciones && !errorRemodelaciones ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  No hay remodelaciones registradas aún.
+                  <button
+                    onClick={() => setSeccionActual(<ARemodelacion />)}
+                    className="mt-2 block mx-auto text-purple-600 hover:text-purple-800 font-medium"
+                  >
+                    Crear primera remodelación
+                  </button>
+                </td>
+              </tr>
+            ) : (
+              remodelaciones.map((remodelacion) => (
+                <tr key={remodelacion.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex shrink-0">
+                      <img
+                        src={`${API_CONFIG.BASE_URL}${remodelacion.imagenUrl?.[0] || '/placeholder-image.jpg'}`}
+                        alt={remodelacion.nombre}
+                        className="h-12 w-16 object-cover rounded border border-gray-200"
+                        onError={(e) => {
+                          // Fallback si la imagen no carga
+                          e.currentTarget.src = '/placeholder-image.jpg';
+                          e.currentTarget.alt = 'Imagen no disponible';
+                        }}
+                      />
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{remodelacion.nombre}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-500 max-w-xs truncate">
+                      {remodelacion.descripcion}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">
+                      ${remodelacion.precio?.toLocaleString() || 'N/A'}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-500 max-w-xs">
+                      {remodelacion.accesorios && remodelacion.accesorios.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {remodelacion.accesorios.slice(0, 2).map((accesorio, index) => (
+                            <span 
+                              key={index}
+                              className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
+                            >
+                              {accesorio}
+                            </span>
+                          ))}
+                          {remodelacion.accesorios.length > 2 && (
+                            <span className="inline-block bg-gray-200 text-gray-600 px-2 py-1 rounded text-xs">
+                              +{remodelacion.accesorios.length - 2} más
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 text-xs">Sin accesorios</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button 
+                      onClick={() => setSeccionActual(
+                        <ERemodelacion 
+                          remodelacionId={remodelacion.id} 
+                          onCancel={() => setSeccionActual('remodelaciones')}
+                          onSuccess={() => {
+                            setSeccionActual('remodelaciones');
+                            obtenerRemodelaciones(); // Refrescar la lista
+                          }}
+                        />
+                      )} 
+                      className="text-blue-600 hover:text-blue-900 mr-3"
+                    >
+                      Editar
+                    </button>
+                    <button 
+                      onClick={() => remodelacion.id && eliminarRemodelacion(remodelacion.id)} 
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))
             )}
-
-            {errorRemodelaciones && (
-              <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-700 text-sm">Error: {errorRemodelaciones}</p>
-                <button
-                  onClick={obtenerRemodelaciones}
-                  className="mt-2 text-red-700 hover:underline text-sm"
-                >
-                  Reintentar
-                </button>
-              </div>
-            )}
-
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imagen</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accesorios</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {remodelaciones.length === 0 && !cargandoRemodelaciones && !errorRemodelaciones ? (
-                    <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
-                        No hay remodelaciones registradas aún.
-                        <button
-                          onClick={() => setSeccionActual(<ARemodelacion />)}
-                          className="mt-2 block mx-auto text-purple-600 hover:text-purple-800 font-medium"
-                        >
-                          Crear primera remodelación
-                        </button>
-                      </td>
-                    </tr>
-                  ) : (
-                    remodelaciones.map((remodelacion) => (
-                      <tr key={remodelacion.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex shrink-0">
-                            <img
-                              src={`${API_CONFIG.BASE_URL}${remodelacion.imagenUrl?.[0] || '/placeholder-image.jpg'}`}
-                              alt={remodelacion.nombre}
-                              className="h-12 w-16 object-cover rounded border border-gray-200"
-                              onError={(e) => {
-                                // Fallback si la imagen no carga
-                                e.currentTarget.src = '/placeholder-image.jpg';
-                                e.currentTarget.alt = 'Imagen no disponible';
-                              }}
-                            />
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{remodelacion.nombre}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-500 max-w-xs truncate">
-                            {remodelacion.descripcion}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
-                            ${remodelacion.precio?.toLocaleString() || 'N/A'}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-500 max-w-xs">
-                            {remodelacion.accesorios && remodelacion.accesorios.length > 0 ? (
-                              <div className="flex flex-wrap gap-1">
-                                {remodelacion.accesorios.slice(0, 2).map((accesorio, index) => (
-                                  <span 
-                                    key={index}
-                                    className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs"
-                                  >
-                                    {accesorio}
-                                  </span>
-                                ))}
-                                {remodelacion.accesorios.length > 2 && (
-                                  <span className="inline-block bg-gray-200 text-gray-600 px-2 py-1 rounded text-xs">
-                                    +{remodelacion.accesorios.length - 2} más
-                                  </span>
-                                )}
-                              </div>
-                            ) : (
-                              <span className="text-gray-400 text-xs">Sin accesorios</span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
-                          <button 
-                            onClick={() => remodelacion.id && eliminarRemodelacion(remodelacion.id)} 
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            Eliminar
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 
       default: // dashboard
         return (
@@ -1016,43 +1046,49 @@ export default function AdminPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-0">
         <header className="bg-white border-b border-gray-200 p-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              {/* Botón Hamburguesa */}
-              <button 
-                onClick={() => setMenuAbierto(!menuAbierto)}
-                className="lg:hidden mr-4 p-2 rounded-md text-gray-600 hover:bg-gray-100"
-                aria-label="Abrir menú"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              <h2 className="text-2xl font-bold text-[#003153]">
-                {typeof seccionActual === 'string' ? (
-                  <>
-                    {seccionActual === 'dashboard' && 'Dashboard'}
-                    {seccionActual === 'clientes' && 'Clientes Registrados'}
-                    {seccionActual === 'Casas' && 'Gestión de Casas'}
-                    {seccionActual === 'proyectos' && 'Proyectos'}
-                    {seccionActual === 'remodelaciones' && 'Gestión de Remodelaciones'}
-                    {seccionActual === 'mensajes' && 'Bandeja de Entrada'}
-                    {seccionActual === 'anadir' && 'Añadir Nuevo Contenido'}
-                    {seccionActual === 'ascender' && 'Ascender Usuario a Admin'}
-                  </>
-                ) : (
-                  (seccionActual as any).type?.name === 'ACasa' ? 'Crear Nueva Casa' : 'Crear Nuevo Proyecto'
-                )}
-              </h2>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Admin User</span>
-              <button onClick={() =>   router.back() } className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800">
-                Cerrar Sesión
-              </button>
-            </div>
-          </div>
-        </header>
+  <div className="flex justify-between items-center">
+    <div className="flex items-center">
+      {/* Botón Hamburguesa */}
+      <button 
+        onClick={() => setMenuAbierto(!menuAbierto)}
+        className="lg:hidden mr-4 p-2 rounded-md text-gray-600 hover:bg-gray-100"
+        aria-label="Abrir menú"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <h2 className="text-2xl font-bold text-[#003153]">
+        {typeof seccionActual === 'string' ? (
+          <>
+            {seccionActual === 'dashboard' && 'Dashboard'}
+            {seccionActual === 'clientes' && 'Clientes Registrados'}
+            {seccionActual === 'Casas' && 'Gestión de Casas'}
+            {seccionActual === 'proyectos' && 'Proyectos'}
+            {seccionActual === 'remodelaciones' && 'Gestión de Remodelaciones'}
+            {seccionActual === 'mensajes' && 'Bandeja de Entrada'}
+            {seccionActual === 'anadir' && 'Añadir Nuevo Contenido'}
+            {seccionActual === 'ascender' && 'Ascender Usuario a Admin'}
+          </>
+        ) : (
+          // Añade estas condiciones para los componentes de edición
+          (seccionActual as any).type?.name === 'EProyecto' ? 'Editar Proyecto' :
+          (seccionActual as any).type?.name === 'ERemodelacion' ? 'Editar Remodelación' :
+          (seccionActual as any).type?.name === 'ACasa' ? 'Crear Nueva Casa' :
+          (seccionActual as any).type?.name === 'AProyecto' ? 'Crear Nuevo Proyecto' :
+          (seccionActual as any).type?.name === 'ARemodelacion' ? 'Crear Nueva Remodelación' :
+          'Editar'
+        )}
+      </h2>
+    </div>
+    <div className="flex items-center space-x-4">
+      <span className="text-gray-700">Admin User</span>
+      <button onClick={() =>   router.back() } className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+</header>
 
         {/* Content Area dinamica */}
         <main className="flex-1 p-6 bg-gray-50">

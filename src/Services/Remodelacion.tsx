@@ -110,6 +110,41 @@ export const remodelacionService = {
             throw error;
         }
     },
+
+    async actualizarRemodelacion(id: string, remodelacion: Partial<Remodelacion>) {
+        try {
+            const token = authService.getToken();
+
+            if (!token) {
+                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
+            }
+
+            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre: remodelacion.nombre,
+                    precio: remodelacion.precio,
+                    descripcion: remodelacion.descripcion,
+                    descripcionDetallada: remodelacion.descripcionDetallada,
+                    accesorios: remodelacion.accesorios,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al actualizar remodelación');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error actualizando remodelación:', error);
+            throw error;
+        }
+    },
 };
 
 export default Remodelacion;
