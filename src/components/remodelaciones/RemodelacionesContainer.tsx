@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
-import FormularioContactoP from '../componentes catalogo/FormularioDeContacto';
+import { FormularioContactoP } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
 
 export const RemodelacionesContainer = () => {

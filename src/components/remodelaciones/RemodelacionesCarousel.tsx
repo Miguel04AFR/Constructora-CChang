@@ -5,7 +5,7 @@ import { remodelaciones as remodelacionesNamed } from '@/src/data/remodelaciones
 import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import FormularioContactoP from '../componentes catalogo/FormularioDeContacto';
+import { FormularioContactoP } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
 
 export const RemodelacionesCarousel = () => {

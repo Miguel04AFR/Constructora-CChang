@@ -4,7 +4,7 @@ import React from 'react';
 import type { Casa } from '@/src/Services/Casa';
 import { GaleriaHeader } from '@/src/components/componentes catalogo/GaleriaHeader';
 import { InformacionPropiedad } from '@/src/components/componentes catalogo/InformacionPropiedad';
-import { FormularioContactoP } from './FormularioDeContacto';
+import { FormularioContactoP } from '@/src/components/componentes catalogo/FormularioDeContacto';
 interface DetallePropiedadProps {
     propiedad: Casa;
 }
