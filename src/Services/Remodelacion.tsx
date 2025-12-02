@@ -115,7 +115,7 @@ export const remodelacionService = {
         try {
           const token = authService.getToken();
     
-          const response = await fetch(`${API_CONFIG.BASE_URL}/remodelacion/${id}`, {
+          const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones/${id}`, {
             method: 'PATCH',
              headers: {
             'Authorization': `Bearer ${token}`,

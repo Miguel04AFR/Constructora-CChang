@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { remodelacionService, Remodelacion } from '@/src/Services/Remodelacion';
 import { useRouter } from 'next/navigation';
 
@@ -21,11 +21,6 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
   });
 
   const [currentAccesorio, setCurrentAccesorio] = useState('');
-  const [imagenFile, setImagenFile] = useState<File | null>(null);
-  const [imagenPreview, setImagenPreview] = useState<string>('');
-  const [imagenActualUrl, setImagenActualUrl] = useState<string>('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
   const [cargando, setCargando] = useState(false);
   const [cargandoDatos, setCargandoDatos] = useState(false);
   const [mensaje, setMensaje] = useState('');
@@ -69,19 +64,12 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
       descripcionDetallada: remodelacionData.descripcionDetallada || '',
       accesorios: remodelacionData.accesorios || [],
     });
-
-    if (remodelacionData.imagenUrl) {
-      setImagenActualUrl(remodelacionData.imagenUrl);
-      setImagenPreview(remodelacionData.imagenUrl);
-    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
-    // Validación especial para precio
     if (name === 'precio') {
-      // Permitir solo números
       if (value === '' || /^\d*\.?\d*$/.test(value)) {
         setFormData(prev => ({
           ...prev,
@@ -113,130 +101,32 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        setMensaje('Selecciona un archivo de imagen válido');
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Máximo 5MB');
-        return;
-      }
-
-      setImagenFile(file);
-      setMensaje('');
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        setImagenPreview(imageUrl);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImagenFile(null);
-    setImagenPreview(imagenActualUrl);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    if (files && files[0]) {
-      const file = files[0];
-      
-      if (!file.type.startsWith('image/')) {
-        setMensaje('Selecciona un archivo de imagen válido');
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Máximo 5MB');
-        return;
-      }
-
-      setImagenFile(file);
-      setMensaje('');
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        setImagenPreview(imageUrl);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setCargando(true);
     setMensaje('');
 
     try {
-      // Validaciones básicas
-      if (!formData.nombre.trim()) {
-        throw new Error('El nombre es requerido');
-      }
+      if (!formData.nombre.trim()) throw new Error('El nombre es requerido');
+      if (!formData.precio || parseFloat(formData.precio) <= 0) throw new Error('El precio debe ser un número positivo');
+      if (!formData.descripcion.trim()) throw new Error('La descripción es requerida');
+      if (!remodelacion && !remodelacionId) throw new Error('No se especificó la remodelación a editar');
 
-      if (!formData.precio || parseFloat(formData.precio) <= 0) {
-        throw new Error('El precio debe ser un número positivo');
-      }
+      const idActual = remodelacion?.id || remodelacionId;
+      if (!idActual) throw new Error('No se pudo identificar la remodelación');
 
-      if (!formData.descripcion.trim()) {
-        throw new Error('La descripción es requerida');
-      }
-
-      if (!remodelacion && !remodelacionId) {
-        throw new Error('No se especificó la remodelación a editar');
-      }
-
-      // Si no hay nueva imagen, actualizar solo datos
-      if (!imagenFile) {
-        // En una implementación real, usarías el endpoint PATCH
-        const precioFloat = parseFloat(formData.precio);
-        
-        // Simular llamada al servicio
-        setMensaje('Remodelación actualizada exitosamente!');
-        
-        // Simular éxito
-        setTimeout(() => {
-          if (onSuccess) onSuccess();
-          else if (onCancel) onCancel();
-        }, 1500);
-        return;
-      }
-
-      // Si hay nueva imagen, subir con FormData
-      const datos = new FormData();
-      datos.append('nombre', formData.nombre);
-      datos.append('precio', parseFloat(formData.precio).toString());
-      datos.append('descripcion', formData.descripcion);
-      datos.append('descripcionDetallada', formData.descripcionDetallada);
-      datos.append('imagen', imagenFile);
-      formData.accesorios.forEach((accesorio, index) => {
-        datos.append(`accesorios[${index}]`, accesorio);
+      await remodelacionService.updateRemodelacion(idActual, {
+        nombre: formData.nombre,
+        precio: parseFloat(formData.precio),
+        descripcion: formData.descripcion,
+        descripcionDetallada: formData.descripcionDetallada,
+        accesorios: formData.accesorios,
       });
 
-      // Nota: Necesitarías crear un endpoint para actualizar remodelación con imagen
-      // Por ahora simulamos el éxito
-      setMensaje('Remodelación actualizada exitosamente!');
-      
-      // Simular éxito
+      setMensaje('¡Remodelación actualizada exitosamente!');
+
       setTimeout(() => {
-        if (onSuccess) onSuccess();
-        else if (onCancel) onCancel();
+        onSuccess ? onSuccess() : onCancel ? onCancel() : router.back();
       }, 1500);
 
     } catch (error: any) {
@@ -247,13 +137,7 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
     }
   };
 
-  const handleCancel = () => {
-    if (onCancel) {
-      onCancel();
-    } else {
-      router.back();
-    }
-  };
+  const handleCancel = () => onCancel ? onCancel() : router.back();
 
   if (cargandoDatos) {
     return (
@@ -270,12 +154,8 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Editar Remodelación
-          </h1>
-          <p className="text-gray-600">
-            Modifica la información de la remodelación disponible.
-          </p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">Editar Remodelación</h1>
+          <p className="text-gray-600">Modifica la información de la remodelación.</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -380,71 +260,6 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                     </div>
                   ))}
                 </div>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagen de la Remodelación
-              </label>
-              
-              <div 
-                className={`border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer transition-colors ${
-                  imagenPreview ? 'border-purple-300 bg-purple-50' : 'hover:border-purple-400 hover:bg-purple-50'
-                }`}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  className="hidden"
-                />
-                
-                {imagenPreview ? (
-                  <div className="space-y-4">
-                    <div className="relative inline-block">
-                      <img 
-                        src={imagenPreview} 
-                        alt="Vista previa" 
-                        className="max-w-full h-auto max-h-48 object-cover rounded-lg mx-auto"
-                      />
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveImage();
-                        }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <p className="text-sm text-purple-600">
-                      {imagenFile ? 'Nueva imagen seleccionada. Haz clic para cambiar.' : 'Imagen actual. Haz clic para cambiar.'}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <svg className="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-medium text-purple-600">Haz clic para subir nueva imagen</span> o arrastra y suelta
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG, GIF hasta 5MB (opcional)
-                    </p>
-                  </div>
-                )}
-              </div>
-              {imagenActualUrl && !imagenFile && (
-                <p className="mt-2 text-xs text-gray-500">
-                  Deja vacío para mantener la imagen actual
-                </p>
               )}
             </div>
 
