@@ -4,7 +4,7 @@ import React from 'react';
 import type { Casa } from '@/src/Services/Casa';
 import { GaleriaHeader } from '@/src/components/componentes catalogo/GaleriaHeader';
 import { InformacionPropiedad } from '@/src/components/componentes catalogo/InformacionPropiedad';
-import { FormularioDeContactos } from '@/src/components/componentes catalogo/FormularioDeContacto';
+import { FormularioDeContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
 interface DetallePropiedadProps {
     propiedad: Casa;
@@ -24,7 +24,7 @@ export const DetallePropiedad: React.FC<DetallePropiedadProps> = ({ propiedad })
 
                     <div className="lg:col-span-1">
                         <div className="sticky top-8">
-                            <FormularioDeContactos propiedad={propiedad} />
+                            <FormularioDeContacto propiedad={propiedad} />
                         </div>
                     </div>
                 </div>
