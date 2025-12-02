@@ -6,9 +6,6 @@ import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
-import { useAuth } from '@/src/contexts/AuthContext';
-import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
-import FormularioRemodelaciones from './FormularioRemodelaciones';
 
 export const RemodelacionesCarousel = () => {
   const { t } = useTranslation();
@@ -26,6 +23,8 @@ export const RemodelacionesCarousel = () => {
   const [formValido, setFormValido] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Keep page index in-range if items change dynamically
 
   // Keep page index in-range if items change dynamically
   useEffect(() => {
@@ -152,7 +151,7 @@ export const RemodelacionesCarousel = () => {
             </div>
 
             <div className="px-4 overflow-auto max-h-[56vh]">
-                <FormularioRemodelaciones
+                <FormularioContacto
                   propiedad={{ nombre: modalRemodel.nombre }}
                   formRef={formRef}
                   onValChange={(v) => setFormValido(v)}

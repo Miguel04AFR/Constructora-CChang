@@ -15,6 +15,7 @@ import { authService } from '@/src/auth/auth';
 import { AscenderUsuario } from '@/src/components/ascender/ascenderUsuario';
 import { EProyecto } from '@/src/components/editar/EProyecto';
 import { ERemodelacion } from '@/src/components/editar/ERemodelacion';
+import { ECasa } from '@/src/components/editar/ECasa';
 
 export default function AdminPage() {
   const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
@@ -369,7 +370,17 @@ export default function AdminPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                          <button className="text-blue-600 hover:text-blue-900 mr-3"
+                           onClick={() => setSeccionActual(
+                        <ECasa
+                          casaId={casa.id} 
+                          onCancel={() => setSeccionActual('Casas')}
+                          onSuccess={() => {
+                            setSeccionActual('Casas');
+                            obtenerCasas(); // Refrescar la lista
+                          }}
+                        />
+                      )} >Editar</button>
                           <button onClick={ () =>  casa.id && eliminarCasa(Number(casa.id))}className="text-red-600 hover:text-red-900">Eliminar</button>
                         </td>
                       </tr>

@@ -237,8 +237,7 @@
       "validName": "Valid name",
       "validEmail": "Valid email",
       "validPhone": "Valid phone",
-      "validMessage": "Valid message",
-      "errorMessage": "[EN] propertyDetail.contactForm.errorMessage"
+      "validMessage": "Valid message"
     }
   },
   "remodel": {
@@ -296,8 +295,7 @@
     "createAccount": "Sign up here",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "required": "Sign in",
-    "signingIn": "Signing in..."
+    "required": "Sign in"
   },
   "common": {
     "close": "Close",
@@ -407,6 +405,5 @@
         "descriptionMaxLength": "Description cannot exceed 1000 characters"
       }
     }
-  },
-  "close": "[EN] close"
+  }
 }

@@ -13,7 +13,7 @@ export const Servicios = () => {
             id: 1,
             titulo: t('services.list.residential.title'),
             descripcion: t('services.list.residential.description'),
-            iconoUrl: '/window.png',
+            iconoUrl: '/servicios/Residencial.jpg',
             ruta: '/servicios/catalogo', 
             textoBoton: t('services.viewHomes')
         },
@@ -21,7 +21,7 @@ export const Servicios = () => {
             id: 2,
             titulo: t('services.list.renovations.title'),
             descripcion: t('services.list.renovations.description'),
-            iconoUrl: '/glove.svg',
+            iconoUrl: '/servicios/Remodelaciones.jpg',
             ruta: '/servicios/renovaciones', 
             textoBoton: t('services.viewRenovations')
         },
@@ -29,7 +29,7 @@ export const Servicios = () => {
             id: 3,
             titulo: t('services.list.consulting.title'),
             descripcion: t('services.list.consulting.description'),
-            iconoUrl: '/file.svg',
+            iconoUrl: '/servicios/Consultoria.jpg',
             ruta: '/servicios/consultoria', 
             textoBoton: t('services.contactConsulting')
         },
@@ -37,7 +37,7 @@ export const Servicios = () => {
             id: 4,
             titulo: t('services.list.supervision.title'),
             descripcion: t('services.list.supervision.description'),
-            iconoUrl: '/icono-consultoria.png',
+            iconoUrl: '/servicios/Supervision.jpg',
             ruta: '/servicios/supervision', 
             textoBoton: t('services.contactSupervision')
         }
@@ -56,39 +56,41 @@ export const Servicios = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {servicios.map((servicio) => (
-                        <div 
+                        <div
                             key={servicio.id}
-                            className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow"
+                            className="bg-white rounded-xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow flex flex-col h-full"
                         >
                             <div className="flex items-start gap-6">
                                 <div className="shrink-0">
-                                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <img 
-                                            src={servicio.iconoUrl} 
+                                    <div className="w-32 h-20 md:w-40 md:h-24 overflow-hidden rounded-lg bg-gray-100 mr-4">
+                                        <img
+                                            src={servicio.iconoUrl}
                                             alt={servicio.titulo}
-                                            className="w-8 h-8 object-contain"
+                                            className="w-full h-full object-cover"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="text-left">
+                                <div className="flex-1 text-left min-w-0">
                                     <h3 className="text-xl font-bold text-[#003153] mb-3">
                                         {servicio.titulo}
                                     </h3>
-                                    <p className="text-gray-600 leading-relaxed">
+                                    <p className="text-gray-600 leading-relaxed break-words">
                                         {servicio.descripcion}
                                     </p>
-                                    <div className="flex items-center gap-6 mt-4 justify-between w-full">
-                                        <p className="text-[#003153] font-medium hover:text-blue-800 transition-colors whitespace-nowrap mr-4">
-                                            {t('services.moreInfo')}
-                                        </p>
-                                        <Link href={servicio.ruta}>
-                                            <button className="text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-6 w-40 sm:w-44 md:w-52 text-center">
-                                                {servicio.textoBoton}
-                                            </button>
-                                        </Link>
-                                    </div>
                                 </div>
+                            </div>
+
+                            <div className="mt-6 mt-auto pt-4 border-t border-gray-100 flex items-center justify-between gap-4">
+                                <p className="text-[#003153] font-medium hover:text-blue-800 transition-colors whitespace-nowrap">
+                                    {t('services.moreInfo')}
+                                </p>
+
+                                <Link href={servicio.ruta}>
+                                    <button className="text-white font-medium bg-[#6B21A8] hover:bg-blue-800 rounded-lg transition-all py-3 px-6 w-40 sm:w-44 md:w-52 text-center flex-shrink-0">
+                                        {servicio.textoBoton}
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     ))}

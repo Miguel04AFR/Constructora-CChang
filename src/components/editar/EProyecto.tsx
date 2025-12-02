@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { proyectoService, Proyecto } from '@/src/Services/Proyecto';
 import { useRouter } from 'next/navigation';
 
@@ -17,11 +17,6 @@ export const EProyecto = ({ proyectoId, proyecto, onCancel, onSuccess }: EProyec
     descripcion: '',
   });
 
-  const [imagenFile, setImagenFile] = useState<File | null>(null);
-  const [imagenPreview, setImagenPreview] = useState<string>('');
-  const [imagenActualUrl, setImagenActualUrl] = useState<string>('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
   const [cargando, setCargando] = useState(false);
   const [cargandoDatos, setCargandoDatos] = useState(false);
   const [mensaje, setMensaje] = useState('');
@@ -62,11 +57,6 @@ export const EProyecto = ({ proyectoId, proyecto, onCancel, onSuccess }: EProyec
       titulo: proyectoData.titulo || '',
       descripcion: proyectoData.descripcion || '',
     });
-
-    if (proyectoData.imagenUrl) {
-      setImagenActualUrl(proyectoData.imagenUrl);
-      setImagenPreview(proyectoData.imagenUrl);
-    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -77,117 +67,34 @@ export const EProyecto = ({ proyectoId, proyecto, onCancel, onSuccess }: EProyec
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        setMensaje('Selecciona un archivo de imagen válido');
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Máximo 5MB');
-        return;
-      }
-
-      setImagenFile(file);
-      setMensaje('');
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        setImagenPreview(imageUrl);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImagenFile(null);
-    setImagenPreview(imagenActualUrl);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    if (files && files[0]) {
-      const file = files[0];
-      
-      if (!file.type.startsWith('image/')) {
-        setMensaje('Selecciona un archivo de imagen válido');
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Máximo 5MB');
-        return;
-      }
-
-      setImagenFile(file);
-      setMensaje('');
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        setImagenPreview(imageUrl);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setCargando(true);
     setMensaje('');
 
     try {
-      // Validaciones básicas
-      if (!formData.titulo.trim()) {
-        throw new Error('El título es requerido');
-      }
+      if (!formData.titulo.trim()) throw new Error('El título es requerido');
+      if (!formData.descripcion.trim()) throw new Error('La descripción es requerida');
 
-      if (!formData.descripcion.trim()) {
-        throw new Error('La descripción es requerida');
-      }
+      const idActual = proyecto?.id || proyectoId;
+      if (!idActual) throw new Error('No se pudo identificar el proyecto');
 
-      if (!proyecto && !proyectoId) {
-        throw new Error('No se especificó el proyecto a editar');
-      }
+      // Actualizar solo título y descripción
+      await proyectoService.updateProyecto(idActual, {
+        titulo: formData.titulo,
+        descripcion: formData.descripcion,
+      });
 
-      // Si no hay nueva imagen, solo actualizar datos
-      if (!imagenFile) {
-        // En una implementación real, aquí se llamaría a un endpoint PATCH para actualizar solo los datos
-        setMensaje('Funcionalidad de actualización sin imagen en desarrollo');
-        // Simular éxito
-        setTimeout(() => {
-          if (onSuccess) onSuccess();
-          else if (onCancel) onCancel();
-        }, 1500);
-        return;
-      }
+      setMensaje('¡Proyecto actualizado exitosamente!');
 
-      // Si hay nueva imagen, subir con FormData
-      const datos = new FormData();
-      datos.append('titulo', formData.titulo);
-      datos.append('descripcion', formData.descripcion);
-      datos.append('imagen', imagenFile);
-
-      // Nota: Necesitarías crear un endpoint para actualizar proyecto con imagen
-      // Por ahora simulamos el éxito
-      setMensaje('Proyecto actualizado exitosamente!');
-      
-      // Simular éxito
       setTimeout(() => {
-        if (onSuccess) onSuccess();
-        else if (onCancel) onCancel();
+        if (onSuccess) {
+          onSuccess();
+        } else if (onCancel) {
+          onCancel();
+        } else {
+          router.back();
+        }
       }, 1500);
 
     } catch (error: any) {
@@ -225,7 +132,7 @@ export const EProyecto = ({ proyectoId, proyecto, onCancel, onSuccess }: EProyec
             Editar Proyecto
           </h1>
           <p className="text-gray-600">
-            Modifica la información del proyecto de construcción.
+            Modifica solo el título y descripción. La imagen no se puede cambiar.
           </p>
         </div>
 
@@ -245,71 +152,6 @@ export const EProyecto = ({ proyectoId, proyecto, onCancel, onSuccess }: EProyec
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 placeholder="Ej: Edificio Residencial Moderno"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagen del Proyecto
-              </label>
-              
-              <div 
-                className={`border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer transition-colors ${
-                  imagenPreview ? 'border-green-300 bg-green-50' : 'hover:border-green-400 hover:bg-green-50'
-                }`}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  className="hidden"
-                />
-                
-                {imagenPreview ? (
-                  <div className="space-y-4">
-                    <div className="relative inline-block">
-                      <img 
-                        src={imagenPreview} 
-                        alt="Vista previa" 
-                        className="max-w-full h-auto max-h-48 object-cover rounded-lg mx-auto"
-                      />
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveImage();
-                        }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <p className="text-sm text-green-600">
-                      {imagenFile ? 'Nueva imagen seleccionada. Haz clic para cambiar.' : 'Imagen actual. Haz clic para cambiar.'}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <svg className="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-medium text-green-600">Haz clic para subir nueva imagen</span> o arrastra y suelta
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG, GIF hasta 5MB (opcional)
-                    </p>
-                  </div>
-                )}
-              </div>
-              {imagenActualUrl && !imagenFile && (
-                <p className="mt-2 text-xs text-gray-500">
-                  Deja vacío para mantener la imagen actual
-                </p>
-              )}
             </div>
 
             <div>
