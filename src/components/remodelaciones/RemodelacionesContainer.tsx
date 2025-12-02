@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
-import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
+import FormularioContactoP from '../componentes catalogo/FormularioDeContacto';
+
 
 export const RemodelacionesContainer = () => {
     const { t } = useTranslation();
@@ -222,7 +223,7 @@ export const RemodelacionesContainer = () => {
                                 {t('propertyDetail.contactForm.title') || 'Contactar sobre remodelación'}
                             </h3>
                             
-                            <FormularioContacto
+                            <FormularioContactoP
                                 propiedad={{ nombre: remodelacionSeleccionada.nombre }}
                                 formRef={formRef}
                                 onValChange={setFormValido}

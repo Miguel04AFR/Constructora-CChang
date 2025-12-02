@@ -5,7 +5,8 @@ import { remodelaciones as remodelacionesNamed } from '@/src/data/remodelaciones
 import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
+import FormularioContactoP from '../componentes catalogo/FormularioDeContacto';
+
 
 export const RemodelacionesCarousel = () => {
   const { t } = useTranslation();
@@ -120,7 +121,7 @@ export const RemodelacionesCarousel = () => {
           <button
             onClick={goPrev}
             disabled={page === 0}
-            className={`px-4 py-2 rounded-md min-w-[96px] ${page === 0 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
+            className={`px-4 py-2 rounded-md min-w-24 ${page === 0 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
             {t('catalog.previous') || 'Anterior'}
           </button>
 
@@ -129,7 +130,7 @@ export const RemodelacionesCarousel = () => {
           <button
             onClick={goNext}
             disabled={page === totalPages - 1}
-            className={`px-4 py-2 rounded-md min-w-[96px] ${page === totalPages - 1 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
+            className={`px-4 py-2 rounded-md min-w-24 ${page === totalPages - 1 ? 'bg-gray-300 text-gray-500' : 'bg-[#003153] text-white hover:bg-blue-800'}`}>
             {t('catalog.next') || 'Siguiente'}
           </button>
         </div>
@@ -151,7 +152,7 @@ export const RemodelacionesCarousel = () => {
             </div>
 
             <div className="px-4 overflow-auto max-h-[56vh]">
-                <FormularioContacto
+                <FormularioContactoP
                   propiedad={{ nombre: modalRemodel.nombre }}
                   formRef={formRef}
                   onValChange={(v) => setFormValido(v)}

@@ -33,7 +33,7 @@ interface ErroresFormulario {
     mensaje?: string;
 }
 
-export const FormularioContacto: React.FC<FormularioContactoProps> = ({ 
+export const FormularioContactoP: React.FC<FormularioContactoProps> = ({ 
     propiedad, 
     formRef, 
     onValChange, 
@@ -299,4 +299,4 @@ export const FormularioContacto: React.FC<FormularioContactoProps> = ({
     );
 };
 
-export default FormularioContacto;
+export default FormularioContactoP;
