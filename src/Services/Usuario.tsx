@@ -19,7 +19,7 @@ export const usuarioService = {
   // Método para crear usuario
   async crearUsuario(usuario: Usuario) {
     try {
-      const responde = await fetch(`${API_CONFIG.BASE_URL}/users`, {
+      const responde = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export const usuarioService = {
       if (!token) {
         throw new Error('No estás autenticado');
       }
-      const response = await fetch(`${API_CONFIG.BASE_URL}/users/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -89,7 +89,7 @@ export const usuarioService = {
       if (!token) {
         throw new Error('No estás autenticado');
       }
-      const response = await fetch(`${API_CONFIG.BASE_URL}/users`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -114,7 +114,7 @@ export const usuarioService = {
       throw new Error('No estás autenticado');
     }
 
-    const response = await fetch(`${API_CONFIG.BASE_URL}/users/ascender/${gmail}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/ascender/${gmail}`, {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -158,7 +158,7 @@ async updateUsuario(id: number, updateData: Partial<Usuario>) {
     try {
       const token = authService.getToken();
 
-      const response = await fetch(`${API_CONFIG.BASE_URL}/users/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
         method: 'PATCH',
          headers: {
         'Authorization': `Bearer ${token}`,
