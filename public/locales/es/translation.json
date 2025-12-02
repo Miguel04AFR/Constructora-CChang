@@ -6,9 +6,7 @@
     "contact": "Contacto",
     "login": "Iniciar Sesión",
     "welcome": "Bienvenido, {{name}}",
-    "logout": "Salir",
-    "logoutConfirm": "¿Estás seguro de que quieres cerrar sesión?",
-    "logoutConfirmTitle": "Confirmar cierre de sesión"
+    "logout": "Salir"
   },
   "hero": {
     "title": "CChang",
@@ -237,8 +235,7 @@
       "validName": "Nombre válido",
       "validEmail": "Email válido",
       "validPhone": "Teléfono válido",
-      "validMessage": "Mensaje válido",
-      "errorMessage": "Por favor, corrige los errores en el formulario."
+      "validMessage": "Mensaje válido"
     }
   },
   "remodel": {
@@ -296,8 +293,7 @@
     "createAccount": "Regístrate aquí",
     "showPassword": "Mostrar contraseña",
     "hidePassword": "Ocultar contraseña",
-    "required": "Iniciar sesión",
-    "signingIn": "Iniciando sesión..."
+    "required": "Iniciar sesión"
   },
   "common": {
     "close": "Cerrar",
@@ -407,6 +403,5 @@
         "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres"
       }
     }
-  },
-  "close": "Cerrar"
+  }
 }

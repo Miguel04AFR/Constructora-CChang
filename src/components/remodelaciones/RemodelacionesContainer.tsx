@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
-import { FormularioDeContactos } from '@/src/components/componentes catalogo/FormularioDeContacto';
+import { FormularioContacto } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
 export const RemodelacionesContainer = () => {
     const { t } = useTranslation();
@@ -148,7 +148,7 @@ export const RemodelacionesContainer = () => {
                             <details className="mb-4 text-sm text-gray-700">
                                 <summary className="cursor-pointer font-medium">{t('remodel.itemsTitle') || 'Incluye'}</summary>
                                 <ul className="mt-2 space-y-2">
-                                    {r.items.map((it, idx) => {
+                                    {(r.accesorios || []).map((it, idx) => {
                                         const parsed = parseItemString(it);
                                         return (
                                             <li key={`${r.id}-item-${idx}`} className="border-l-2 border-gray-200 pl-3">
@@ -222,7 +222,7 @@ export const RemodelacionesContainer = () => {
                                 {t('propertyDetail.contactForm.title') || 'Contactar sobre remodelación'}
                             </h3>
                             
-                            <FormularioDeContactos
+                            <FormularioContacto
                                 propiedad={{ nombre: remodelacionSeleccionada.nombre }}
                                 formRef={formRef}
                                 onValChange={setFormValido}
