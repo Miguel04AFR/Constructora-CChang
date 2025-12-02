@@ -120,8 +120,8 @@ export const RemodelacionesContainer = () => {
                     : 'bg-blue-100 text-blue-800 border border-blue-300'
                 }`}>
                     {isAuthenticated 
-                        ? '✅ Estás autenticado - Puedes contactar' 
-                        : '🔒 Inicia sesión para contactar sobre remodelaciones'
+                        ? ' Estás autenticado - Puedes contactar' 
+                        : ' Inicia sesión para contactar sobre remodelaciones'
                     }
                 </div>
 
