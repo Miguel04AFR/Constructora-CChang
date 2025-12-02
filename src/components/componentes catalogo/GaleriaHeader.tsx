@@ -44,8 +44,6 @@ const Encabezado: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
 };
 
 const Galeria: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
-    const [imagenPrincipal, setImagenPrincipal] = useState(propiedad.imagenUrl);
-
     const imagenesPorCasa: { [key: string]: string[] } = {
         '1': [
             '/Casa 1/1761508791-z3qyIA-x.jpeg',
@@ -73,8 +71,13 @@ const Galeria: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
         ]
     };
 
-    const numeroCasa = propiedad.id.slice(-1);
-    const imagenes = imagenesPorCasa[numeroCasa] || [propiedad.imagenUrl];
+    const numeroCasa = typeof propiedad.id === 'string' ? propiedad.id.slice(-1) : (propiedad.id != null ? String(propiedad.id).slice(-1) : '');
+    const fallbackImagenes: string[] = propiedad.imagenUrl
+        ? (Array.isArray(propiedad.imagenUrl) ? propiedad.imagenUrl : [propiedad.imagenUrl])
+        : [];
+    const imagenes = imagenesPorCasa[numeroCasa] || fallbackImagenes;
+
+    const [imagenPrincipal, setImagenPrincipal] = useState<string>(imagenes[0] || '');
 
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
