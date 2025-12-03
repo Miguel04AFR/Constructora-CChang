@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Proyecto } from '@/src/Services/Proyecto';
+import { proyectoService } from '@/src/Services/Proyecto';
 import { useTranslation } from 'react-i18next';
 
+// Datos mock fijos
 const proyectosEjemplo: Proyecto[] = [ 
   {
     id: 1,
@@ -28,33 +30,65 @@ const proyectosEjemplo: Proyecto[] = [
 export const Proyectos = () => {
   const [indiceActual, setIndiceActual] = useState(0);
   const [estaTransicionando, setEstaTransicionando] = useState(false);
+  const [proyectosDB, setProyectosDB] = useState<Proyecto[]>([]);
   const { t } = useTranslation();
 
-  const proyectoActual = proyectosEjemplo[indiceActual];
+  // Combinar datos del backend con datos mock sin distinción
+  const todosLosProyectos = [...proyectosDB, ...proyectosEjemplo];
+  
+  const proyectoActual = todosLosProyectos[indiceActual];
+
+  // Obtener proyectos del backend silenciosamente
+  useEffect(() => {
+    const fetchProyectos = async () => {
+      try {
+        const proyectosFromAPI = await proyectoService.obtenerProyectos();
+        
+        if (proyectosFromAPI && Array.isArray(proyectosFromAPI)) {
+          const proyectosValidos = proyectosFromAPI.filter(
+            proyecto => proyecto && proyecto.titulo && proyecto.imagenUrl
+          );
+          setProyectosDB(proyectosValidos);
+        }
+      } catch (err) {
+        // Silenciamos el error, los mock ya están disponibles
+        console.log('No se pudieron cargar proyectos adicionales');
+      }
+    };
+
+    fetchProyectos();
+  }, []);
 
   const siguienteProyecto = () => {
+    if (todosLosProyectos.length <= 1) return;
+    
     setEstaTransicionando(true);
     setTimeout(() => {
-      setIndiceActual(prev => (prev + 1) % proyectosEjemplo.length);
+      setIndiceActual(prev => (prev + 1) % todosLosProyectos.length);
       setEstaTransicionando(false);
     }, 300);
   };
 
   const anteriorProyecto = () => {
+    if (todosLosProyectos.length <= 1) return;
+    
     setEstaTransicionando(true);
     setTimeout(() => {
-      setIndiceActual(prev => (prev - 1 + proyectosEjemplo.length) % proyectosEjemplo.length);
+      setIndiceActual(prev => (prev - 1 + todosLosProyectos.length) % todosLosProyectos.length);
       setEstaTransicionando(false);
     }, 300);
   };
 
+  // Auto-rotación
   useEffect(() => {
+    if (todosLosProyectos.length <= 1) return;
+    
     const intervalo = setInterval(() => {
       siguienteProyecto();
     }, 5000);
 
     return () => clearInterval(intervalo);
-  }, []);
+  }, [todosLosProyectos.length]);
 
   return (
     <section id="proyectos" className="py-20 gradient-to-br from-gray-50 to-blue-50">
@@ -84,8 +118,7 @@ export const Proyectos = () => {
                   alt={proyectoActual.titulo}
                   className="w-full h-full object-cover"
                 />
-
-                <div className="absolute inset-0 bgradient-to-t from-black/60 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent"></div>
               </div>
               
               {/* Información del proyecto */}
@@ -97,9 +130,9 @@ export const Proyectos = () => {
 
                   <div className="flex items-center gap-4">
                     <div className="flex gap-2">
-                      {proyectosEjemplo.map((proyecto, index) => ( /*no uso la variable proyecto pero wueno*/
+                      {todosLosProyectos.map((proyecto, index) => (
                         <button
-                          key={index}
+                          key={proyecto.id || index}
                           onClick={() => {
                             setEstaTransicionando(true);
                             setTimeout(() => {
@@ -117,7 +150,7 @@ export const Proyectos = () => {
                       ))}
                     </div>
                     <span className="text-sm text-gray-300">
-                      {indiceActual + 1} / {proyectosEjemplo.length}
+                      {indiceActual + 1} / {todosLosProyectos.length}
                     </span>
                   </div>
                 </div>
@@ -145,11 +178,11 @@ export const Proyectos = () => {
             </button>
           </div>
 
-          {/* en chiquito */}
+          {/* Miniaturas - todos los proyectos juntos */}
           <div className="grid grid-cols-3 gap-4 mt-8">
-            {proyectosEjemplo.map((proyecto, index) => (
+            {todosLosProyectos.map((proyecto, index) => (
               <button
-                key={proyecto.id}
+                key={proyecto.id || index}
                 onClick={() => {
                   setEstaTransicionando(true);
                   setTimeout(() => {
@@ -159,7 +192,7 @@ export const Proyectos = () => {
                 }}
                 className={`relative h-32 rounded-xl overflow-hidden transition-all ${
                   index === indiceActual 
-                    ? 'ring-4 ring-[#003153] scale-105' //ring es como border pero es mas decorativo,la diferencia es que no suma al tamño del elemento 
+                    ? 'ring-4 ring-[#003153] scale-105'
                     : 'opacity-80 hover:opacity-100 hover:scale-102'
                 }`}
               >

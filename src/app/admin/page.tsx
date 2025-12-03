@@ -263,7 +263,6 @@ export default function AdminPage() {
                           {formatearFecha(usuario.fechaNacimiento)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
                           <button onClick={() => usuario.id && eliminarUsu(usuario.id)} className="text-red-600 hover:text-red-900">Eliminar</button>
                           {/*sino le pongo la validacion de usuario.id no me deja*/}
                         </td>
@@ -460,7 +459,7 @@ export default function AdminPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex shrink-0">
                       <img 
-                        src={`${API_CONFIG.BASE_URL}${proyecto.imagenUrl}`}
+                        src={`${process.env.NEXT_PUBLIC_API_URL}${proyecto.imagenUrl}`}
                         alt={proyecto.titulo}
                         className="h-12 w-16 object-cover rounded border border-gray-200"
                         onError={(e) => {
