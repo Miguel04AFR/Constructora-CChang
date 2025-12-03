@@ -3,7 +3,7 @@ import { API_CONFIG } from "../config/env";
 export const authService = {
   async login(credentials: { gmail: string; password: string }) {
     try {
-      const response = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
