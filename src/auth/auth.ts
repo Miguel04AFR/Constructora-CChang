@@ -24,7 +24,6 @@ export const authService = {
       
       return data;
     } catch (error) {
-      console.error('Error en login:', error);
       throw error;
     }
   },
@@ -54,14 +53,12 @@ export const authService = {
       const isExpired = payload.exp * 1000 < Date.now();
       
       if (isExpired) {
-        console.log('Token expirado - haciendo logout automático');
         this.logout();
         return false;
       }
       
       return true;
     } catch (error) {
-      console.error('Error verificando token:', error);
       this.logout();
       return false;
     }

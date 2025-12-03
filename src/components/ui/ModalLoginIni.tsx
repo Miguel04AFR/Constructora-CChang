@@ -71,7 +71,6 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         if (result.user.role === 'admin' || result.user.role === 'superAdmin') {
         router.push('/admin');
       } else {
-        // Recargar la página para actualizar estado
         router.refresh();
       }
       

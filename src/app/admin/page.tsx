@@ -1006,7 +1006,7 @@ export default function AdminPage() {
       <button 
         onClick={() => setSeccionActual('remodelaciones')}
         className={`w-full text-left px-4 py-2 rounded-lg ${
-          seccionActual === 'remodelaciones' ? 'bg-purple-600 text-white' : 'hover:bg-purple-600 text-blue-100'
+          seccionActual === 'remodelaciones' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
         }`}
       >
         🛠️ Remodelaciones
