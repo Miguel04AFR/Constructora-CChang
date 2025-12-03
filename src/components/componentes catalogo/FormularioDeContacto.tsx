@@ -19,7 +19,7 @@ interface ErroresFormulario {
     mensaje?: string;
 }
 
-export const FormularioContacto: React.FC<FormularioContactoProps> = ({ propiedad, formRef, onValChange, onSubmitSuccess, hideSubmit = false }) => {
+export const FormularioContactoP: React.FC<FormularioContactoProps> = ({ propiedad, formRef, onValChange, onSubmitSuccess, hideSubmit = false }) => {
     const [formData, setFormData] = useState({
         nombre: '',
         email: '',
