@@ -19,7 +19,7 @@ export interface Mensaje{
       throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
     }
 
-          const response = await fetch(`${API_CONFIG.BASE_URL}/mensajes`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mensajes`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export interface Mensaje{
       async obtenerMensajes() {
         try {
           const token = authService.getToken();
-          const response = await fetch(`${API_CONFIG.BASE_URL}/mensajes`, { 
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mensajes`, { 
         headers: {
           'Authorization': `Bearer ${token}` 
         }
@@ -77,7 +77,7 @@ export interface Mensaje{
             if (!token) {
               throw new Error('No estás autenticado');
             }
-            const response = await fetch(`${API_CONFIG.BASE_URL}/mensajes/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mensajes/${id}`, {
               method: 'DELETE',
               headers: {
                 'Authorization': `Bearer ${token}`,

@@ -20,7 +20,7 @@ export const proyectoService = {
       if (!token) {
         throw new Error('No estás autenticado');
       }
-            const response = await fetch(`${API_CONFIG.BASE_URL}/proyectos/upload`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos/upload`, {
                 method: 'POST',
                    headers: {
                  'Authorization': `Bearer ${token}`,
@@ -51,7 +51,7 @@ async crearProyecto (proyecto: Proyecto) {
       }
 
       
-        const responde = await fetch(`${API_CONFIG.BASE_URL}/proyectos`,
+        const responde = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos`,
             {
                method: 'POST',
                headers: {
@@ -82,7 +82,7 @@ async crearProyecto (proyecto: Proyecto) {
 async obtenerProyectos () {
 
     try{
-        const responde = await fetch(`${API_CONFIG.BASE_URL}/proyectos`)
+        const responde = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos`)
         return await responde.json();
     }
     catch(error){
@@ -99,7 +99,7 @@ async eliminarProyecto(id: number) {
       if (!token) {
         throw new Error('No estás autenticado');
       }
-      const response = await fetch(`${API_CONFIG.BASE_URL}/proyectos/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -127,7 +127,7 @@ async eliminarProyecto(id: number) {
           try {
             const token = authService.getToken();
       
-            const response = await fetch(`${API_CONFIG.BASE_URL}/proyectos/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos/${id}`, {
               method: 'PATCH',
                headers: {
               'Authorization': `Bearer ${token}`,

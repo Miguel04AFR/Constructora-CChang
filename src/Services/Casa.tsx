@@ -22,7 +22,7 @@ export const casaService = {
                 throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
             }
 
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas/upload`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -54,7 +54,7 @@ export const casaService = {
                 throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
             }
 
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -85,7 +85,7 @@ export const casaService = {
 
     async obtenerCasas() {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas`);
             return await response.json();
         } catch (error) {
             console.error('Error obteniendo casas:', error);
@@ -101,7 +101,7 @@ export const casaService = {
                 throw new Error('No estás autenticado');
             }
 
-            const response = await fetch(`${API_CONFIG.BASE_URL}/casas/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -130,7 +130,7 @@ export const casaService = {
               try {
                 const token = authService.getToken();
           
-                const response = await fetch(`${API_CONFIG.BASE_URL}/casas/${id}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas/${id}`, {
                   method: 'PATCH',
                    headers: {
                   'Authorization': `Bearer ${token}`,

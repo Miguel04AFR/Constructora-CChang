@@ -20,7 +20,7 @@ export const remodelacionService = {
                 throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
             }
 
-            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones/upload`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -48,7 +48,7 @@ export const remodelacionService = {
                 throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
             }
 
-            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -71,7 +71,7 @@ export const remodelacionService = {
 
     async obtenerRemodelaciones() {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones`);
             return await response.json();
         } catch (error) {
             console.error('Error obteniendo remodelaciones:', error);
@@ -87,7 +87,7 @@ export const remodelacionService = {
                 throw new Error('No estás autenticado');
             }
 
-            const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -115,7 +115,7 @@ export const remodelacionService = {
         try {
           const token = authService.getToken();
     
-          const response = await fetch(`${API_CONFIG.BASE_URL}/remodelaciones/${id}`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones/${id}`, {
             method: 'PATCH',
              headers: {
             'Authorization': `Bearer ${token}`,
