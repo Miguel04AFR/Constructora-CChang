@@ -1,31 +1,54 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { remodelaciones as remodelacionesNamed } from '@/src/data/remodelaciones';
+import { remodelaciones as remodelacionesMock } from '@/src/data/remodelaciones';
 import type { Remodelacion } from '@/src/Services/Remodelacion';
+import { remodelacionService } from '@/src/Services/Remodelacion';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { FormularioContactoP } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
-
 export const RemodelacionesCarousel = () => {
   const { t } = useTranslation();
   const pageSize = 3;
-  // Normalize possible shapes (named export or other shapes)
-  const items: Remodelacion[] = Array.isArray(remodelacionesNamed)
-    ? (remodelacionesNamed as Remodelacion[])
-    : ((remodelacionesNamed as unknown as { default?: Remodelacion[] }).default ?? []);
-
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const [page, setPage] = useState(0);
+  
+  const [items, setItems] = useState<Remodelacion[]>([]);
+  const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalRemodel, setModalRemodel] = useState<Remodelacion | null>(null);
   const [formValido, setFormValido] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Keep page index in-range if items change dynamically
+  // Obtener remodelaciones de la base de datos y combinar con mock
+  useEffect(() => {
+    const fetchRemodelaciones = async () => {
+      try {
+        setLoading(true);
+        const remodelacionesFromAPI = await remodelacionService.obtenerRemodelaciones();
+        
+        // Combinar con remodelaciones mock
+        const todasLasRemodelaciones = [
+          ...(Array.isArray(remodelacionesFromAPI) ? remodelacionesFromAPI : []),
+          ...remodelacionesMock
+        ];
+        
+        setItems(todasLasRemodelaciones);
+      } catch (err) {
+        console.log('No se pudieron cargar remodelaciones adicionales, usando solo mock');
+        // Si hay error, usar solo las mock
+        setItems(remodelacionesMock);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRemodelaciones();
+  }, []);
+
+  const total = items.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const [page, setPage] = useState(0);
 
   // Keep page index in-range if items change dynamically
   useEffect(() => {
@@ -38,6 +61,36 @@ export const RemodelacionesCarousel = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [page]);
+
+  // Función para obtener la URL correcta de la imagen
+  const getImageUrl = (imagenUrl: string | string[] | undefined): string => {
+    // Si es undefined o vacío
+    if (!imagenUrl) return '/placeholder-image.jpg';
+    
+    // Si es array, tomar la primera imagen
+    const url = Array.isArray(imagenUrl) ? (imagenUrl[0] ?? '') : imagenUrl;
+    
+    if (!url) return '/placeholder-image.jpg';
+    
+    // Verificar si es una imagen mock conocida
+    const mockImages = remodelacionesMock.flatMap(remodel => 
+      Array.isArray(remodel.imagenUrl) ? remodel.imagenUrl : 
+      remodel.imagenUrl ? [remodel.imagenUrl] : []
+    );
+    
+    if (mockImages.includes(url)) {
+      return url; // Es imagen mock, usar directamente
+    }
+    
+    // Si ya es URL completa
+    if (url.startsWith('http')) {
+      return url;
+    }
+    
+    // Para imágenes de la base de datos
+    const normalizedPath = url.startsWith('/') ? url : `/${url}`;
+    return `${process.env.NEXT_PUBLIC_API_URL}${normalizedPath}`;
+  };
 
   const goPrev = () => setPage((p) => Math.max(0, p - 1));
   const goNext = () => setPage((p) => Math.min(totalPages - 1, p + 1));
@@ -54,6 +107,17 @@ export const RemodelacionesCarousel = () => {
     }
     return textoCortado + '...';
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#003153]"></div>
+          <p className="mt-2 text-gray-600">Cargando remodelaciones...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (total === 0) {
     return (
@@ -83,37 +147,61 @@ export const RemodelacionesCarousel = () => {
 
         {/* Cards stack */}
         <div className="space-y-6">
-          {pageItems.map((r) => (
-            <div key={r.id} className="bg-white rounded-xl shadow-lg overflow-hidden transition-shadow hover:shadow-xl">
-              <div className="md:flex">
-                <div className="md:w-1/3 h-48 md:h-auto bg-gray-100 overflow-hidden">
-                  {r.imagenUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={r.imagenUrl} alt={r.nombre} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
-                  )}
-                </div>
-                <div className="p-6 md:w-2/3 flex flex-col">
-                  <h3 className="text-2xl font-bold text-[#003153] mb-2">{r.nombre}</h3>
-                  <p className="text-sm text-gray-600 mb-4">{limitarDescripcion(r.descripcion || '')}</p>
-
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="text-sm text-gray-600">📌 {t('catalog.area') || 'm²'}</div>
-                    <div className="text-2xl font-bold text-[#6B21A8]">{new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(r.precio)}</div>
+          {pageItems.map((r) => {
+            const imagenUrl = getImageUrl(r.imagenUrl);
+            
+            return (
+              <div key={r.id} className="bg-white rounded-xl shadow-lg overflow-hidden transition-shadow hover:shadow-xl">
+                <div className="md:flex">
+                  <div className="md:w-1/3 h-48 md:h-auto bg-gray-100 overflow-hidden">
+                    <img 
+                      src={imagenUrl} 
+                      alt={r.nombre} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder-image.jpg';
+                        e.currentTarget.alt = 'Imagen no disponible';
+                      }}
+                    />
                   </div>
+                  <div className="p-6 md:w-2/3 flex flex-col">
+                    <h3 className="text-2xl font-bold text-[#003153] mb-2">{r.nombre}</h3>
+                    <p className="text-sm text-gray-600 mb-4">{limitarDescripcion(r.descripcion || '')}</p>
 
-                  <div className="mt-4 flex gap-3">
-                    <Link href={`/servicios/renovaciones/${r.id}`} className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm">{t('catalog.viewDetailsButton') || 'Ver Detalles'}</Link>
-                    <button
-                      onClick={() => { setModalRemodel(r); setModalOpen(true); setFormValido(false); }}
-                      className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
-                    >{t('remodel.buy') || 'Contactar'}</button>
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="text-sm text-gray-600">📌 {t('catalog.area') || 'm²'}</div>
+                      <div className="text-2xl font-bold text-[#6B21A8]">
+                        {new Intl.NumberFormat(undefined, { 
+                          style: 'currency', 
+                          currency: 'USD', 
+                          maximumFractionDigits: 0 
+                        }).format(r.precio || 0)}
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex gap-3">
+                      <Link 
+                        href={`/servicios/renovaciones/${r.id}`} 
+                        className="bg-[#003153] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm"
+                      >
+                        {t('catalog.viewDetailsButton') || 'Ver Detalles'}
+                      </Link>
+                      <button
+                        onClick={() => { 
+                          setModalRemodel(r); 
+                          setModalOpen(true); 
+                          setFormValido(false); 
+                        }}
+                        className="text-sm bg-[#6B21A8] text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                      >
+                        {t('remodel.buy') || 'Contactar'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Prev / Next buttons */}
@@ -125,7 +213,9 @@ export const RemodelacionesCarousel = () => {
             {t('catalog.previous') || 'Anterior'}
           </button>
 
-          <div className="text-sm text-gray-600 whitespace-nowrap">{t('remodel.pageInfo', { page: page + 1, total: totalPages }) || `Página ${page + 1} de ${totalPages}`}</div>
+          <div className="text-sm text-gray-600 whitespace-nowrap">
+            {t('remodel.pageInfo', { page: page + 1, total: totalPages }) || `Página ${page + 1} de ${totalPages}`}
+          </div>
 
           <button
             onClick={goNext}
@@ -135,6 +225,7 @@ export const RemodelacionesCarousel = () => {
           </button>
         </div>
       </div>
+      
       {/* Modal for contact form */}
       {modalOpen && modalRemodel && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -152,21 +243,23 @@ export const RemodelacionesCarousel = () => {
             </div>
 
             <div className="px-4 overflow-auto max-h-[56vh]">
-                <FormularioContactoP
-                  propiedad={{ nombre: modalRemodel.nombre }}
-                  formRef={formRef}
-                  onValChange={(v) => setFormValido(v)}
-                  onSubmitSuccess={() => {
-                    setModalOpen(false);
-                    setModalRemodel(null);
-                    setShowSuccess(true);
-                    setTimeout(() => setShowSuccess(false), 3000);
-                  }}
-                  hideSubmit={true}
-                />
+              <FormularioContactoP
+                propiedad={{ nombre: modalRemodel.nombre }}
+                formRef={formRef}
+                onValChange={(v) => setFormValido(v)}
+                onSubmitSuccess={() => {
+                  setModalOpen(false);
+                  setModalRemodel(null);
+                  setShowSuccess(true);
+                  setTimeout(() => setShowSuccess(false), 3000);
+                }}
+                hideSubmit={true}
+              />
             </div>
             <div className="flex justify-end gap-3 p-4 border-t">
-              <button onClick={() => setModalOpen(false)} className="px-4 py-2 rounded bg-gray-200">{t('cancel') || 'Cancelar'}</button>
+              <button onClick={() => setModalOpen(false)} className="px-4 py-2 rounded bg-gray-200">
+                {t('cancel') || 'Cancelar'}
+              </button>
               <button
                 onClick={() => {
                   if (formRef.current) {
@@ -178,11 +271,14 @@ export const RemodelacionesCarousel = () => {
                 }}
                 disabled={!formValido}
                 className={`px-4 py-2 rounded text-white ${formValido ? 'bg-[#003153] hover:bg-blue-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-              >{t('accept') || 'Aceptar'}</button>
+              >
+                {t('accept') || 'Aceptar'}
+              </button>
             </div>
           </div>
         </div>
       )}
+      
       {/* Success toast */}
       {showSuccess && (
         <div role="status" className="fixed bottom-6 right-6 z-60 bg-green-600 text-white px-4 py-2 rounded shadow">

@@ -3,7 +3,7 @@ import {Casa} from '../Services/Casa'
 
 export const casasAnadidas: Casa[] = [
     {
-        id: "hcf1",
+        id: "hcf1000",
         nombre: "Casa Residencial",
         imagenUrl: ["/Casa 1/1761508791-z3qyIA-x.jpeg"],
         precio: 1550000,
@@ -14,7 +14,7 @@ export const casasAnadidas: Casa[] = [
         descripcion: "Casa ubicada en La Habana, municipio Playa: hostal de lujo con piscina y negocio de hostelería incluido. La propiedad cuenta con aproximadamente 500 m2 distribuidos en 3 plantas y dispone de dos títulos de propiedad, lo que facilita la operación comercial y la gestión legal del inmueble."
     },
     {
-        id: "hcf3",
+        id: "hcf1001",
         nombre: "Casa para Tranquilidad Familiar",
         imagenUrl: ["/Casa 3/1757528062-zbMhmVrr.jpeg"], 
         precio: 210000,
@@ -25,7 +25,7 @@ export const casasAnadidas: Casa[] = [
         descripcion: "Casa en La Habana compuesta por dos propiedades independientes: planta baja y planta alta. Casas con dos propiedades independientes (planta baja y planta alta)."
     },
     {
-        id: "hcf4",
+        id: "hcf10002",
         nombre: "Apartamento en el Vedado",
         imagenUrl: ["/Casa 4/1757361273-nLT7wQnz.webp"], 
         precio: 60000,

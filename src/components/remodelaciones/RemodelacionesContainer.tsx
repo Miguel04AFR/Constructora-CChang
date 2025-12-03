@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { remodelaciones } from '@/src/data/remodelaciones';
+import { remodelaciones as remodelacionesMock } from '@/src/data/remodelaciones';
 import type { Remodelacion } from '@/src/Services/Remodelacion';
+import { remodelacionService } from '@/src/Services/Remodelacion';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -18,9 +19,69 @@ export const RemodelacionesContainer = () => {
     const [modalContactoOpen, setModalContactoOpen] = useState(false);
     const [remodelacionSeleccionada, setRemodelacionSeleccionada] = useState<Remodelacion | null>(null);
     const [remodelacionPendiente, setRemodelacionPendiente] = useState<Remodelacion | null>(null);
+    const [remodelacionesDB, setRemodelacionesDB] = useState<Remodelacion[]>([]);
+    const [loading, setLoading] = useState(true);
     const remodelacionPendienteRef = React.useRef<Remodelacion | null>(null);
     const formRef = React.useRef<HTMLFormElement>(null);
     const [formValido, setFormValido] = useState(false);
+
+    // Combinar datos del backend con datos mock
+    const todasLasRemodelaciones = [...remodelacionesDB, ...remodelacionesMock];
+
+    // Obtener remodelaciones de la base de datos
+    useEffect(() => {
+        const fetchRemodelaciones = async () => {
+            try {
+                setLoading(true);
+                const remodelacionesFromAPI = await remodelacionService.obtenerRemodelaciones();
+                
+                if (remodelacionesFromAPI && Array.isArray(remodelacionesFromAPI)) {
+                    // Filtrar remodelaciones válidas
+                    const remodelacionesValidas = remodelacionesFromAPI.filter(
+                        remodel => remodel && remodel.nombre && remodel.descripcion
+                    );
+                    setRemodelacionesDB(remodelacionesValidas);
+                }
+            } catch (err) {
+                console.log('No se pudieron cargar remodelaciones adicionales');
+                // Silenciamos el error, los mock ya están disponibles
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRemodelaciones();
+    }, []);
+
+    // Función para obtener la URL correcta de la imagen
+    const getImageUrl = (imagenUrl: string | string[] | undefined): string => {
+        // Si es undefined o vacío
+        if (!imagenUrl) return '/placeholder-image.jpg';
+        
+        // Si es array, tomar la primera imagen
+        const url = Array.isArray(imagenUrl) ? (imagenUrl[0] ?? '') : imagenUrl;
+        
+        if (!url) return '/placeholder-image.jpg';
+        
+        // Verificar si es una imagen mock conocida
+        const mockImages = remodelacionesMock.flatMap(remodel => 
+            Array.isArray(remodel.imagenUrl) ? remodel.imagenUrl : 
+            remodel.imagenUrl ? [remodel.imagenUrl] : []
+        );
+        
+        if (mockImages.includes(url)) {
+            return url; // Es imagen mock, usar directamente
+        }
+        
+        // Si ya es URL completa
+        if (url.startsWith('http')) {
+            return url;
+        }
+        
+        // Para imágenes de la base de datos
+        const normalizedPath = url.startsWith('/') ? url : `/${url}`;
+        return `${process.env.NEXT_PUBLIC_API_URL}${normalizedPath}`;
+    };
 
     // Sincronizar la referencia con el estado
     React.useEffect(() => {
@@ -94,7 +155,18 @@ export const RemodelacionesContainer = () => {
         setRemodelacionSeleccionada(null);
     };
 
-    if (remodelaciones.length === 0) {
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#003153]"></div>
+                    <p className="mt-2 text-gray-600">Cargando remodelaciones...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (todasLasRemodelaciones.length === 0) {
         return (
             <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
                 <p className="text-xl text-gray-600">{t('remodel.empty') || 'No hay remodelaciones disponibles.'}</p>
@@ -125,16 +197,27 @@ export const RemodelacionesContainer = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {remodelaciones.map((r: Remodelacion) => {
-                        const displayTotal = r.precio;
+                    {todasLasRemodelaciones.map((r: Remodelacion) => {
+                        const displayTotal = r.precio || 0;
+                        const imagenUrl = getImageUrl(r.imagenUrl);
 
                         return (
                         <div key={r.id} className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
                             <div className="h-44 bg-gray-100 mb-4 overflow-hidden rounded">
-                                {r.imagenUrl ? (
-                                    <img src={r.imagenUrl} alt={r.nombre} className="w-full h-full object-cover" />
+                                {imagenUrl ? (
+                                    <img 
+                                        src={imagenUrl} 
+                                        alt={r.nombre} 
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = '/placeholder-image.jpg';
+                                            e.currentTarget.alt = 'Imagen no disponible';
+                                        }}
+                                    />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                        Sin imagen
+                                    </div>
                                 )}
                             </div>
 

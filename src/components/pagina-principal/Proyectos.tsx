@@ -5,6 +5,7 @@ import type { Proyecto } from '@/src/Services/Proyecto';
 import { proyectoService } from '@/src/Services/Proyecto';
 import { useTranslation } from 'react-i18next';
 
+
 // Datos mock fijos
 const proyectosEjemplo: Proyecto[] = [ 
   {
@@ -27,18 +28,43 @@ const proyectosEjemplo: Proyecto[] = [
   }
 ];
 
+const getImageUrl = (imagenUrl: string): string => {
+  if (!imagenUrl) return '/placeholder-image.jpg';
+  
+  // Lista de imágenes mock conocidas
+  const mockImages = [
+    "/modelo-3d-de-edificio-residencial.jpg",
+    "/vista-3d-del-modelo-de-casa.jpg", 
+    "/vista-del-modelo-de-casa-3d.jpg"
+  ];
+  
+  // Si es imagen mock, usar directamente
+  if (mockImages.includes(imagenUrl)) {
+    return imagenUrl;
+  }
+  
+  // Si ya es URL completa
+  if (imagenUrl.startsWith('http')) {
+    return imagenUrl;
+  }
+  
+  // Para imagenes de la base de datos
+  // Asegurar que tenga / al inicio
+  const normalizedPath = imagenUrl.startsWith('/') ? imagenUrl : `/${imagenUrl}`;
+  return `${process.env.NEXT_PUBLIC_API_URL}${normalizedPath}`;
+};
+
 export const Proyectos = () => {
   const [indiceActual, setIndiceActual] = useState(0);
   const [estaTransicionando, setEstaTransicionando] = useState(false);
   const [proyectosDB, setProyectosDB] = useState<Proyecto[]>([]);
   const { t } = useTranslation();
 
-  // Combinar datos del backend con datos mock sin distinción
+  // Combinar datos del backend con datos mock 
   const todosLosProyectos = [...proyectosDB, ...proyectosEjemplo];
   
   const proyectoActual = todosLosProyectos[indiceActual];
 
-  // Obtener proyectos del backend silenciosamente
   useEffect(() => {
     const fetchProyectos = async () => {
       try {
@@ -114,9 +140,14 @@ export const Proyectos = () => {
                 }`}
               >
                 <img 
-                  src={proyectoActual.imagenUrl} 
+                  src={getImageUrl(proyectoActual.imagenUrl)} 
                   alt={proyectoActual.titulo}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback si la imagen no carga
+                    e.currentTarget.src = '/placeholder-image.jpg';
+                    e.currentTarget.alt = 'Imagen no disponible';
+                  }}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent"></div>
               </div>
@@ -197,9 +228,14 @@ export const Proyectos = () => {
                 }`}
               >
                 <img 
-                  src={proyecto.imagenUrl} 
+                  src={getImageUrl(proyecto.imagenUrl)} 
                   alt={proyecto.titulo}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback si la imagen no carga
+                    e.currentTarget.src = '/placeholder-image.jpg';
+                    e.currentTarget.alt = 'Imagen no disponible';
+                  }}
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                   <span className="text-white font-medium text-sm text-center px-2">
