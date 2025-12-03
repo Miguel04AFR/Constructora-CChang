@@ -1,11 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { authService } from '@/src/auth/auth';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: string | null;
-  login: (username: string) => void;
+  user: any | null;
+  login: (userData: any) => void;
   logout: () => void;
 }
 
@@ -13,27 +14,62 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<any | null>(null);
 
-  useEffect(() => {
-    // Verificar si hay sesión guardada en localStorage
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(savedUser);
-      setIsAuthenticated(true);
+  const checkAuth = () => {
+    try {
+      const authenticated = authService.isAuthenticated();
+      const currentUser = authService.getCurrentUser();
+      
+      setIsAuthenticated(authenticated);
+      setUser(currentUser);
+    } catch (error) {
+      console.error('Error verificando autenticación:', error);
+      setIsAuthenticated(false);
+      setUser(null);
     }
+  };
+
+  // Verificar autenticación al cargar
+  useEffect(() => {
+    checkAuth();
   }, []);
 
-  const login = (username: string) => {
-    setUser(username);
+  useEffect(() => {
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    const handleAuthChange = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener('auth-change', handleAuthChange as EventListener);
+
+    // Verificar periódicamente (cada segundo)
+    const interval = setInterval(checkAuth, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('auth-change', handleAuthChange as EventListener);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const login = (userData: any) => {
     setIsAuthenticated(true);
-    localStorage.setItem('user', username);
-};
+    setUser(userData);
+    // Disparar evento para notificar a otros componentes
+    window.dispatchEvent(new Event('auth-change'));
+  };
 
   const logout = () => {
-    setUser(null);
+    authService.logout();
     setIsAuthenticated(false);
-    localStorage.removeItem('user');
+    setUser(null);
+    window.dispatchEvent(new Event('auth-change'));
   };
 
   return (

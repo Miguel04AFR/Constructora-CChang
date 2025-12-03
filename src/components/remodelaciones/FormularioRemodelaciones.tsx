@@ -132,37 +132,38 @@ export const FormularioRemodelaciones: React.FC<Props> = ({ propiedad, formRef, 
   };
 
   const enviarFormulario = async (datos: any) => {
-          setMensajeEnviado(true);
-  
-          try {
-              const mensajeParaEnviar = {
-                  tipo: 'Supervision de proyecto',
-                  motivo: datos.descripcion,
-                  gmail: datos.email,
-                  telefono: datos.telefono
-              };
-  
-              await mensajeService.crearMensaje(mensajeParaEnviar);
-  
-              setMostrarMensajeErrores(false);
-              setFormData({
-                  nombre: '',
-                  email: '',
-                  telefono: '',
-                  descripcion: ''
-              });
-              setErrores({});
-              setCamposTocados({});
-  
-              if (onSubmitSuccess) onSubmitSuccess();
-  
-          } catch (error) {
-              console.error('Error al enviar mensaje:', error);
-              setMostrarMensajeErrores(true);
-          } finally {
-              setMensajeEnviado(false);
-          }
+    setMensajeEnviado(true);
+
+    try {
+      const mensajeParaEnviar = {
+        tipo: 'Consulta Remodelación',
+        motivo: datos.mensaje, // CORRECTO: usar mensaje, no descripcion
+        gmail: datos.email,
+        telefono: datos.telefono,
+        propiedad: propiedad?.nombre || 'Remodelación'
       };
+
+      await mensajeService.crearMensaje(mensajeParaEnviar);
+
+      setMostrarMensajeErrores(false);
+      setFormData({
+        nombre: '',
+        email: '',
+        telefono: '',
+        mensaje: '' // CORRECTO: mensaje, no descripcion
+      });
+      setErrores({});
+      setCamposTocados({});
+
+      if (onSubmitSuccess) onSubmitSuccess();
+
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+      setMostrarMensajeErrores(true);
+    } finally {
+      setMensajeEnviado(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

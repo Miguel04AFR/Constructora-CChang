@@ -405,5 +405,6 @@
         "descriptionMaxLength": "Description cannot exceed 1000 characters"
       }
     }
-  }
+  },
+  "login.signIn": "Logging in..."
 }

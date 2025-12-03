@@ -6,6 +6,7 @@ import { IoClose, IoMail, IoLockClosed, IoEye, IoEyeOff, IoCheckmarkCircle, IoWa
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/src/auth/auth';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => {
   const [loginInput, setLoginInput] = useState('');
@@ -16,6 +17,7 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
   const [error, setError] = useState('');
   const { t } = useTranslation();
   const router = useRouter();
+  const { login } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -64,6 +66,8 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         if (usuario) {
           usuario(result.user.nombre);
         }
+
+        login(result.user);//act contexto
 
         onClose();
 
