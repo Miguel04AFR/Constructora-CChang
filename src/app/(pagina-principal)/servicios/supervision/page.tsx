@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { FormularioSupervision } from '@/src/components/componentes supervision/FormularioSupervision';
+import { FormularioConsultoria } from '@/src/components/componentes consultoria/FormularioConsultoria';
 import { useTranslation } from 'react-i18next';
 
 export default function SupervisionPage() {
@@ -138,7 +138,7 @@ export default function SupervisionPage() {
 
             <div className="p-6 overflow-auto max-h-[72vh]">
               <h2 className="text-2xl font-bold text-[#003153] mb-4 text-center">{t('consulting.form.title') || 'Solicitud de supervisión'}</h2>
-              <FormularioSupervision />
+              <FormularioConsultoria />
             </div>
           </div>
         </div>
