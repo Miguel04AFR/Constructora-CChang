@@ -171,6 +171,25 @@ export default function AdminPage() {
     }
   }
 
+  // Función para abrir Gmail con respuesta
+  const responderMensaje = (gmailDestinatario: string, asunto?: string, mensaje?: string) => {
+    // Preparamos el asunto
+    const asuntoCodificado = encodeURIComponent(asunto ? `Re: ${asunto}` : 'Respuesta a tu consulta');
+    
+    // Preparamos el cuerpo del mensaje
+    const cuerpoCodificado = encodeURIComponent(
+      mensaje 
+        ? `\n\n--- Mensaje original ---\n${mensaje}\n\n`
+        : '\n\n'
+    );
+    
+    // Creamos el enlace a Gmail
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${gmailDestinatario}&su=${asuntoCodificado}&body=${cuerpoCodificado}`;
+    
+    // Abrimos en nueva pestaña
+    window.open(gmailUrl, '_blank');
+  };
+
   // navegar a los tarjetas
   const navegarAFormulario = (tipo: string) => {
     router.push(`/admin/anadir/${tipo}`);
@@ -605,17 +624,18 @@ export default function AdminPage() {
                   </div>
 
                   <div className="mt-3 flex gap-2 flex-wrap">
-                    <button className="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                    <button 
+                      onClick={() => responderMensaje(
+                        mensaje.gmail, 
+                        `Consulta de ${mensaje.user?.nombre || 'cliente'}`, 
+                        mensaje.motivo
+                      )}
+                      className="text-blue-600 hover:text-blue-800 text-sm flex items-center"
+                    >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                       Responder
-                    </button>
-                    <button className="text-green-600 hover:text-green-800 text-sm flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Marcar como atendido
                     </button>
                     <button onClick={() => mensaje.id && eliminarMen(mensaje.id)} className="text-red-600 hover:text-red-800 text-sm flex items-center">
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -894,7 +914,7 @@ export default function AdminPage() {
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                <h4 className="font-semibold text-orange-800"> Mensajes Pendientes</h4>
+                <h4 className="font-semibold text-orange-800">Mensajes en Bandeja de Entrada</h4>
                 <p className="text-2xl font-bold text-orange-600">{mensajes.length}</p>
                 <button 
                   onClick={() => setSeccionActual('mensajes')}
