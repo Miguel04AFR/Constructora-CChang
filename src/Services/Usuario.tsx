@@ -47,37 +47,37 @@ export const usuarioService = {
   },
 
 
-    async eliminarUsuario(id: number) {
-    try {
+   async eliminarUsuario(id: number) {
+  try {
+    const token = authService.getToken();
+    
+    if (!token) {
+      throw new Error('No estás autenticado');
+    }
+    
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
-       const token = authService.getToken();
-      
-      if (!token) {
-        throw new Error('No estás autenticado');
-      }
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al eliminar usuario');
+    }
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al eliminar usuario');
-      }
-
-       if (response.status === 204) {
+    if (response.status === 204) {
       return { success: true, message: 'Usuario eliminado correctamente' };
     }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error en usuarioService:', error);
-      throw error;
-    }
-  },
+    
+    
+  } catch (error) {
+    console.error('Error en usuarioService:', error);
+    throw error;
+  }
+},
 
 
 

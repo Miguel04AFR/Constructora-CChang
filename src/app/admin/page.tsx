@@ -263,7 +263,7 @@ export default function AdminPage() {
                           {formatearFecha(usuario.fechaNacimiento)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button onClick={() => usuario.id && eliminarUsu(usuario.id)} className="text-red-600 hover:text-red-900">Eliminar</button>
+                          <button onClick={() => usuario.id && eliminarUsu(Number(usuario.id))} className="text-red-600 hover:text-red-900">Eliminar</button>
                           {/*sino le pongo la validacion de usuario.id no me deja*/}
                         </td>
                       </tr>
