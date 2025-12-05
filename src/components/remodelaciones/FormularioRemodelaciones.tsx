@@ -137,7 +137,7 @@ export const FormularioRemodelaciones: React.FC<Props> = ({ propiedad, formRef, 
     try {
       const mensajeParaEnviar = {
         tipo: 'Consulta Remodelación',
-        motivo: datos.mensaje, // CORRECTO: usar mensaje, no descripcion
+        motivo: datos.mensaje, 
         gmail: datos.email,
         telefono: datos.telefono,
         propiedad: propiedad?.nombre || 'Remodelación'
@@ -150,7 +150,7 @@ export const FormularioRemodelaciones: React.FC<Props> = ({ propiedad, formRef, 
         nombre: '',
         email: '',
         telefono: '',
-        mensaje: '' // CORRECTO: mensaje, no descripcion
+        mensaje: '' 
       });
       setErrores({});
       setCamposTocados({});
