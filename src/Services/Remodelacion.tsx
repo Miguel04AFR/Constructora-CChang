@@ -79,6 +79,26 @@ export const remodelacionService = {
         }
     },
 
+    async obtenerRemodelacionesPag(paginacion: {limit: number, offset: number}) {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones/pag`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                     body: JSON.stringify({
+                       limit: paginacion.limit,
+                       offset: paginacion.offset
+                }),
+                }
+            });
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error obteniendo casas:', error);
+            throw error;
+        }
+    },
+
     async eliminarRemodelacion(id: number) {
         try {
             const token = authService.getToken();
