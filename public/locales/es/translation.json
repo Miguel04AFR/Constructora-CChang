@@ -250,6 +250,7 @@
     "viewDetails": "Detalles",
     "detailTitle": "Descripción detallada del servicio",
     "price": "Precio",
+    "estimatedPrice": "Precio estimado",
     "perUnit": "/unidad",
     "itemTotal": "Total del item",
     "empty": "No hay remodelaciones disponibles",

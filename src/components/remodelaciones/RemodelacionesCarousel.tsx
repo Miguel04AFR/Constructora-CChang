@@ -170,7 +170,7 @@ export const RemodelacionesCarousel = () => {
                             maximumFractionDigits: 0 
                           }).format(r.precio || 0)}
                         </span>
-                        <p className="text-sm text-gray-500 mt-1">Precio estimado</p>
+                        <p className="text-sm text-gray-500 mt-1">{t('remodel.estimatedPrice')}</p>
                       </div>
                       
                       <div className="flex gap-3">
