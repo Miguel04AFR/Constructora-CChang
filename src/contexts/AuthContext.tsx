@@ -8,7 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   user: any | null;
   loading: boolean;
-  login: (credentials: { gmail: string; password: string }) => Promise<boolean>; 
+  login: (credentials: { gmail: string; password: string }) => Promise<{success: boolean; user?: any}>; 
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   verificarRol: (roleName: string) => boolean;
@@ -136,24 +136,26 @@ const isLoggingOutRef = useRef(false);
     };
   }, [isAuthenticated, checkAuth]);
 
-  const login = async (credentials: { gmail: string; password: string }): Promise<boolean> => {
-    try {
-      const result = await authService.login(credentials);
+  const login = async (credentials: { gmail: string; password: string }): Promise<{success: boolean; user?: any}> => {
+  try {
+    const result = await authService.login(credentials);
+    
+    if (result?.success) {
+      const validatedUser = await authService.validateSession();
+      const userData = validatedUser || result.user;
       
-      if (result?.success) {
-        setIsAuthenticated(true);
-        setUser(result.user);
-        
-        // programar refresh automatico despues del login
-        scheduleAutoRefresh();
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Error en login:', error);
-      return false;
+      setIsAuthenticated(true);
+      setUser(userData);
+      
+      scheduleAutoRefresh();
+      return { success: true, user: userData };
     }
-  };
+    return { success: false };
+  } catch (error) {
+    console.error('Error en login:', error);
+    return { success: false };
+  }
+};
 
 
   const logout = async () => {

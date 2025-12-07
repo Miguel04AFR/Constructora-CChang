@@ -175,7 +175,7 @@ export default function AdminPage() {
 
   const exportarClientesPDF = () => {
     try {
-      // Filtrar usuarios que no sean admin
+      // Filtrar usuarios que no sean superAdmin
       const clientesFiltrados = usuarios.filter(user => user.gmail !== 'admin@constructora.com');
       
       if (clientesFiltrados.length === 0) {
