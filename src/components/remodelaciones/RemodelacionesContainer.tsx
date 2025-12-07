@@ -9,7 +9,6 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
 import { FormularioContactoP } from '@/src/components/componentes catalogo/FormularioDeContacto';
 
-
 export const RemodelacionesContainer = () => {
     const { t } = useTranslation();
     const router = useRouter();

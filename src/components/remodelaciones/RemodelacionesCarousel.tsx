@@ -157,9 +157,7 @@ export const RemodelacionesCarousel = () => {
                     
                     {/* Especificaciones */}
                     <div className="mb-6">
-                      <div className="text-sm text-gray-600 mb-2">
-                        📍 Área de remodelación: {r.area || 'No especificada'}
-                      </div>
+                      
                     </div>
                     
                     {/* Precio y Botones */}
