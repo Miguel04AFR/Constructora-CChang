@@ -14,18 +14,13 @@ export const proyectoService = {
 
  async crearProyectoConImagen(formData: FormData) {
         try {
-
-             const token = authService.getToken();
-      
-      if (!token) {
-        throw new Error('No estás autenticado');
-      }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos/upload`, {
                 method: 'POST',
                    headers: {
-                 'Authorization': `Bearer ${token}`,
+
                },
                 body: formData,
+                credentials: 'include',
             });
 
             if (!response.ok) {
@@ -44,18 +39,11 @@ async crearProyecto (proyecto: Proyecto) {
     
     try{
 
-         const token = authService.getToken();
-      
-      if (!token) {
-        throw new Error('No estás autenticado');
-      }
-
-      
         const responde = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos`,
             {
                method: 'POST',
                headers: {
-                 'Authorization': `Bearer ${token}`,
+
                  'Content-Type': 'application/json',
                },
                 body: JSON.stringify({
@@ -63,6 +51,7 @@ async crearProyecto (proyecto: Proyecto) {
                     titulo: proyecto.titulo,
                     descripcion: proyecto.descripcion
                 }),
+                credentials: 'include',
             });
             if (!responde.ok) {
         const errorData = await responde.json();
@@ -94,17 +83,13 @@ async obtenerProyectos () {
 async eliminarProyecto(id: number) {
     try {
 
-       const token = authService.getToken();
-      
-      if (!token) {
-        throw new Error('No estás autenticado');
-      }
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -125,15 +110,15 @@ async eliminarProyecto(id: number) {
 
    async updateProyecto(id: number, updateData: Partial<Proyecto>) {
           try {
-            const token = authService.getToken();
       
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/proyectos/${id}`, {
               method: 'PATCH',
                headers: {
-              'Authorization': `Bearer ${token}`,
+
               'Content-Type': 'application/json',
             },
               body: JSON.stringify(updateData),
+              credentials: 'include',
             });
       
             if (!response.ok) {

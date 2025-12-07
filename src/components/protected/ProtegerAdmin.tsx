@@ -1,22 +1,37 @@
 'use client';
 import { useEffect } from 'react';
-import { authService } from '@/src/auth/auth';
-
+import { useAuth } from '@/src/contexts/AuthContext'; 
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
-export const ProtegerAdmin =  ({ children }: { children: React.ReactNode }) => {
+export const ProtegerAdmin = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [verificando, setVerificando] = useState(true);
+  const { isAuthenticated, user, loading } = useAuth(); // Datos del contexto
 
   useEffect(() => {
-    const verificarAcceso = () => {
-      if (!authService.isAuthenticated()) {
+    // Esperar a que el contexto termine de cargar
+    if (loading) return;
+
+    const verificarAcceso = async () => {
+      // Verificar si está autenticado
+      if (!isAuthenticated) {
         router.push('/');
         return;
       }
 
-      if (!authService.isAdmin()) {
+      // Verificar si es admin o superAdmin
+      if (!user) {
+        router.push('/');
+        return;
+      }
+
+
+      const userRole = typeof user.role === 'string' 
+        ? user.role 
+        : user.role?.name;
+
+      if (userRole !== 'admin' && userRole !== 'superAdmin') {
         router.push('/');
         return;
       }
@@ -25,9 +40,9 @@ export const ProtegerAdmin =  ({ children }: { children: React.ReactNode }) => {
     };
 
     verificarAcceso();
-  }, [router]);
+  }, [router, isAuthenticated, user, loading]);
 
-  if (verificando) {
+  if (loading || verificando) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
         <div className="text-center">

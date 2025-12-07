@@ -2,7 +2,7 @@ import type { Remodelacion } from '@/src/Services/Remodelacion';
 
 export const remodelaciones: Remodelacion[] = [
     {
-        id: 1,
+        id: 1000,
         nombre: 'Remodelación de Cocina Integral',
         precio: 8500,
         descripcion: 'Renovación completa de cocina: mobiliario, encimeras y distribución.',
@@ -17,7 +17,7 @@ export const remodelaciones: Remodelacion[] = [
         ]
     },
     {
-        id: 2,
+        id: 2000,
         nombre: 'Remodelación de Baño Principal',
         precio: 4500,
         descripcion: 'Actualización de acabados, grifería y distribución para baño principal.',
@@ -32,7 +32,7 @@ export const remodelaciones: Remodelacion[] = [
         ]
     },
     {
-        id: 3,
+        id: 3000,
         nombre: 'Remodelación de Pintura Exterior',
         // This package's total price will be derived from the items below (1.25 per m² * cantidad + other items)
         // Compute: 1.25 * 200 (m²) = 250; preparación = 500 => total = 750
@@ -48,7 +48,7 @@ export const remodelaciones: Remodelacion[] = [
         ]
     },
      {
-        id: 4,
+        id: 4000,
         nombre: 'Remodelación de jardín y áreas exteriores',
         precio: 1350,
         descripcion:
