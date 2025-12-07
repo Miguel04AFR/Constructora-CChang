@@ -13,6 +13,14 @@ export interface Casa {
     descripcion: string;
 }
 
+
+export interface PaginacionResponse {
+    casas: Casa[];
+    total: number;
+    totalPages: number;
+}
+
+
 export const casaService = {
     async crearCasaConImagen(formData: FormData) {
         try {
@@ -92,6 +100,47 @@ export const casaService = {
             throw error;
         }
     },
+
+
+     // Casa.tsx - modifica obtenerCasasPag
+async obtenerCasasPag(paginacion: {limit: number, offset: number}): Promise<PaginacionResponse> {
+    try {
+        // Asegúrate de que los parámetros sean números
+        const limit = paginacion.limit || 10;
+        const offset = paginacion.offset || 0;
+        
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/casas/pag?limit=${limit}&offset=${offset}`, 
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        console.log('Response status paginación:', response.status);
+        
+        if (!response.ok) {
+            // Obtener detalles del error
+            let errorMessage = 'Error al obtener casas paginadas';
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorData.error || errorMessage;
+                console.error('Error detallado:', errorData);
+            } catch {
+                errorMessage = `Error ${response.status}: ${response.statusText}`;
+            }
+            throw new Error(errorMessage);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error obteniendo casas:', error);
+        throw error;
+    }
+},
+
 
     async eliminarCasa(id: number) {
         try {

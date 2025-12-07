@@ -4,13 +4,13 @@ import { remodelaciones as remodelacionesMock } from '@/src/data/remodelaciones'
 import type { Remodelacion } from '@/src/Services/Remodelacion';
 import { remodelacionService } from '@/src/Services/Remodelacion';
 
-// Función para obtener TODAS las remodelaciones (mock + DB)
+
 async function obtenerTodasLasRemodelaciones() {
   try {
-    // Obtener remodelaciones de la base de datos
+
     const remodelacionesDB = await remodelacionService.obtenerRemodelaciones();
     
-    // Combinar con remodelaciones mock
+
     const remodelacionesDBFormateadas = Array.isArray(remodelacionesDB) 
       ? remodelacionesDB.map(remodel => ({
           ...remodel,
