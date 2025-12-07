@@ -45,7 +45,7 @@ const isLoggingOutRef = useRef(false);
 
         try {
           await authService.refreshToken();
-          console.log('✅ Refresh automático completado');
+          console.log('Refresh automático completado');
           
           // Reprogramar el siguiente refresh
           scheduleAutoRefresh();
@@ -78,7 +78,7 @@ const isLoggingOutRef = useRef(false);
         scheduleAutoRefresh();
       } else {
         // si no hay sesion vlida, intentar refresh
-        console.log('🔄 Sesión inválida, intentando refresh...');
+        console.log(' Sesión inválida, intentando refresh...');
         const refreshResult = await authService.refreshToken();
         
         if (refreshResult?.success && refreshResult.user) {
@@ -136,13 +136,18 @@ const isLoggingOutRef = useRef(false);
     };
   }, [isAuthenticated, checkAuth]);
 
-  const login = async (credentials: { gmail: string; password: string }): Promise<{success: boolean; user?: any}> => {
+  const login = async (credentials: { gmail: string; password: string }): Promise<{success: boolean; user?: any; message?: string}> => {
   try {
     const result = await authService.login(credentials);
     
     if (result?.success) {
+      // Llamar a validateSession para obtener los datos actualizados
       const validatedUser = await authService.validateSession();
       const userData = validatedUser || result.user;
+      
+      if (!userData) {
+        return { success: false, message: 'No se pudo obtener información del usuario' };
+      }
       
       setIsAuthenticated(true);
       setUser(userData);
@@ -150,13 +155,12 @@ const isLoggingOutRef = useRef(false);
       scheduleAutoRefresh();
       return { success: true, user: userData };
     }
-    return { success: false };
-  } catch (error) {
+    return { success: false, message: result?.message || 'Login falló' };
+  } catch (error: any) {
     console.error('Error en login:', error);
-    return { success: false };
+    return { success: false, message: error.message || 'Error en el login' };
   }
 };
-
 
   const logout = async () => {
     isLoggingOutRef.current = true;
