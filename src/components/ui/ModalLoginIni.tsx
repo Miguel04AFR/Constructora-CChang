@@ -49,7 +49,7 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
     }
 
     try {
-      const result = await login({
+      const result = await authService.login({
         gmail: loginInput,
         password: password
       });
