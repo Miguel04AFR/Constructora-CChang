@@ -9,7 +9,6 @@ import { AProyecto } from '@/src/components/añadir/AProyecto';
 import { ACasa } from '@/src/components/añadir/ACasa';
 import { ARemodelacion } from '@/src/components/añadir/ARemodelacion';
 import { mensajeService } from '@/src/Services/Mensajes';
-import remodelaciones from '@/src/data/remodelaciones';
 import Remodelacion, { remodelacionService } from '@/src/Services/Remodelacion';
 import { authService } from '@/src/auth/auth';
 import { AscenderUsuario } from '@/src/components/ascender/ascenderUsuario';
@@ -17,6 +16,9 @@ import { EProyecto } from '@/src/components/editar/EProyecto';
 import { ERemodelacion } from '@/src/components/editar/ERemodelacion';
 import { ECasa } from '@/src/components/editar/ECasa';
 import { useAuth } from '@/src/contexts/AuthContext';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 export default function AdminPage() {
   const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
@@ -85,9 +87,6 @@ export default function AdminPage() {
       setErrorMensajes(null);
       const mensajess = await mensajeService.obtenerMensajes();
       setMensajes(mensajess);
-
-      // fecha: new Date(Date.now() - 345600000).toLocaleDateString('es-ES'),
-
     } catch (error: any) {
       console.error('Error obteniendo mensajes:', error);
       setErrorMensajes(error.message || 'Error al cargar mensajes');
@@ -174,22 +173,111 @@ export default function AdminPage() {
     }
   }
 
+  const exportarClientesPDF = () => {
+    try {
+      // Filtrar usuarios que no sean admin
+      const clientesFiltrados = usuarios.filter(user => user.gmail !== 'admin@constructora.com');
+      
+      if (clientesFiltrados.length === 0) {
+        alert('No hay clientes para exportar');
+        return;
+      }
+      
+      const doc = new jsPDF('p', 'mm', 'a4');
+      
+      // Título
+      doc.setFontSize(18);
+      doc.setTextColor(0, 49, 83); // #003153
+      doc.text('Reporte de Clientes', 105, 20, { align: 'center' });
+      
+      // Subtítulo
+      doc.setFontSize(12);
+      doc.setTextColor(100, 100, 100);
+      doc.text('Constructora CChang', 105, 28, { align: 'center' });
+      
+      // Información del reporte
+      doc.setFontSize(10);
+      doc.text(`Fecha de generación: ${new Date().toLocaleDateString('es-ES')}`, 14, 40);
+      doc.text(`Total de clientes: ${clientesFiltrados.length}`, 14, 46);
+      
+      // Preparar datos para la tabla
+      const headers = [['ID', 'Nombre', 'Apellido', 'Email', 'Teléfono', 'Fecha Nacimiento']];
+      
+      const data = clientesFiltrados.map(user => [
+        user.id?.toString() || 'N/A',
+        user.nombre || 'N/A',
+        user.apellido || 'N/A',
+        user.gmail || 'N/A',
+        user.telefono || 'N/A',
+        user.fechaNacimiento ? new Date(user.fechaNacimiento).toLocaleDateString('es-ES') : 'N/A'
+      ]);
+      
+      // Generar tabla usando autoTable directamente
+      autoTable(doc, {
+        head: headers,
+        body: data,
+        startY: 55,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [0, 49, 83], 
+          textColor: 255,
+          fontStyle: 'bold'
+        },
+        styles: {
+          fontSize: 9,
+          cellPadding: 3
+        },
+        columnStyles: {
+          0: { cellWidth: 15 }, // ID
+          1: { cellWidth: 30 }, // Nombre
+          2: { cellWidth: 30 }, // Apellido
+          3: { cellWidth: 45 }, // Email
+          4: { cellWidth: 30 }, // Teléfono
+          5: { cellWidth: 30 }  // Fecha Nacimiento
+        },
+        margin: { left: 14, right: 14 }
+      });
+      
+      const finalY = (doc as any).lastAutoTable?.finalY || 86;
+      const pageHeight = doc.internal.pageSize.height;
+      
+      const pageCount = doc.getNumberOfPages();
+      for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+          `Página ${i} de ${pageCount} • Generado por Admin`,
+          doc.internal.pageSize.width / 2,
+          pageHeight - 10,
+          { align: 'center' }
+        );
+      }
+      
+      // Descargar PDF
+      doc.save(`clientes-constructora-${new Date().toISOString().split('T')[0]}.pdf`);
+      
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      alert('Error al generar el PDF. Por favor, intente nuevamente.');
+    }
+  };
+
   // Función para abrir Gmail con respuesta
   const responderMensaje = (gmailDestinatario: string, asunto?: string, mensaje?: string) => {
     // Preparamos el asunto
     const asuntoCodificado = encodeURIComponent(asunto ? `Re: ${asunto}` : 'Respuesta a tu consulta');
     
-    // Preparamos el cuerpo del mensaje
+    //  cuerpo del mensaje
     const cuerpoCodificado = encodeURIComponent(
       mensaje 
         ? `\n\n--- Mensaje original ---\n${mensaje}\n\n`
         : '\n\n'
     );
     
-    // Creamos el enlace a Gmail
+    // enlace a Gmail
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${gmailDestinatario}&su=${asuntoCodificado}&body=${cuerpoCodificado}`;
     
-    // Abrimos en nueva pestaña
     window.open(gmailUrl, '_blank');
   };
 
@@ -219,6 +307,17 @@ export default function AdminPage() {
                 <h3 className="text-lg font-semibold text-[#003153]">
                   Lista de Clientes ({usuarios.length - 1})
                 </h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={exportarClientesPDF}
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Exportar PDF
+                  </button>
+                </div>
               </div>
             </div>
             
@@ -909,11 +1008,7 @@ export default function AdminPage() {
                 <h4 className="font-semibold text-purple-800"> Proyectos Activos</h4>
                 <p className="text-2xl font-bold text-purple-600">{proyectos.length}</p>
               </div>
-
-              
             </div>
-
-            
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">

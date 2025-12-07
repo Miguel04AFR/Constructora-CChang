@@ -406,5 +406,5 @@
       }
     }
   },
-  "login.signIn": "Logging in..."
+  "login.signingIn": "Logging in..."
 }
