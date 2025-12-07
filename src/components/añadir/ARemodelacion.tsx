@@ -1,8 +1,10 @@
-'use client';
+ 'use client';
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { remodelacionService } from '@/src/Services/Remodelacion';
 
 export const ARemodelacion = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -59,14 +61,14 @@ export const ARemodelacion = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    if (file) {
+      if (file) {
       if (!file.type.startsWith('image/')) {
-        setMensaje('Selecciona un archivo de imagen válido');
+        setMensaje(t('forms.errors.invalidImage'));
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Máximo 5MB');
+        setMensaje(t('forms.errors.imageTooLarge'));
         return;
       }
 
@@ -97,19 +99,18 @@ export const ARemodelacion = () => {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = e.dataTransfer.files;
-    if (files && files[0]) {
+      if (files && files[0]) {
       const file = files[0];
 
       if (!file.type.startsWith('image/')) {
-        setMensaje('Selecciona un archivo de imagen válido');
+        setMensaje(t('forms.errors.invalidImage'));
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Máximo 5MB');
+        setMensaje(t('forms.errors.imageTooLarge'));
         return;
       }
-
       setImagenFile(file);
       setMensaje('');
 
@@ -129,16 +130,16 @@ export const ARemodelacion = () => {
 
     try {
       if (!imagenFile) {
-        throw new Error('Por favor, selecciona una imagen');
+        throw new Error(t('forms.errors.atLeastOneImage'));
       }
 
       if (formData.accesorios.length === 0) {
-        throw new Error('Por favor, añade al menos un accesorios');
+        throw new Error(t('forms.addRemodel.errors.atLeastOneAccessory'));
       }
 
      const precioFloat = parseFloat(formData.precio);
     if (isNaN(precioFloat) || precioFloat <= 0) {
-      throw new Error('El precio debe ser un número positivo');
+      throw new Error(t('forms.addRemodel.errors.invalidPrice'));
     }
 
       const datos = new FormData();
@@ -152,7 +153,7 @@ export const ARemodelacion = () => {
       });
 
       const remodelacionCreada = await remodelacionService.crearRemodelacionConImagen(datos);
-      setMensaje('Remodelación creada exitosamente!');
+      setMensaje(t('forms.addRemodel.success'));
 
       // Limpiar formulario
       setFormData({
@@ -166,7 +167,7 @@ export const ARemodelacion = () => {
 
     } catch (error: any) {
       console.error('Error al crear remodelación:', error);
-      setMensaje(`Error: ${error.message || 'No se pudo crear la remodelación'}`);
+      setMensaje(`${t('forms.errors.errorPrefix')}: ${error.message || t('forms.addRemodel.createError')}`);
     } finally {
       setCargando(false);
     }
@@ -178,10 +179,10 @@ export const ARemodelacion = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Añadir Nueva Remodelación
+            {t('forms.addRemodel.title')}
           </h1>
           <p className="text-gray-600">
-            Completa la información de la nueva remodelación disponible.
+            {t('forms.addRemodel.subtitle')}
           </p>
         </div>
 
@@ -190,7 +191,7 @@ export const ARemodelacion = () => {
 
             <div>
               <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">
-                Nombre de la Remodelación *
+                {t('forms.addRemodel.name')} *
               </label>
               <input
                 type="text"
@@ -206,7 +207,7 @@ export const ARemodelacion = () => {
 
             <div>
               <label htmlFor="precio" className="block text-sm font-medium text-gray-700 mb-2">
-                Precio *
+                {t('forms.addRemodel.price')} *
               </label>
               <input
                 type="number"
@@ -222,7 +223,7 @@ export const ARemodelacion = () => {
 
             <div>
               <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
-                Descripción *
+                {t('forms.addRemodel.description')} *
               </label>
               <textarea
                 id="descripcion"
@@ -238,7 +239,7 @@ export const ARemodelacion = () => {
 
             <div>
               <label htmlFor="descripcionDetallada" className="block text-sm font-medium text-gray-700 mb-2">
-                Descripción Detallada
+                {t('forms.addRemodel.detailedDescription')}
               </label>
               <textarea
                 id="descripcionDetallada"
@@ -253,7 +254,7 @@ export const ARemodelacion = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                accesorios de la Remodelación *
+                {t('forms.addRemodel.accessoriesLabel')} *
               </label>
               <div className="flex gap-2 mb-4">
                 <input
@@ -268,7 +269,7 @@ export const ARemodelacion = () => {
                   onClick={handleAddaccesorios}
                   className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                 >
-                  Añadir
+                  {t('forms.addRemodel.addAccessory')}
                 </button>
               </div>
               {formData.accesorios.length > 0 && (
@@ -291,7 +292,7 @@ export const ARemodelacion = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagen de la Remodelación *
+                {t('forms.addRemodel.imageLabel')} *
               </label>
 
               <div
@@ -330,7 +331,7 @@ export const ARemodelacion = () => {
                       </button>
                     </div>
                     <p className="text-sm text-purple-600">
-                      Imagen seleccionada. Haz clic para cambiar.
+                      {t('forms.addRemodel.imageSelected')}
                     </p>
                   </div>
                 ) : (

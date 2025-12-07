@@ -17,49 +17,10 @@
     "contact": "Contáctanos",
     "projects": "Ver nuestros proyectos"
   },
-  "contactForm": {
-    "title": "Contactar sobre esta propiedad",
-    "name": "Nombre completo",
-    "email": "Email",
-    "phone": "Teléfono",
-    "message": "Mensaje",
-    "send": "Enviar Mensaje",
-    "required": "Complete los campos requeridos"
-  },
-  "properties": {
-    "ourHomes": "Nuestras Viviendas",
-    "discover": "Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad",
-    "viewDetails": "Ver Detalles",
-    "price": "Precio",
-    "bedrooms": "habitaciones",
-    "bathrooms": "baños",
-    "area": "Superficie"
-  },
+
   "projects": {
     "title": "Nuestros Proyectos",
-    "subtitle": "Descubre nuestras obras más destacadas y proyectos innovadores",
-    "previous": "Anterior",
-    "next": "Siguiente",
-    "goToProject": "Ir al proyecto {{number}}",
-    "viewProject": "Ver proyecto {{name}}",
-    "list": {
-      "residential": {
-        "title": "Construcción Residencial",
-        "description": "Casas y edificios con los más altos estándares de calidad."
-      },
-      "renovations": {
-        "title": "Renovaciones y Remodelaciones",
-        "description": "Transformamos tus espacios existentes con diseños modernos."
-      },
-      "consulting": {
-        "title": "Consultoría en Construcción",
-        "description": "Asesoría especializada para tu proyecto constructivo."
-      },
-      "supervision": {
-        "title": "Supervisión de Proyectos",
-        "description": "Control de calidad y cumplimiento de plazos garantizados."
-      }
-    }
+    "subtitle": "Descubre nuestros trabajos más destacados y proyectos innovadores"
   },
   "services": {
     "title": "Nuestros Servicios de Construcción",
@@ -87,6 +48,40 @@
         "title": "Supervisión de Proyectos",
         "description": "Control de calidad y cumplimiento de plazos garantizados."
       }
+    },
+    "supervision": {
+      "title": "Supervisión de proyectos",
+      "heroAlt": "Supervisión de proyectos",
+      "intro1": "Ofrecemos un servicio integral de supervisión de proyectos para garantizar que su obra se ejecute conforme a los planos, especificaciones y plazos establecidos. Nuestro equipo profesional revisa la calidad de los materiales, coordina a los contratistas, supervisa instalaciones y entrega reportes periódicos para que usted mantenga control total del avance y presupuesto.",
+      "intro2": "Adaptamos la supervisión a obras de cualquier escala: desde remodelaciones puntuales hasta proyectos completos de construcción. Trabajamos con cronogramas transparentes, controles de calidad y un enfoque en la optimización de costes sin sacrificar la experiencia de obra.",
+      "features": {
+        "inspections": {
+          "title": "Inspecciones periódicas",
+          "desc": "Visitas programadas para verificar avance, calidad y cumplimiento de especificaciones técnicas."
+        },
+        "coordination": {
+          "title": "Coordinación de contratistas",
+          "desc": "Gestión de subcontratistas y proveedores para reducir retrasos y conflictos en obra."
+        },
+        "reports": {
+          "title": "Reportes y control presupuestario",
+          "desc": "Informes periódicos con fotografías, hitos alcanzados y desviaciones de presupuesto."
+        }
+      },
+      "processTitle": "Nuestro proceso",
+      "process": {
+        "step1": { "title": "Levantamiento inicial", "desc": "Revisión de planos y condiciones del sitio." },
+        "step2": { "title": "Planificación", "desc": "Definimos hitos, recursos y calendario de supervisión." },
+        "step3": { "title": "Supervisión continua", "desc": "Inspecciones, coordinación y control de calidad." },
+        "step4": { "title": "Reporte final", "desc": "Documento completo con análisis de ejecución, fotografías de cierre, recomendaciones para mantenimiento y formalización de entrega del proyecto." }
+      },
+      "faqTitle": "Preguntas frecuentes",
+      "faq": {
+        "q1": { "q": "¿En cuánto tiempo puedo tener el primer reporte?", "a": "Normalmente enviamos el primer reporte dentro de la primera semana de supervisión." },
+        "q2": { "q": "¿Puedo contratar supervisión por fases?", "a": "Sí, ofrecemos planes por fase o por alcance según sus necesidades." },
+        "q3": { "q": "¿Incluyen control de calidad de materiales?", "a": "Realizamos verificaciones en sitio y pruebas básicas; para ensayos avanzados coordinamos laboratorios colaboradores." }
+      },
+      "form": { "title": "Solicitud de supervisión" }
     }
   },
   "about": {
@@ -180,8 +175,10 @@
     "subtitle": "Descubre nuestra exclusiva selección de viviendas diseñadas para tu comodidad",
     "previousHouse": "Casa anterior",
     "nextHouse": "Casa siguiente",
+    "first": "Primera",
     "previous": "Anterior",
     "next": "Siguiente",
+    "last": "Última",
     "goToHouse": "Ver casa {{number}}",
     "viewDetails": "Ver detalles de {{name}}",
     "viewDetailsButton": "Ver Detalles",
@@ -197,6 +194,11 @@
     "bathrooms": "Baños",
     "area": "Superficie",
     "description": "Descripción",
+    "location": "Ubicación",
+    "locationRequired": "La ubicación es requerida",
+    "bedroomsRequired": "El número de habitaciones es requerido",
+    "bathroomsRequired": "El número de baños es requerido",
+    "instructionText": "Modifica solo el título y descripción. La imagen no se puede cambiar.",
     "features": {
       "title": "Características",
       "pool": "Piscina",
@@ -252,7 +254,8 @@
     "itemTotal": "Total del item",
     "empty": "No hay remodelaciones disponibles",
     "carousel": "Carrusel de remodelaciones",
-    "pageInfo": "Página {{page}} de {{total}}"
+    "pageInfo": "Página {{page}} de {{total}}",
+    "detailedDescription": "Descripción detallada de este servicio"
   },
   "newUser": {
     "title": "Crear cuenta",
@@ -276,7 +279,14 @@
     "creating": "Creando cuenta...",
     "create": "Crear Cuenta",
     "question": "¿Ya tienes cuenta?",
-    "getBack": "Volver"
+    "getBack": "Volver",
+    "termsAcceptanceRequired": "Debes leer y aceptar los Términos y condiciones y la Política de privacidad.",
+    "termsTitle": "Términos y condiciones y Política de privacidad",
+    "termsSection": "Términos y Condiciones",
+    "privacySection": "Política de Privacidad",
+    "termsEndNote": "Al llegar al final de este documento se habilitará el botón 'Acepto'.",
+    "termsClose": "Cerrar",
+    "termsAccept": "Acepto"
   },
   "login": {
     "title": "Iniciar Sesión",
@@ -299,7 +309,24 @@
   },
   "common": {
     "close": "Cerrar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "notFound": "No Encontrado",
+    "propertyNotFound": "Propiedad No Encontrada",
+    "propertyNotFoundMessage": "La propiedad que buscas no existe o ha sido removida.",
+    "backToCatalog": "Volver al Catálogo",
+    "loading": "Cargando...",
+    "loadingCatalog": "Cargando catálogo...",
+    "noAvailable": "No hay disponibles",
+    "noPropertiesAvailable": "No hay casas disponibles en el catálogo",
+    "noImage": "Sin imagen",
+    "imageNotAvailable": "Imagen no disponible",
+    "detail": "Detalle",
+    "location": "Ubicación",
+    "notSpecified": "No especificada",
+    "viewFullDetails": "Ver detalles completos",
+    "authenticated": "Estás autenticado - Puedes contactar",
+    "loginPrompt": "Por favor, inicia sesión para continuar",
+    "htmlVideoNotSupported": "Tu navegador no soporta videos HTML5."
   },
   "form": {
     "name": "Nombre",
@@ -320,6 +347,105 @@
       "descriptionRequired": "La descripción es obligatoria",
       "descriptionMinLength": "La descripción debe tener al menos 20 caracteres",
       "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres"
+    }
+  },
+  "forms": {
+    "addHouse": {
+      "title": "Añadir Nueva Casa",
+      "subtitle": "Completa la información de la nueva casa disponible.",
+      "name": "Nombre de la Casa",
+      "price": "Precio",
+      "location": "Ubicación",
+      "bedrooms": "Habitaciones",
+      "bathrooms": "Baños",
+      "placeholder": {
+        "name": "Ej: Casa Moderna con Jardín",
+        "price": "Ej: 250000",
+        "location": "Ej: Ciudad de México",
+        "bedrooms": "3",
+        "bathrooms": "2"
+      },
+      "success": "Casa creada exitosamente!",
+      "createError": "No se pudo crear la casa"
+    },
+    "errors": {
+      "invalidImage": "Selecciona archivos de imagen válidos",
+      "imageTooLarge": "Una o más imágenes son demasiado grandes. Máximo 5MB por imagen",
+      "atLeastOneImage": "Por favor, selecciona al menos una imagen",
+      "errorPrefix": "Error"
+    },
+    "addRemodel": {
+      "title": "Añadir Nueva Remodelación",
+      "subtitle": "Completa la información de la nueva remodelación disponible.",
+      "name": "Nombre de la Remodelación",
+      "price": "Precio",
+      "description": "Descripción",
+      "detailedDescription": "Descripción Detallada",
+      "accessoriesLabel": "Accesorios de la Remodelación",
+      "addAccessory": "Añadir",
+      "imageLabel": "Imagen de la Remodelación",
+      "imageSelected": "Imagen seleccionada. Haz clic para cambiar.",
+      "success": "Remodelación creada exitosamente!",
+      "createError": "No se pudo crear la remodelación",
+      "errors": {
+        "atLeastOneAccessory": "Por favor, añade al menos un accesorio",
+        "invalidPrice": "El precio debe ser un número positivo"
+      }
+    },
+    "editHouse": {
+      "title": "Editar Casa",
+      "subtitle": "Modifica la información de la casa. Las imágenes no se pueden cambiar.",
+      "loading": "Cargando casa...",
+      "placeholder": {
+        "name": "Ej: Casa Moderna en la Playa",
+        "price": "Ej: 250000",
+        "location": "Ej: Playa del Carmen, Quintana Roo",
+        "bedrooms": "Ej: 3",
+        "bathrooms": "Ej: 2",
+        "area": "Ej: 120",
+        "description": "Describe las características, ventajas y detalles de la casa..."
+      },
+      "priceLabel": "Precio ($)",
+      "updating": "Actualizando...",
+      "updateButton": "Actualizar Casa",
+      "success": "¡Casa actualizada exitosamente!",
+      "errors": {
+        "notFound": "Casa no encontrada",
+        "loadError": "No se pudo cargar la casa",
+        "nameRequired": "El nombre es requerido",
+        "priceInvalid": "El precio debe ser un número positivo",
+        "m2Required": "Los metros cuadrados son requeridos",
+        "descriptionRequired": "La descripción es requerida"
+      }
+    },
+    "editRemodel": {
+      "title": "Editar Remodelación",
+      "subtitle": "Modifica la información de la remodelación.",
+      "loading": "Cargando remodelación...",
+      "name": "Nombre de la Remodelación",
+      "price": "Precio",
+      "description": "Descripción",
+      "detailedDescription": "Descripción Detallada",
+      "accessoriesLabel": "Accesorios de la Remodelación",
+      "addAccessory": "Añadir",
+      "updating": "Actualizando...",
+      "updateButton": "Actualizar Remodelación",
+      "success": "¡Remodelación actualizada exitosamente!",
+      "placeholder": {
+        "name": "Ej: Remodelación de Cocina Integral",
+        "price": "Ej: 8500",
+        "description": "Describe brevemente la remodelación...",
+        "detailedDescription": "Describe en detalle la remodelación...",
+        "accessory": "Añade un accesorio..."
+      },
+      "errors": {
+        "notFound": "Remodelación no encontrada",
+        "loadError": "No se pudo cargar la remodelación",
+        "nameRequired": "El nombre es requerido",
+        "priceInvalid": "El precio debe ser un número positivo",
+        "descriptionRequired": "La descripción es requerida",
+        "updateError": "No se pudo actualizar la remodelación"
+      }
     }
   },
   "cancel": "Cancelar",

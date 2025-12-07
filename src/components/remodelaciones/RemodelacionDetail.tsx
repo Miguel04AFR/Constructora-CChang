@@ -48,7 +48,7 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
   return (
   <div className="min-h-screen bg-gray-50 pt-24 pb-12">
       <div className="max-w-5xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-[#003153] mb-6">Descripción detallada del servicio</h1>
+        <h1 className="text-3xl font-bold text-[#003153] mb-6">{t('remodel.detailedDescription')}</h1>
 
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="md:flex gap-6">
@@ -58,7 +58,7 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={remodelacion.imagenUrl} alt={remodelacion.nombre} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">{t('common.noImage')}</div>
                 )}
               </div>
               <div>
@@ -84,7 +84,7 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
 
               {remodelacion.descripcionDetallada && (
                 <div className="mt-4 text-gray-700">
-                  <h3 className="font-medium text-[#003153]">Detalle</h3>
+                  <h3 className="font-medium text-[#003153]">{t('common.detail')}</h3>
                   <p className="mt-2 text-sm">{remodelacion.descripcionDetallada}</p>
                 </div>
               )}

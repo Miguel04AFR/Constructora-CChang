@@ -37,29 +37,7 @@
   },
   "projects": {
     "title": "Our Projects",
-    "subtitle": "Discover our most outstanding works and innovative projects",
-    "previous": "Previous",
-    "next": "Next",
-    "goToProject": "Go to project {{number}}",
-    "viewProject": "View project {{name}}",
-    "list": {
-      "residential": {
-        "title": "Residential Construction",
-        "description": "Houses and buildings with the highest quality standards."
-      },
-      "renovations": {
-        "title": "Renovations and Remodeling",
-        "description": "We transform your existing spaces with modern designs."
-      },
-      "consulting": {
-        "title": "Construction Consulting",
-        "description": "Specialized advice for your construction project."
-      },
-      "supervision": {
-        "title": "Project Supervision",
-        "description": "Quality control and guaranteed compliance with deadlines."
-      }
-    }
+    "subtitle": "Discover our most outstanding works and innovative projects"
   },
   "services": {
     "title": "Our Construction Services",
@@ -87,6 +65,41 @@
         "title": "Project Supervision",
         "description": "Quality control and guaranteed compliance with deadlines."
       }
+      
+    },
+    "supervision": {
+      "title": "Project Supervision",
+      "heroAlt": "Project supervision",
+      "intro1": "We offer a comprehensive project supervision service to ensure your work is executed according to plans, specifications and established timelines. Our professional team reviews material quality, coordinates contractors, supervises installations and delivers periodic reports so you maintain full control of progress and budget.",
+      "intro2": "We adapt supervision to projects of any scale: from targeted renovations to full construction projects. We work with transparent schedules, quality controls and a focus on cost optimization without sacrificing construction experience.",
+      "features": {
+        "inspections": {
+          "title": "Periodic inspections",
+          "desc": "Scheduled visits to verify progress, quality and compliance with technical specifications."
+        },
+        "coordination": {
+          "title": "Contractor coordination",
+          "desc": "Management of subcontractors and suppliers to reduce delays and conflicts on site."
+        },
+        "reports": {
+          "title": "Reports and budget control",
+          "desc": "Periodic reports with photos, milestones achieved and budget deviations."
+        }
+      },
+      "processTitle": "Our process",
+      "process": {
+        "step1": { "title": "Initial survey", "desc": "Review of plans and site conditions." },
+        "step2": { "title": "Planning", "desc": "We define milestones, resources and supervision schedule." },
+        "step3": { "title": "Continuous supervision", "desc": "Inspections, coordination and quality control." },
+        "step4": { "title": "Final report", "desc": "Comprehensive document with execution analysis, closure photos, maintenance recommendations and formal project handover documentation." }
+      },
+      "faqTitle": "Frequently asked questions",
+      "faq": {
+        "q1": { "q": "How long until I receive the first report?", "a": "We usually send the first report within the first week of supervision." },
+        "q2": { "q": "Can I hire supervision by phases?", "a": "Yes, we offer phased plans or scope-based contracts according to your needs." },
+        "q3": { "q": "Do you include material quality control?", "a": "We perform on-site checks and basic tests; for advanced testing we coordinate with partner laboratories." }
+      },
+      "form": { "title": "Supervision request" }
     }
   },
   "about": {
@@ -180,8 +193,10 @@
     "subtitle": "Discover our exclusive selection of homes designed for your comfort",
     "previousHouse": "Previous house",
     "nextHouse": "Next house",
+    "first": "First",
     "previous": "Previous",
     "next": "Next",
+    "last": "Last",
     "goToHouse": "View house {{number}}",
     "viewDetails": "View details of {{name}}",
     "viewDetailsButton": "View Details",
@@ -197,6 +212,11 @@
     "bathrooms": "Bathrooms",
     "area": "Area",
     "description": "Description",
+    "location": "Location",
+    "locationRequired": "Location is required",
+    "bedroomsRequired": "Number of bedrooms is required",
+    "bathroomsRequired": "Number of bathrooms is required",
+    "instructionText": "Only modify title and description. Image cannot be changed.",
     "features": {
       "title": "Features",
       "pool": "Swimming Pool",
@@ -252,7 +272,8 @@
     "itemTotal": "Item total",
     "empty": "No renovations available",
     "carousel": "Renovations carousel",
-    "pageInfo": "Page {{page}} of {{total}}"
+    "pageInfo": "Page {{page}} of {{total}}",
+    "detailedDescription": "Detailed description of this service"
   },
   "newUser": {
     "title": "Create Account",
@@ -276,7 +297,14 @@
     "creating": "Creating account...",
     "create": "Create Account",
     "question": "Already have an account?",
-    "getBack": "Back"
+    "getBack": "Back",
+    "termsAcceptanceRequired": "You must read and accept the Terms and Conditions and Privacy Policy.",
+    "termsTitle": "Terms and Conditions and Privacy Policy",
+    "termsSection": "Terms and Conditions",
+    "privacySection": "Privacy Policy",
+    "termsEndNote": "When you reach the end of this document, the 'Accept' button will be enabled.",
+    "termsClose": "Close",
+    "termsAccept": "Accept"
   },
   "login": {
     "title": "Login",
@@ -299,7 +327,24 @@
   },
   "common": {
     "close": "Close",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "notFound": "Not Found",
+    "propertyNotFound": "Property Not Found",
+    "propertyNotFoundMessage": "The property you are looking for does not exist or has been removed.",
+    "backToCatalog": "Back to Catalog",
+    "loading": "Loading...",
+    "loadingCatalog": "Loading catalog...",
+    "noAvailable": "Not available",
+    "noPropertiesAvailable": "No homes available in the catalog",
+    "noImage": "No image",
+    "imageNotAvailable": "Image not available",
+    "detail": "Detail",
+    "location": "Location",
+    "notSpecified": "Not specified",
+    "viewFullDetails": "View full details",
+    "authenticated": "You are authenticated - You can contact",
+    "loginPrompt": "Please log in to continue",
+    "htmlVideoNotSupported": "Your browser does not support HTML5 videos."
   },
   "form": {
     "name": "Name",
@@ -320,6 +365,105 @@
       "descriptionRequired": "Description is required",
       "descriptionMinLength": "Description must have at least 20 characters",
       "descriptionMaxLength": "Description cannot exceed 1000 characters"
+    }
+  },
+  "forms": {
+    "addHouse": {
+      "title": "Add New House",
+      "subtitle": "Complete the information for the new available house.",
+      "name": "House Name",
+      "price": "Price",
+      "location": "Location",
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "placeholder": {
+        "name": "E.g.: Modern House with Garden",
+        "price": "E.g.: 250000",
+        "location": "E.g.: Mexico City",
+        "bedrooms": "3",
+        "bathrooms": "2"
+      },
+      "success": "House created successfully!",
+      "createError": "Could not create the house"
+    },
+    "errors": {
+      "invalidImage": "Please select valid image files",
+      "imageTooLarge": "One or more images are too large. Max 5MB per image",
+      "atLeastOneImage": "Please select at least one image",
+      "errorPrefix": "Error"
+    },
+    "addRemodel": {
+      "title": "Add New Remodel",
+      "subtitle": "Complete the information for the new available remodel.",
+      "name": "Remodel Name",
+      "price": "Price",
+      "description": "Description",
+      "detailedDescription": "Detailed Description",
+      "accessoriesLabel": "Remodel Accessories",
+      "addAccessory": "Add",
+      "imageLabel": "Remodel Image",
+      "imageSelected": "Image selected. Click to change.",
+      "success": "Remodel created successfully!",
+      "createError": "Could not create the remodel",
+      "errors": {
+        "atLeastOneAccessory": "Please add at least one accessory",
+        "invalidPrice": "Price must be a positive number"
+      }
+    },
+    "editHouse": {
+      "title": "Edit House",
+      "subtitle": "Modify the house information. Images cannot be changed.",
+      "loading": "Loading house...",
+      "placeholder": {
+        "name": "E.g.: Modern House by the Beach",
+        "price": "E.g.: 250000",
+        "location": "E.g.: Playa del Carmen, Quintana Roo",
+        "bedrooms": "E.g.: 3",
+        "bathrooms": "E.g.: 2",
+        "area": "E.g.: 120",
+        "description": "Describe the features, advantages and details of the house..."
+      },
+      "priceLabel": "Price ($)",
+      "updating": "Updating...",
+      "updateButton": "Update House",
+      "success": "House updated successfully!",
+      "errors": {
+        "notFound": "House not found",
+        "loadError": "Could not load the house",
+        "nameRequired": "Name is required",
+        "priceInvalid": "Price must be a positive number",
+        "m2Required": "Area (m²) is required",
+        "descriptionRequired": "Description is required"
+      }
+    },
+    "editRemodel": {
+      "title": "Edit Remodel",
+      "subtitle": "Modify the remodel information.",
+      "loading": "Loading remodel...",
+      "name": "Remodel Name",
+      "price": "Price",
+      "description": "Description",
+      "detailedDescription": "Detailed Description",
+      "accessoriesLabel": "Remodel Accessories",
+      "addAccessory": "Add",
+      "updating": "Updating...",
+      "updateButton": "Update Remodel",
+      "success": "Remodel updated successfully!",
+      "placeholder": {
+        "name": "E.g.: Kitchen Remodel",
+        "price": "E.g.: 8500",
+        "description": "Briefly describe the remodel...",
+        "detailedDescription": "Describe the remodel in detail...",
+        "accessory": "Add an accessory..."
+      },
+      "errors": {
+        "notFound": "Remodel not found",
+        "loadError": "Could not load the remodel",
+        "nameRequired": "Name is required",
+        "priceInvalid": "Price must be a positive number",
+        "descriptionRequired": "Description is required",
+        "updateError": "Could not update the remodel"
+      }
     }
   },
   "cancel": "Cancel",
@@ -406,5 +550,5 @@
       }
     }
   },
-  "login.signingIn": "Logging in..."
+  "loging.signingIn": "Signing in..."
 }

@@ -77,7 +77,7 @@ export const CatalogoContainer = () => {
             <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
                 <div className="text-center">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#003153]"></div>
-                    <p className="mt-2 text-gray-600">Cargando catálogo...</p>
+                    <p className="mt-2 text-gray-600">{t('common.loadingCatalog')}</p>
                 </div>
             </div>
         );
@@ -87,8 +87,7 @@ export const CatalogoContainer = () => {
         return (
             <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
                 <div className="text-center">
-                    <p className="text-xl text-gray-600 mb-4">{t('catalog.noHouses')}</p>
-                    <p className="text-gray-500 text-sm">No hay casas disponibles en el catálogo</p>
+                    <p className="text-xl text-gray-600 mb-4">{t('common.noPropertiesAvailable')}</p>
                 </div>
             </div>
         );
@@ -119,14 +118,14 @@ export const CatalogoContainer = () => {
                                 <div className="md:flex">
                                     {/* Imagen a la izquierda */}
                                     <div className="md:w-1/3">
-                                        <div className="h-64 md:h-full overflow-hidden">
+                                            <div className="h-64 md:h-full overflow-hidden">
                                             <img 
                                                 src={`${process.env.NEXT_PUBLIC_API_URL}${imagenPrincipal}`}
                                                 alt={casa.nombre}
                                                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                                 onError={(e) => {
                                                     e.currentTarget.src = '/placeholder-image.jpg';
-                                                    e.currentTarget.alt = 'Imagen no disponible';
+                                                    e.currentTarget.alt = t('common.imageNotAvailable');
                                                 }}
                                             />
                                         </div>
@@ -148,19 +147,19 @@ export const CatalogoContainer = () => {
                                         {/* Especificaciones en grid */}
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm text-gray-600">
                                             <div className="flex flex-col">
-                                                <span className="font-semibold">📍 Ubicación</span>
-                                                <span>{casa.ubicacion || 'No especificada'}</span>
+                                                <span className="font-semibold">📍 {t('propertyDetail.location')}</span>
+                                                <span>{casa.ubicacion || t('common.notSpecified')}</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="font-semibold">🛏️ Habitaciones</span>
+                                                <span className="font-semibold">🛏️ {t('propertyDetail.bedrooms')}</span>
                                                 <span>{casa.habitaciones || 0}</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="font-semibold">🚿 Baños</span>
+                                                <span className="font-semibold">🚿 {t('propertyDetail.bathrooms')}</span>
                                                 <span>{casa.banos || 0}</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="font-semibold">📐 Área</span>
+                                                <span className="font-semibold">📐 {t('propertyDetail.area')}</span>
                                                 <span>{casa.metrosCuadrados || 0} m²</span>
                                             </div>
                                         </div>
@@ -171,7 +170,7 @@ export const CatalogoContainer = () => {
                                                 <span className="text-3xl font-bold text-[#6B21A8]">
                                                     ${(casa.precio || 0).toLocaleString()}
                                                 </span>
-                                                <p className="text-sm text-gray-500 mt-1">Precio total</p>
+                                                <p className="text-sm text-gray-500 mt-1">{t('propertyDetail.price')}</p>
                                             </div>
                                             <Link 
                                                 href={`/servicios/catalogo/${casa.id}`}
@@ -179,7 +178,7 @@ export const CatalogoContainer = () => {
                                                 aria-label={`Ver detalles de ${casa.nombre}`}
                                                 title={`Ver detalles de ${casa.nombre}`}
                                             >
-                                                Ver detalles completos
+                                                {t('common.viewFullDetails')}
                                             </Link>
                                         </div>
                                     </div>
@@ -201,7 +200,7 @@ export const CatalogoContainer = () => {
                                 : 'bg-[#003153] text-white hover:bg-blue-800'
                             }`}
                         >
-                            « Primera
+                            « {t('catalog.first')}
                         </button>
                         
                         <button
@@ -213,7 +212,7 @@ export const CatalogoContainer = () => {
                                 : 'bg-[#003153] text-white hover:bg-blue-800'
                             }`}
                         >
-                            ‹ Anterior
+                            ‹ {t('catalog.previous')}
                         </button>
                         
                         {/* Números de página */}
@@ -268,7 +267,7 @@ export const CatalogoContainer = () => {
                                 : 'bg-[#003153] text-white hover:bg-blue-800'
                             }`}
                         >
-                            Siguiente ›
+                            {t('catalog.next')} ›
                         </button>
                         
                         <button
@@ -280,7 +279,7 @@ export const CatalogoContainer = () => {
                                 : 'bg-[#003153] text-white hover:bg-blue-800'
                             }`}
                         >
-                            Última »
+                            {t('catalog.last')} »
                         </button>
                     </div>
                 )}
