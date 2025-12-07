@@ -12,7 +12,7 @@ export default function SupervisionPage() {
   return (
     <div className="min-h-screen bg-gray-100 pt-24 pb-12">
       <div className="max-w-5xl mx-auto px-4">
-        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#003153] mb-6">Supervisión de proyectos</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#003153] mb-6">{t('services.supervision.title')}</h1>
 
         <div className="w-full mb-6">
           {/* Wide rectangular photo */}
@@ -22,7 +22,7 @@ export default function SupervisionPage() {
             {/* imgTs is stable per mount to avoid changing on every render */}
             <img
               src={`/supervision.jpg?ts=${imgTs}`}
-              alt="Supervisión de proyectos"
+              alt={t('services.supervision.heroAlt')}
               className="w-full h-full object-cover"
               onError={(e) => {
                 // fallback to a known existing image if supervision.jpg fails to load
@@ -36,19 +36,15 @@ export default function SupervisionPage() {
           </div>
         </div>
 
-        <p className="text-gray-700 leading-relaxed mb-6">
-          Ofrecemos un servicio integral de supervisión de proyectos para garantizar que su obra se ejecute conforme a los planos, especificaciones y plazos establecidos. Nuestro equipo profesional revisa la calidad de los materiales, coordina a los contratistas, supervisa instalaciones y entrega reportes periódicos para que usted mantenga control total del avance y presupuesto.
-        </p>
+        <p className="text-gray-700 leading-relaxed mb-6">{t('services.supervision.intro1')}</p>
 
-        <p className="text-gray-700 leading-relaxed mb-6">
-          Adaptamos la supervisión a obras de cualquier escala: desde remodelaciones puntuales hasta proyectos completos de construcción. Trabajamos con cronogramas transparentes, controles de calidad y un enfoque en la optimización de costes sin sacrificar la experiencia de obra.
-        </p>
+        <p className="text-gray-700 leading-relaxed mb-6">{t('services.supervision.intro2')}</p>
 
         {/* Features */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
-            <h4 className="font-semibold text-[#003153] mb-2">Inspecciones periódicas</h4>
-            <p className="text-sm text-gray-600">Visitas programadas para verificar avance, calidad y cumplimiento de especificaciones técnicas.</p>
+            <h4 className="font-semibold text-[#003153] mb-2">{t('services.supervision.features.inspections.title')}</h4>
+            <p className="text-sm text-gray-600">{t('services.supervision.features.inspections.desc')}</p>
             <div className="mt-6 flex justify-center">
               <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-50">
                 <svg className="w-6 h-6 text-green-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -58,8 +54,8 @@ export default function SupervisionPage() {
             </div>
           </div>
           <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
-            <h4 className="font-semibold text-[#003153] mb-2">Coordinación de contratistas</h4>
-            <p className="text-sm text-gray-600">Gestión de subcontratistas y proveedores para reducir retrasos y conflictos en obra.</p>
+            <h4 className="font-semibold text-[#003153] mb-2">{t('services.supervision.features.coordination.title')}</h4>
+            <p className="text-sm text-gray-600">{t('services.supervision.features.coordination.desc')}</p>
             <div className="mt-6 flex justify-center">
               <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-50">
                 <svg className="w-6 h-6 text-green-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -69,8 +65,8 @@ export default function SupervisionPage() {
             </div>
           </div>
           <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
-            <h4 className="font-semibold text-[#003153] mb-2">Reportes y control presupuestario</h4>
-            <p className="text-sm text-gray-600">Informes periódicos con fotografías, hitos alcanzados y desviaciones de presupuesto.</p>
+            <h4 className="font-semibold text-[#003153] mb-2">{t('services.supervision.features.reports.title')}</h4>
+            <p className="text-sm text-gray-600">{t('services.supervision.features.reports.desc')}</p>
             <div className="mt-6 flex justify-center">
               <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-50">
                 <svg className="w-6 h-6 text-green-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -83,12 +79,12 @@ export default function SupervisionPage() {
 
         {/* Process */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-[#003153] mb-4">Nuestro proceso</h3>
+          <h3 className="text-2xl font-bold text-[#003153] mb-4">{t('services.supervision.processTitle')}</h3>
           <ol className="list-decimal list-inside space-y-3 text-gray-700">
-            <li><strong>Levantamiento inicial:</strong> Revisión de planos y condiciones del sitio.</li>
-            <li><strong>Planificación:</strong> Definimos hitos, recursos y calendario de supervisión.</li>
-            <li><strong>Supervisión continua:</strong> Inspecciones, coordinación y control de calidad.</li>
-            <li><strong>Reporte final:</strong> Entrega de informe con recomendaciones y cierre de observaciones.</li>
+            <li><strong>{t('services.supervision.process.step1.title')}:</strong> {t('services.supervision.process.step1.desc')}</li>
+            <li><strong>{t('services.supervision.process.step2.title')}:</strong> {t('services.supervision.process.step2.desc')}</li>
+            <li><strong>{t('services.supervision.process.step3.title')}:</strong> {t('services.supervision.process.step3.desc')}</li>
+            <li><strong>{t('services.supervision.process.step4.title')}:</strong> {t('services.supervision.process.step4.desc')}</li>
           </ol>
         </div>
 
@@ -96,19 +92,19 @@ export default function SupervisionPage() {
 
         {/* FAQs */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-[#003153] mb-4">Preguntas frecuentes</h3>
+          <h3 className="text-2xl font-bold text-[#003153] mb-4">{t('services.supervision.faqTitle')}</h3>
           <div className="space-y-3">
             <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-              <p className="font-medium">¿En cuánto tiempo puedo tener el primer reporte?</p>
-              <p className="text-sm text-gray-600">Normalmente enviamos el primer reporte dentro de la primera semana de supervisión.</p>
+              <p className="font-medium">{t('services.supervision.faq.q1.q')}</p>
+              <p className="text-sm text-gray-600">{t('services.supervision.faq.q1.a')}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-              <p className="font-medium">¿Puedo contratar supervisión por fases?</p>
-              <p className="text-sm text-gray-600">Sí, ofrecemos planes por fase o por alcance según sus necesidades.</p>
+              <p className="font-medium">{t('services.supervision.faq.q2.q')}</p>
+              <p className="text-sm text-gray-600">{t('services.supervision.faq.q2.a')}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-              <p className="font-medium">¿Incluyen control de calidad de materiales?</p>
-              <p className="text-sm text-gray-600">Realizamos verificaciones en sitio y pruebas básicas; para ensayos avanzados coordinamos laboratorios colaboradores.</p>
+              <p className="font-medium">{t('services.supervision.faq.q3.q')}</p>
+              <p className="text-sm text-gray-600">{t('services.supervision.faq.q3.a')}</p>
             </div>
           </div>
         </div>
@@ -128,16 +124,16 @@ export default function SupervisionPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black opacity-40" onClick={() => setOpen(false)} />
           <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl mx-4 z-10 max-h-[80vh]">
-            <button
-              aria-label={t('close') || 'Cerrar'}
-              onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center z-20"
-            >
-              ×
-            </button>
+              <button
+                aria-label={t('common.close') || 'Cerrar'}
+                onClick={() => setOpen(false)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center z-20"
+              >
+                ×
+              </button>
 
             <div className="p-6 overflow-auto max-h-[72vh]">
-              <h2 className="text-2xl font-bold text-[#003153] mb-4 text-center">{t('consulting.form.title') || 'Solicitud de supervisión'}</h2>
+              <h2 className="text-2xl font-bold text-[#003153] mb-4 text-center">{t('services.supervision.form.title')}</h2>
               <FormularioSupervision />
             </div>
           </div>

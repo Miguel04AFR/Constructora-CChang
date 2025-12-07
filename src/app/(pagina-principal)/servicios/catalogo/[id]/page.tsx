@@ -62,10 +62,10 @@ export default async function PaginaDetallePropiedad({ params }: { params: Promi
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Propiedad No Encontrada</h1>
           <p className="text-gray-600 mb-6">La propiedad que buscas no existe o ha sido removida.</p>
           <a 
-            href="/catalogo" 
+            href="/" 
             className="bg-[#003153] text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors"
           >
-            Volver al Catálogo
+            Volver al Inicio
           </a>
         </div>
       </div>

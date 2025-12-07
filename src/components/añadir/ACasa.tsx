@@ -1,8 +1,10 @@
 'use client';
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { casaService } from '@/src/Services/Casa';
 
 export const ACasa = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -37,12 +39,12 @@ export const ACasa = () => {
 
       for (const file of files) {
         if (!file.type.startsWith('image/')) {
-          setMensaje('Selecciona archivos de imagen válidos');
+          setMensaje(t('forms.errors.invalidImage'));
           return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-          setMensaje('Una o más imágenes son demasiado grandes. Máximo 5MB por imagen');
+          setMensaje(t('forms.errors.imageTooLarge'));
           return;
         }
 
@@ -86,12 +88,12 @@ export const ACasa = () => {
 
       for (const file of files) {
         if (!file.type.startsWith('image/')) {
-          setMensaje('Selecciona archivos de imagen válidos');
+          setMensaje(t('forms.errors.invalidImage'));
           return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-          setMensaje('Una o más imágenes son demasiado grandes. Máximo 5MB por imagen');
+          setMensaje(t('forms.errors.imageTooLarge'));
           return;
         }
 
@@ -120,7 +122,7 @@ export const ACasa = () => {
 
     try {
       if (imagenFiles.length === 0) {
-        throw new Error('Por favor, selecciona al menos una imagen');
+        throw new Error(t('forms.errors.atLeastOneImage'));
       }
 
       const datos = new FormData();
@@ -137,7 +139,7 @@ export const ACasa = () => {
       });
 
       const casaCreada = await casaService.crearCasaConImagen(datos);
-      setMensaje('Casa creada exitosamente!');
+      setMensaje(t('forms.addHouse.success'));
 
       // Limpiar formulario
       setFormData({
@@ -154,7 +156,7 @@ export const ACasa = () => {
 
     } catch (error: any) {
       console.error('Error al crear casa:', error);
-      setMensaje(`Error: ${error.message || 'No se pudo crear la casa'}`);
+      setMensaje(`${t('forms.errors.errorPrefix')}: ${error.message || t('forms.addHouse.createError')}`);
     } finally {
       setCargando(false);
     }
@@ -166,10 +168,10 @@ export const ACasa = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Añadir Nueva Casa
+            {t('forms.addHouse.title')}
           </h1>
           <p className="text-gray-600">
-            Completa la información de la nueva casa disponible.
+            {t('forms.addHouse.subtitle')}
           </p>
         </div>
 
@@ -178,7 +180,7 @@ export const ACasa = () => {
 
             <div>
               <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">
-                Nombre de la Casa *
+                {t('forms.addHouse.name')} *
               </label>
               <input
                 type="text"
@@ -188,14 +190,14 @@ export const ACasa = () => {
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Ej: Casa Moderna con Jardín"
+                placeholder={t('forms.addHouse.placeholder.name')}
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="precio" className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio *
+                  {t('forms.addHouse.price')} *
                 </label>
                 <input
                   type="number"
@@ -205,13 +207,13 @@ export const ACasa = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: 250000"
+                  placeholder={t('forms.addHouse.placeholder.price')}
                 />
               </div>
 
               <div>
                 <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700 mb-2">
-                  Ubicación *
+                  {t('forms.addHouse.location')} *
                 </label>
                 <input
                   type="text"
@@ -221,7 +223,7 @@ export const ACasa = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: Ciudad de México"
+                  placeholder={t('forms.addHouse.placeholder.location')}
                 />
               </div>
             </div>
@@ -229,7 +231,7 @@ export const ACasa = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="habitaciones" className="block text-sm font-medium text-gray-700 mb-2">
-                  Habitaciones *
+                  {t('forms.addHouse.bedrooms')} *
                 </label>
                 <input
                   type="number"
@@ -239,13 +241,13 @@ export const ACasa = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="3"
+                  placeholder={t('forms.addHouse.placeholder.bedrooms')}
                 />
               </div>
 
               <div>
                 <label htmlFor="banos" className="block text-sm font-medium text-gray-700 mb-2">
-                  Baños *
+                  {t('forms.addHouse.bathrooms')} *
                 </label>
                 <input
                   type="number"
@@ -255,7 +257,7 @@ export const ACasa = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="2"
+                  placeholder={t('forms.addHouse.placeholder.bathrooms')}
                 />
               </div>
 

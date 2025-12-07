@@ -134,7 +134,7 @@ export const RemodelacionesContainer = () => {
                                 {r.imagenUrl ? (
                                     <img src={r.imagenUrl} alt={r.nombre} className="w-full h-full object-cover" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                                    <div className="w-full h-full flex items-center justify-center text-gray-400">{t('common.noImage')}</div>
                                 )}
                             </div>
 

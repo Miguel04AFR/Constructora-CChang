@@ -75,7 +75,7 @@ const Caracteristicas: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
         { nombre: t('propertyDetail.features.garage'), icono: '🚗' },
         { nombre:  t('propertyDetail.features.garden'), icono: '🌳' },
         { nombre: t('propertyDetail.features.airConditioning'), icono: '❄️' },
-        { nombre: 'WiFi', icono: '📶' },
+        { nombre: t('propertyDetail.features.wifi'), icono: '📶' },
         { nombre: t('propertyDetail.features.laundry'), icono: '🧺' },
         { nombre: t('propertyDetail.features.kitchen'), icono: '👨‍🍳' }
     ];

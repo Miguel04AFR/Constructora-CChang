@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { casaService, Casa } from '@/src/Services/Casa';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 interface ECasaProps {
   casaId?: string;
@@ -12,6 +13,7 @@ interface ECasaProps {
 
 export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -46,11 +48,11 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
       if (casaEncontrada) {
         cargarDatosCasa(casaEncontrada);
       } else {
-        setMensaje('Casa no encontrada');
+        setMensaje(t('forms.editHouse.errors.notFound'));
       }
     } catch (error: any) {
       console.error('Error cargando casa:', error);
-      setMensaje(`Error: ${error.message || 'No se pudo cargar la casa'}`);
+      setMensaje(`${t('forms.errors.errorPrefix')}: ${error.message || t('forms.editHouse.errors.loadError')}`);
     } finally {
       setCargandoDatos(false);
     }
@@ -98,13 +100,13 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
 
     try {
       // Validaciones básicas
-      if (!formData.nombre.trim()) throw new Error('El nombre es requerido');
-      if (!formData.precio || parseFloat(formData.precio) <= 0) throw new Error('El precio debe ser un número positivo');
-      if (!formData.ubicacion.trim()) throw new Error('La ubicación es requerida');
-      if (!formData.habitaciones || parseInt(formData.habitaciones) < 0) throw new Error('El número de habitaciones es requerido');
-      if (!formData.banos || parseInt(formData.banos) < 0) throw new Error('El número de baños es requerido');
-      if (!formData.metrosCuadrados || parseFloat(formData.metrosCuadrados) <= 0) throw new Error('Los metros cuadrados son requeridos');
-      if (!formData.descripcion.trim()) throw new Error('La descripción es requerida');
+      if (!formData.nombre.trim()) throw new Error(t('forms.editHouse.errors.nameRequired'));
+      if (!formData.precio || parseFloat(formData.precio) <= 0) throw new Error(t('forms.editHouse.errors.priceInvalid'));
+      if (!formData.ubicacion.trim()) throw new Error(t('propertyDetail.locationRequired'));
+      if (!formData.habitaciones || parseInt(formData.habitaciones) < 0) throw new Error(t('propertyDetail.bedroomsRequired'));
+      if (!formData.banos || parseInt(formData.banos) < 0) throw new Error(t('propertyDetail.bathroomsRequired'));
+      if (!formData.metrosCuadrados || parseFloat(formData.metrosCuadrados) <= 0) throw new Error(t('forms.editHouse.errors.m2Required'));
+      if (!formData.descripcion.trim()) throw new Error(t('forms.editHouse.errors.descriptionRequired'));
 
       if (!casa && !casaId) throw new Error('No se especificó la casa a editar');
 
@@ -123,7 +125,7 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
         // NO enviamos imagenUrl
       });
 
-      setMensaje('¡Casa actualizada exitosamente!');
+      setMensaje(t('forms.editHouse.success'));
 
       setTimeout(() => {
         onSuccess ? onSuccess() : onCancel ? onCancel() : router.back();
@@ -144,7 +146,7 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
       <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Cargando casa...</p>
+          <p className="mt-2 text-gray-600">{t('forms.editHouse.loading')}</p>
         </div>
       </div>
     );
@@ -154,12 +156,8 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Editar Casa
-          </h1>
-          <p className="text-gray-600">
-            Modifica la información de la casa. Las imágenes no se pueden cambiar.
-          </p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">{t('forms.editHouse.title')}</h1>
+          <p className="text-gray-600">{t('forms.editHouse.subtitle')}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -176,14 +174,14 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Ej: Casa Moderna en la Playa"
+                placeholder={t('forms.editHouse.placeholder.name')}
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="precio" className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio ($) *
+                  {t('forms.editHouse.priceLabel')}
                 </label>
                 <input
                   type="number"
@@ -195,13 +193,13 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                   min="0"
                   step="0.01"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: 250000"
+                  placeholder={t('forms.editHouse.placeholder.price')}
                 />
               </div>
 
               <div>
                 <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700 mb-2">
-                  Ubicación *
+                  {t('propertyDetail.location')} *
                 </label>
                 <input
                   type="text"
@@ -211,7 +209,7 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                   onChange={handleChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: Playa del Carmen, Quintana Roo"
+                  placeholder={t('forms.editHouse.placeholder.location')}
                 />
               </div>
             </div>
@@ -219,7 +217,7 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label htmlFor="habitaciones" className="block text-sm font-medium text-gray-700 mb-2">
-                  Habitaciones *
+                  {t('propertyDetail.bedrooms')} *
                 </label>
                 <input
                   type="number"
@@ -230,13 +228,13 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                   required
                   min="0"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: 3"
+                  placeholder={t('forms.editHouse.placeholder.bedrooms')}
                 />
               </div>
 
               <div>
                 <label htmlFor="banos" className="block text-sm font-medium text-gray-700 mb-2">
-                  Baños *
+                  {t('propertyDetail.bathrooms')} *
                 </label>
                 <input
                   type="number"
@@ -247,7 +245,7 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                   required
                   min="0"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: 2"
+                  placeholder={t('forms.editHouse.placeholder.bathrooms')}
                 />
               </div>
 
@@ -265,14 +263,14 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                   min="0"
                   step="0.01"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: 120"
+                  placeholder={t('forms.editHouse.placeholder.area')}
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
-                Descripción *
+                {t('propertyDetail.description')} *
               </label>
               <textarea
                 id="descripcion"
@@ -282,7 +280,7 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                 required
                 rows={6}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
-                placeholder="Describe las características, ventajas y detalles de la casa..."
+                placeholder={t('forms.editHouse.placeholder.description')}
               />
             </div>
 
@@ -305,10 +303,10 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                 {cargando ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Actualizando...
+                    {t('forms.editHouse.updating')}
                   </div>
                 ) : (
-                  'Actualizar Casa'
+                  t('forms.editHouse.updateButton')
                 )}
               </button>
 
@@ -317,7 +315,7 @@ export const ECasa = ({ casaId, casa, onCancel, onSuccess }: ECasaProps) => {
                 onClick={handleCancel}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
               >
-                Cancelar
+                {t('cancel')}
               </button>
             </div>
           </form>

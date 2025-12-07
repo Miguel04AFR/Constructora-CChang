@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { remodelacionService, Remodelacion } from '@/src/Services/Remodelacion';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 interface ERemodelacionProps {
   remodelacionId?: number;
@@ -12,6 +13,7 @@ interface ERemodelacionProps {
 
 export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSuccess }: ERemodelacionProps) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -43,11 +45,11 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
       if (remodelacionEncontrada) {
         cargarDatosRemodelacion(remodelacionEncontrada);
       } else {
-        setMensaje('Remodelación no encontrada');
+        setMensaje(t('forms.editRemodel.errors.notFound'));
       }
     } catch (error: any) {
       console.error('Error cargando remodelación:', error);
-      setMensaje(`Error: ${error.message || 'No se pudo cargar la remodelación'}`);
+      setMensaje(`${t('forms.errors.errorPrefix')}: ${error.message || t('forms.editRemodel.errors.loadError')}`);
     } finally {
       setCargandoDatos(false);
     }
@@ -107,9 +109,9 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
     setMensaje('');
 
     try {
-      if (!formData.nombre.trim()) throw new Error('El nombre es requerido');
-      if (!formData.precio || parseFloat(formData.precio) <= 0) throw new Error('El precio debe ser un número positivo');
-      if (!formData.descripcion.trim()) throw new Error('La descripción es requerida');
+      if (!formData.nombre.trim()) throw new Error(t('forms.editRemodel.errors.nameRequired'));
+      if (!formData.precio || parseFloat(formData.precio) <= 0) throw new Error(t('forms.editRemodel.errors.priceInvalid'));
+      if (!formData.descripcion.trim()) throw new Error(t('forms.editRemodel.errors.descriptionRequired'));
       if (!remodelacion && !remodelacionId) throw new Error('No se especificó la remodelación a editar');
 
       const idActual = remodelacion?.id || remodelacionId;
@@ -123,7 +125,7 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
         accesorios: formData.accesorios,
       });
 
-      setMensaje('¡Remodelación actualizada exitosamente!');
+      setMensaje(t('forms.editRemodel.success'));
 
       setTimeout(() => {
         onSuccess ? onSuccess() : onCancel ? onCancel() : router.back();
@@ -131,7 +133,7 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
 
     } catch (error: any) {
       console.error('Error al actualizar remodelación:', error);
-      setMensaje(`Error: ${error.message || 'No se pudo actualizar la remodelación'}`);
+      setMensaje(`${t('forms.errors.errorPrefix')}: ${error.message || t('forms.editRemodel.errors.updateError')}`);
     } finally {
       setCargando(false);
     }
@@ -144,7 +146,7 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
       <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-          <p className="mt-2 text-gray-600">Cargando remodelación...</p>
+          <p className="mt-2 text-gray-600">{t('forms.editRemodel.loading')}</p>
         </div>
       </div>
     );
@@ -154,15 +156,15 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Editar Remodelación</h1>
-          <p className="text-gray-600">Modifica la información de la remodelación.</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">{t('forms.editRemodel.title')}</h1>
+          <p className="text-gray-600">{t('forms.editRemodel.subtitle')}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">
-                Nombre de la Remodelación *
+                {t('forms.editRemodel.name')} *
               </label>
               <input
                 type="text"
@@ -172,13 +174,13 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Ej: Remodelación de Cocina Integral"
+                placeholder={t('forms.editRemodel.placeholder.name')}
               />
             </div>
 
             <div>
               <label htmlFor="precio" className="block text-sm font-medium text-gray-700 mb-2">
-                Precio *
+                {t('forms.editRemodel.price')} *
               </label>
               <input
                 type="number"
@@ -190,13 +192,13 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                 min="0"
                 step="0.01"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Ej: 8500"
+                placeholder={t('forms.editRemodel.placeholder.price')}
               />
             </div>
 
             <div>
               <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
-                Descripción *
+                {t('forms.editRemodel.description')} *
               </label>
               <textarea
                 id="descripcion"
@@ -206,13 +208,13 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                 required
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Describe brevemente la remodelación..."
+                placeholder={t('forms.editRemodel.placeholder.description')}
               />
             </div>
 
             <div>
               <label htmlFor="descripcionDetallada" className="block text-sm font-medium text-gray-700 mb-2">
-                Descripción Detallada
+                {t('forms.editRemodel.detailedDescription')}
               </label>
               <textarea
                 id="descripcionDetallada"
@@ -221,13 +223,13 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                 onChange={handleChange}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Describe en detalle la remodelación..."
+                placeholder={t('forms.editRemodel.placeholder.detailedDescription')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Accesorios de la Remodelación
+                {t('forms.editRemodel.accessoriesLabel')}
               </label>
               <div className="flex gap-2 mb-4">
                 <input
@@ -235,14 +237,14 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                   value={currentAccesorio}
                   onChange={(e) => setCurrentAccesorio(e.target.value)}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  placeholder="Añade un accesorio..."
+                  placeholder={t('forms.editRemodel.placeholder.accessory')}
                 />
                 <button
                   type="button"
                   onClick={handleAddAccesorio}
                   className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                 >
-                  Añadir
+                  {t('forms.editRemodel.addAccessory')}
                 </button>
               </div>
               {formData.accesorios.length > 0 && (
@@ -282,10 +284,10 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                 {cargando ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Actualizando...
+                    {t('forms.editRemodel.updating')}
                   </div>
                 ) : (
-                  'Actualizar Remodelación'
+                  t('forms.editRemodel.updateButton')
                 )}
               </button>
 
@@ -294,7 +296,7 @@ export const ERemodelacion = ({ remodelacionId, remodelacion, onCancel, onSucces
                 onClick={handleCancel}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
               >
-                Cancelar
+                {t('cancel')}
               </button>
             </div>
           </form>

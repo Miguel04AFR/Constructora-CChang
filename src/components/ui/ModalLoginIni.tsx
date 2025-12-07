@@ -62,7 +62,7 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         setInicio(false);
         setCargando(false);
         
-        if (usuario) {
+        if (usuario && result.user) {
           usuario(result.user.nombre);
         }
 
@@ -73,7 +73,7 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         onClose();
 
         // Redirigir basado en la verificación real
-        if (result.user.role === 'admin' || result.user.role === 'superAdmin') {
+        if (result.user && (result.user.role === 'admin' || result.user.role === 'superAdmin')) {
           router.push('/admin');
         } else {
           router.refresh();
