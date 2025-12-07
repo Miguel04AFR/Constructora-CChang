@@ -49,12 +49,14 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
     }
 
     try {
-      const result = await authService.login({
+      const result = await login({
         gmail: loginInput,
         password: password
       });
 
       setInicio(true);
+
+      
       
       setTimeout(async () => { // anadi async aqui
         setLoginInput('');
@@ -66,14 +68,17 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
           usuario(result.user.nombre);
         }
 
-        
+        const userRole = typeof result.user?.role === 'string' 
+        ? result.user.role 
+        : result.user?.role?.name;
+
         //anadi esto: Verificar con backend despues del login
         await checkAuth();
 
         onClose();
 
         // Redirigir basado en la verificación real
-        if (result.user && (result.user.role === 'admin' || result.user.role === 'superAdmin')) {
+        if (result.user && (userRole === 'admin' || userRole === 'superAdmin')) {
           router.push('/admin');
         } else {
           router.refresh();

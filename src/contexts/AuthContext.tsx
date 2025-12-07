@@ -137,30 +137,45 @@ const isLoggingOutRef = useRef(false);
   }, [isAuthenticated, checkAuth]);
 
   const login = async (credentials: { gmail: string; password: string }): Promise<{success: boolean; user?: any; message?: string}> => {
-  try {
-    const result = await authService.login(credentials);
-    
-    if (result?.success) {
-      // Llamar a validateSession para obtener los datos actualizados
+    try {
+      // Primer paso: hacer login
+      const result = await authService.login(credentials);
+      
+      console.log('🔍 Resultado de authService.login:', result);
+      
+      if (!result?.success) {
+        return { success: false, message: result?.message || 'Login falló' };
+      }
+
+      // Segundo paso: obtener datos completos del usuario
       const validatedUser = await authService.validateSession();
+      
+      console.log('🔍 Usuario validado:', validatedUser);
+      
+      // Usar validatedUser si existe, si no usar result.user
       const userData = validatedUser || result.user;
       
       if (!userData) {
         return { success: false, message: 'No se pudo obtener información del usuario' };
       }
       
+      console.log('✅ Usuario final para el contexto:', userData);
+      console.log('✅ Rol del usuario:', userData.role);
+      
+      // Actualizar el estado del contexto
       setIsAuthenticated(true);
       setUser(userData);
       
       scheduleAutoRefresh();
+      
+      // IMPORTANTE: Retornar userData para que el componente pueda acceder al rol
       return { success: true, user: userData };
+      
+    } catch (error: any) {
+      console.error('❌ Error en login del contexto:', error);
+      return { success: false, message: error.message || 'Error en el login' };
     }
-    return { success: false, message: result?.message || 'Login falló' };
-  } catch (error: any) {
-    console.error('Error en login:', error);
-    return { success: false, message: error.message || 'Error en el login' };
-  }
-};
+  };
 
   const logout = async () => {
     isLoggingOutRef.current = true;
