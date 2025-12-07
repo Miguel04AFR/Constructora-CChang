@@ -17,7 +17,7 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
   const [error, setError] = useState('');
   const { t } = useTranslation();
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, checkAuth } = useAuth(); // anadi checkAuth
 
   useEffect(() => {
     if (isOpen) {
@@ -54,10 +54,9 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         password: password
       });
 
-      // Usar authService para verificar si es admin
       setInicio(true);
       
-      setTimeout(() => {
+      setTimeout(async () => { // anadi async aqui
         setLoginInput('');
         setPassword('');
         setInicio(false);
@@ -67,18 +66,20 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
           usuario(result.user.nombre);
         }
 
-        login(result.user);//act contexto
+        
+        //anadi esto: Verificar con backend despues del login
+        await checkAuth();
 
         onClose();
 
         // Redirigir basado en la verificación real
         if (result.user.role === 'admin' || result.user.role === 'superAdmin') {
-        router.push('/admin');
-      } else {
-        router.refresh();
-      }
+          router.push('/admin');
+        } else {
+          router.refresh();
+        }
       
-    }, 2000);
+      }, 2000);
       
     } catch (error: any) {
       setCargando(false);

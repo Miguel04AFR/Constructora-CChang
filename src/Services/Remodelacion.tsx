@@ -20,18 +20,15 @@ export interface PaginacionRemodelacion {
 export const remodelacionService = {
     async crearRemodelacionConImagen(formData: FormData) {
         try {
-            const token = authService.getToken();
 
-            if (!token) {
-                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
-            }
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones/upload`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+
                 },
                 body: formData,
+                credentials: 'include',
             });
 
             console.log('Response status remodelación con imagen:', response.status);
@@ -58,19 +55,16 @@ export const remodelacionService = {
 
     async crearRemodelacion(remodelacion: Omit<Remodelacion, 'id'>) {
         try {
-            const token = authService.getToken();
 
-            if (!token) {
-                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
-            }
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(remodelacion),
+                credentials: 'include',
             });
 
             console.log('Response status crear remodelación:', response.status);
@@ -169,20 +163,16 @@ export const remodelacionService = {
 
     async eliminarRemodelacion(id: number) {
         try {
-            const token = authService.getToken();
 
-            if (!token) {
-                throw new Error('No estás autenticado');
-            }
 
             console.log('Eliminando remodelación ID:', id);
             
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
             });
 
             console.log('Response status eliminar remodelación:', response.status);
@@ -213,21 +203,18 @@ export const remodelacionService = {
 
     async updateRemodelacion(id: number, updateData: Partial<Remodelacion>) {
         try {
-          const token = authService.getToken();
-          
-          if (!token) {
-              throw new Error('No estás autenticado');
-          }
+
 
           console.log('Actualizando remodelación ID:', id, 'Datos:', updateData);
     
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/remodelaciones/${id}`, {
             method: 'PATCH',
              headers: {
-            'Authorization': `Bearer ${token}`,
+
             'Content-Type': 'application/json',
           },
             body: JSON.stringify(updateData),
+            credentials: 'include',
           });
 
           console.log('Response status actualizar remodelación:', response.status);

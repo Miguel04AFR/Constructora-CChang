@@ -16,6 +16,7 @@ import { AscenderUsuario } from '@/src/components/ascender/ascenderUsuario';
 import { EProyecto } from '@/src/components/editar/EProyecto';
 import { ERemodelacion } from '@/src/components/editar/ERemodelacion';
 import { ECasa } from '@/src/components/editar/ECasa';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export default function AdminPage() {
   const [seccionActual, setSeccionActual] = useState<string | React.ReactNode>('dashboard');
@@ -39,6 +40,8 @@ export default function AdminPage() {
   const [errorCasas, setErrorCasas] = useState<string | null>(null);
   const [errorMensajes, setErrorMensajes] = useState<string | null>(null);
   const [errorRemodelaciones, setErrorRemodelaciones] = useState<string | null>(null);
+
+  const { user, verificarRol, esAdmin } = useAuth();
 
   useEffect(() => {
     obtenerUsuarios();
@@ -1057,7 +1060,7 @@ export default function AdminPage() {
                ➕ Añadir Contenido
               </button>
             </li>
-            {authService.VerificarRole('superAdmin') && (
+            {verificarRol('superAdmin') && (
       <li>
     <button 
       onClick={() => setSeccionActual(<AscenderUsuario />)}

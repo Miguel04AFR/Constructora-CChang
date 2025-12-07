@@ -115,7 +115,7 @@ export const MenuBar = () => {
             <div className='flex items-center gap-3 flex-col sm:flex-row'>
               <div className='flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg border border-green-200 text-sm sm:text-base'>
                 <IoPersonOutline size={20} />
-                <span className="font-medium"> {t('navigation.welcome', { name: user?.nombre || user?.gmail || 'Usuario' })}</span>
+                <span className="font-medium"> {t('navigation.welcome')}</span>
               </div>
               <button 
                 onClick={handleCerrarSesion}

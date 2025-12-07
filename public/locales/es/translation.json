@@ -5,7 +5,7 @@
     "about": "Nosotros",
     "contact": "Contacto",
     "login": "Iniciar Sesión",
-    "welcome": "Bienvenido, {{name}}",
+    "welcome": "Bienvenido",
     "logout": "Salir",
     "logoutConfirmTitle": "Confrmación de cerrar sesión",
     "logoutConfirm": "Está seguro que desea cerrar sesión?"
