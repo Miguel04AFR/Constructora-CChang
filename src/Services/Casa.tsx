@@ -13,26 +13,22 @@ export interface Casa {
     descripcion: string;
 }
 
-
-export interface PaginacionResponse {
-    casas: Casa[];
-    total: number;
-    totalPages: number;
-}
-
-
 export const casaService = {
     async crearCasaConImagen(formData: FormData) {
         try {
-           
+            const token = authService.getToken(); 
+            
+            if (!token) {
+                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
+            }
+
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas/upload`, {
                 method: 'POST',
                 headers: {
-
+                    'Authorization': `Bearer ${token}`,
 
                 },
                 body: formData,
-                credentials: 'include',
                 
             });
 
@@ -52,11 +48,16 @@ export const casaService = {
 
     async crearCasa(casa: Casa) {
         try {
-          
+            const token = authService.getToken(); 
+            
+            if (!token) {
+                throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
+            }
+
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas`, {
                 method: 'POST',
                 headers: {
-            
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     id: casa.id,
@@ -68,7 +69,6 @@ export const casaService = {
                     metrosCuadrados: casa.metrosCuadrados,
                     descripcion: casa.descripcion,
                 }),
-                credentials: 'include',
             });
             
             if (!response.ok) {
@@ -93,56 +93,20 @@ export const casaService = {
         }
     },
 
-
-     // Casa.tsx - modifica obtenerCasasPag
-async obtenerCasasPag(paginacion: {limit: number, offset: number}): Promise<PaginacionResponse> {
-    try {
-        // Asegúrate de que los parámetros sean números
-        const limit = paginacion.limit || 10;
-        const offset = paginacion.offset || 0;
-        
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/casas/pag?limit=${limit}&offset=${offset}`, 
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }
-        );
-
-        console.log('Response status paginación:', response.status);
-        
-        if (!response.ok) {
-            // Obtener detalles del error
-            let errorMessage = 'Error al obtener casas paginadas';
-            try {
-                const errorData = await response.json();
-                errorMessage = errorData.message || errorData.error || errorMessage;
-                console.error('Error detallado:', errorData);
-            } catch {
-                errorMessage = `Error ${response.status}: ${response.statusText}`;
-            }
-            throw new Error(errorMessage);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error obteniendo casas:', error);
-        throw error;
-    }
-},
-
-
     async eliminarCasa(id: number) {
         try {
-          
+            const token = authService.getToken();
+
+            if (!token) {
+                throw new Error('No estás autenticado');
+            }
+
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',
             });
 
             if (!response.ok) {
@@ -164,15 +128,15 @@ async obtenerCasasPag(paginacion: {limit: number, offset: number}): Promise<Pagi
 
     async updateCasa(id: number, updateData: Partial<Casa>) {
               try {
-
+                const token = authService.getToken();
           
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/casas/${id}`, {
                   method: 'PATCH',
                    headers: {
+                  'Authorization': `Bearer ${token}`,
                   'Content-Type': 'application/json',
                 },
                   body: JSON.stringify(updateData),
-                  credentials: 'include',
                 });
           
                 if (!response.ok) {

@@ -6,7 +6,6 @@ import { IoClose, IoMail, IoLockClosed, IoEye, IoEyeOff, IoCheckmarkCircle, IoWa
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/src/auth/auth';
-import { useAuth } from '@/src/contexts/AuthContext';
 
 export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => {
   const [loginInput, setLoginInput] = useState('');
@@ -17,7 +16,6 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
   const [error, setError] = useState('');
   const { t } = useTranslation();
   const router = useRouter();
-  const { login, checkAuth } = useAuth(); // anadi checkAuth
 
   useEffect(() => {
     if (isOpen) {
@@ -54,9 +52,10 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
         password: password
       });
 
+      // Usar authService para verificar si es admin
       setInicio(true);
       
-      setTimeout(async () => { // anadi async aqui
+      setTimeout(() => {
         setLoginInput('');
         setPassword('');
         setInicio(false);
@@ -66,20 +65,17 @@ export const ModalLoginIni = ({ isOpen, onClose, usuario }: ModalLoginProps) => 
           usuario(result.user.nombre);
         }
 
-        
-        //anadi esto: Verificar con backend despues del login
-        await checkAuth();
-
         onClose();
 
         // Redirigir basado en la verificación real
         if (result.user.role === 'admin' || result.user.role === 'superAdmin') {
-          router.push('/admin');
-        } else {
-          router.refresh();
-        }
+        router.push('/admin');
+      } else {
+        // Recargar la página para actualizar estado
+        router.refresh();
+      }
       
-      }, 2000);
+    }, 2000);
       
     } catch (error: any) {
       setCargando(false);

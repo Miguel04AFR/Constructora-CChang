@@ -39,27 +39,17 @@ export const ConsultoriaContent = () => {
 
                         {/* Espacio para imágenes - Grid responsivo */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-                            <div className="rounded-lg overflow-hidden h-64">
-                                <img 
-                                    src="/Planos-de-casa-de-dos-pisos-moderna" 
-                                    alt="Planos de arquitectura" 
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        e.currentTarget.src = '/Planos-de-casa-de-dos-pisos-moderna.jpg';
-                                        e.currentTarget.alt = 'Imagen no disponible';
-                                    }}
-                                />
+                            <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+                                <span className="text-gray-400">
+                                    {t('consulting.imagePlaceholder1')}
+                                </span>
+                                {/* Reemplazar con: <img src="/consultoria/planos.jpg" alt="Planos" className="w-full h-full object-cover rounded-lg" /> */}
                             </div>
-                            <div className="rounded-lg overflow-hidden h-64">
-                                <img 
-                                    src="/FuncionListo1" 
-                                    alt="Análisis técnico" 
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        e.currentTarget.src = '/FuncionListo1.png';
-                                        e.currentTarget.alt = 'Imagen no disponible';
-                                    }}
-                                />
+                            <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
+                                <span className="text-gray-400">
+                                    {t('consulting.imagePlaceholder2')}
+                                </span>
+                                {/* Reemplazar con: <img src="/consultoria/analisis.jpg" alt="Análisis" className="w-full h-full object-cover rounded-lg" /> */}
                             </div>
                         </div>
 

@@ -3,13 +3,12 @@ import { API_CONFIG } from "../config/env";
 export const authService = {
   async login(credentials: { gmail: string; password: string }) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
-        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -19,75 +18,82 @@ export const authService = {
 
       const data = await response.json();
       
-      // nO guardar en localStorage las cookies son suficientes
+      // Guardar en localStorage
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
       return data;
     } catch (error) {
+      console.error('Error en login:', error);
       throw error;
     }
   },
 
-  async logout() {
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-    } catch (error) {
-      console.error('Error en logout backend:', error);
-    } finally {
-      // Limpiar por si hay datos legacy
-      localStorage.removeItem('user');
-    }
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token_timestamp'); 
   },
 
-  async validateSession() {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/validate`, {
-        method: 'POST',
-        credentials: 'include',
-      });
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  },
 
-      if (!response.ok) {
-        return null;
+  getCurrentUser() {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      // Verificar expiracion REAL token 
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const isExpired = payload.exp * 1000 < Date.now();
+      
+      if (isExpired) {
+        console.log('Token expirado - haciendo logout automático');
+        this.logout();
+        return false;
       }
-
-      const data = await response.json();
-      return data.user;
+      
+      return true;
     } catch (error) {
-      return null;
+      console.error('Error verificando token:', error);
+      this.logout();
+      return false;
     }
   },
 
-  async refreshToken() {
-    try {
-      console.log('Llamando a /auth/refresh');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
-        method: 'POST',
-        credentials: 'include', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
 
-      if (!response.ok) {
-        console.log('Refresh falló con status:', response.status);
-        return null;
-      }
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    if (!user) return false;
+       
+    return user.role === 'admin' || user.role === 'superAdmin';
 
-      const data = await response.json();
-      console.log('Refresh exitoso');
-      return data;
-    } catch (error) {
-      console.error('Error en refreshToken:', error);
-      return null;
-    }
   },
 
+  //Para obtener headers autenticados
   getAuthHeaders(): HeadersInit {
+    const token = this.getToken();
     return {
       'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
     };
-  }
+  },
 
-  
+  VerificarRole(roleName: string): boolean {
+  const user = this.getCurrentUser();
+  if (!user) return false;
+  return user.role === roleName;
+},
+
+  // Para obtener el rol actual
+getCurrentRole(): string | null {
+  const user = this.getCurrentUser();
+  return user ? user.role : null;
+}
 };

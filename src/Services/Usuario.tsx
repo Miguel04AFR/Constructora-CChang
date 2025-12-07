@@ -47,46 +47,52 @@ export const usuarioService = {
   },
 
 
-   async eliminarUsuario(id: number) {
-  try {
+    async eliminarUsuario(id: number) {
+    try {
 
-    
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include', //esto envia las cookies automaticamente 
-    });
+       const token = authService.getToken();
+      
+      if (!token) {
+        throw new Error('No estás autenticado');
+      }
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error al eliminar usuario');
-    }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al eliminar usuario');
+      }
 
-    if (response.status === 204) {
+       if (response.status === 204) {
       return { success: true, message: 'Usuario eliminado correctamente' };
     }
-    
-    
-  } catch (error) {
-    console.error('Error en usuarioService:', error);
-    throw error;
-  }
-},
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error en usuarioService:', error);
+      throw error;
+    }
+  },
 
 
 
    async obtenerUsuarios() {
     try {
     
-
+      const token = authService.getToken();
+      
+      if (!token) {
+        throw new Error('No estás autenticado');
+      }
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
         headers: {
-          'Content-Type': 'application/json',
-
+          'Authorization': `Bearer ${token}`,
         },
-        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -102,14 +108,18 @@ export const usuarioService = {
 
   async AscenderUsuario(gmail: string) {
   try {
+    const token = authService.getToken();
 
+    if (!token) {
+      throw new Error('No estás autenticado');
+    }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/ascender/${gmail}`, {
       method: 'PATCH',
       headers: {
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
       //No necesita body porque todo va en la URL
     });
 
@@ -146,16 +156,15 @@ export const usuarioService = {
 
 async updateUsuario(id: number, updateData: Partial<Usuario>) {
     try {
-
+      const token = authService.getToken();
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
         method: 'PATCH',
          headers: {
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      
         body: JSON.stringify(updateData),
-        credentials: 'include',
       });
 
       if (!response.ok) {

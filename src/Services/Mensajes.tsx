@@ -13,14 +13,18 @@ export interface Mensaje{
     export const mensajeService = {
       async crearMensaje(mensaje: Mensaje) {
         try {
+          const token = authService.getToken(); 
+
+          if (!token) {
+      throw new Error('Usuario no autenticado. Debe iniciar sesión primero.');
+    }
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mensajes`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-               //'Authorization': `Bearer ${token}`//sin esto el getUser no iba a funcionar XD
+               'Authorization': `Bearer ${token}`//sin esto el getUser no iba a funcionar XD
             },
-            credentials: 'include',
             body: JSON.stringify({
                 tipo: mensaje.tipo,
                 motivo: mensaje.motivo,
@@ -47,11 +51,11 @@ export interface Mensaje{
     
       async obtenerMensajes() {
         try {
+          const token = authService.getToken();
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mensajes`, { 
         headers: {
-
-        },
-        credentials: 'include',
+          'Authorization': `Bearer ${token}` 
+        }
       });
           if (!response.ok) {
             const errorData = await response.json();
@@ -68,13 +72,17 @@ export interface Mensaje{
       async eliminarMensaje(id: number) {
           try {
       
-
+             const token = authService.getToken();
+            
+            if (!token) {
+              throw new Error('No estás autenticado');
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mensajes/${id}`, {
               method: 'DELETE',
               headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
-              credentials: 'include',
             });
       
             if (!response.ok) {

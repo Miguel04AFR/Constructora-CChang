@@ -5,10 +5,8 @@
     "about": "Nosotros",
     "contact": "Contacto",
     "login": "Iniciar Sesión",
-    "welcome": "Bienvenido",
-    "logout": "Salir",
-    "logoutConfirmTitle": "Confrmación de cerrar sesión",
-    "logoutConfirm": "Está seguro que desea cerrar sesión?"
+    "welcome": "Bienvenido, {{name}}",
+    "logout": "Salir"
   },
   "hero": {
     "title": "CChang",
@@ -405,6 +403,5 @@
         "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres"
       }
     }
-  },
-  "loging.signingIn": "Iniciando sesión..."
+  }
 }

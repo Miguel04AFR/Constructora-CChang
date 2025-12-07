@@ -5,7 +5,7 @@
     "about": "About Us",
     "contact": "Contact",
     "login": "Login",
-    "welcome": "Welcome",
+    "welcome": "Welcome, {{name}}",
     "logout": "Logout",
     "logoutConfirmTitle": "Logout confirmation",
     "logoutConfirm": "Are you sure you want to log out?"
@@ -405,6 +405,5 @@
         "descriptionMaxLength": "Description cannot exceed 1000 characters"
       }
     }
-  },
-  "login.signingIn": "Logging in..."
+  }
 }
