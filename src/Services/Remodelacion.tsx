@@ -1,13 +1,12 @@
 import { authService } from "../auth/auth";
 
 export interface Remodelacion {
-    area: string;
     id: number;
     nombre: string;
     precio: number;
     descripcion: string;
     descripcionDetallada?: string;
-    imagenUrl?: string[];
+    imagenUrl?: string;
     accesorios: string[];
 }
 

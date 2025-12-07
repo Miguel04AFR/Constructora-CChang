@@ -6,39 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { ModalLoginIni } from '@/src/components/ui/ModalLoginIni';
 import { FormularioRemodelaciones } from '@/src/components/remodelaciones/FormularioRemodelaciones';
-import { remodelaciones as remodelacionesMock } from '@/src/data/remodelaciones';
 
 type Props = {
   remodelacion: Remodelacion;
-};
-
-// Función para obtener la URL correcta de la imagen
-const getImageUrl = (imagenUrl: string | string[] | undefined): string => {
-  if (!imagenUrl) return '/placeholder-image.jpg';
-  
-  // Si es array, tomar la primera imagen
-  const url = Array.isArray(imagenUrl) ? (imagenUrl[0] ?? '') : imagenUrl;
-  
-  if (!url) return '/placeholder-image.jpg';
-  
-  // Verificar si es una imagen mock conocida
-  const mockImages = remodelacionesMock.flatMap(remodel => 
-    Array.isArray(remodel.imagenUrl) ? remodel.imagenUrl : 
-    remodel.imagenUrl ? [remodel.imagenUrl] : []
-  );
-  
-  if (mockImages.includes(url)) {
-    return url; // Es imagen mock, usar directamente
-  }
-  
-  // Si ya es URL completa
-  if (url.startsWith('http')) {
-    return url;
-  }
-  
-  // Para imágenes de la base de datos
-  const normalizedPath = url.startsWith('/') ? url : `/${url}`;
-  return `${process.env.NEXT_PUBLIC_API_URL}${normalizedPath}`;
 };
 
 export default function RemodelacionDetail({ remodelacion }: Props) {
@@ -48,9 +18,6 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
   const [modalContactoOpen, setModalContactoOpen] = useState(false);
   const pendingRef = useRef<boolean>(false);
   const formRef = useRef<HTMLFormElement | null>(null);
-  
-  // Obtener la URL correcta de la imagen
-  const imagenUrl = getImageUrl(remodelacion.imagenUrl);
 
   useEffect(() => {
     if (isAuthenticated && pendingRef.current) {
@@ -87,16 +54,12 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
           <div className="md:flex gap-6">
             <div className="md:w-1/3 mb-4 md:mb-0 flex flex-col gap-4">
               <div className="h-56 bg-gray-100 rounded overflow-hidden">
-                {/* Imagen corregida */}
-                <img 
-                  src={imagenUrl} 
-                  alt={remodelacion.nombre} 
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = '/placeholder-image.jpg';
-                    e.currentTarget.alt = 'Imagen no disponible';
-                  }}
-                />
+                {remodelacion.imagenUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={remodelacion.imagenUrl} alt={remodelacion.nombre} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                )}
               </div>
               <div>
                 <button
@@ -127,9 +90,7 @@ export default function RemodelacionDetail({ remodelacion }: Props) {
               )}
 
               <div className="mt-4">
-                <span className="text-2xl font-bold text-[#6B21A8]">
-                  {formatCurrency(remodelacion.precio || 0)}
-                </span>
+                <span className="text-2xl font-bold text-[#6B21A8]">{formatCurrency(remodelacion.precio)}</span>
                 <span className="text-sm text-gray-500 ml-2">{t('catalog.price') || 'Precio'}</span>
               </div>
             </div>
