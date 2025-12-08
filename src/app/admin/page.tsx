@@ -1080,16 +1080,23 @@ export default function AdminPage() {
           
         <nav className="p-4">
           <ul className="space-y-2">
-            <li>
-              <button 
-                onClick={() => setSeccionActual('dashboard')}
-                className={`w-full text-left px-4 py-2 rounded-lg ${
-                  seccionActual === 'dashboard' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
-                }`}
-              >
-                📊 Dashboard
-              </button>
-            </li>
+          <li>
+            <button 
+              onClick={() => {
+                setSeccionActual('dashboard');
+                obtenerUsuarios();
+                obtenerProyectos();
+                obtenerCasas();
+                obtenerMensajes();
+                obtenerRemodelaciones();
+              }}
+              className={`w-full text-left px-4 py-2 rounded-lg ${
+                seccionActual === 'dashboard' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
+              }`}
+            >
+              📊 Dashboard
+            </button>
+          </li>
             <li>
               <button 
                 onClick={() => setSeccionActual('clientes')}
@@ -1102,7 +1109,9 @@ export default function AdminPage() {
             </li>
             <li>
               <button 
-                onClick={() => setSeccionActual('Casas')}
+                onClick={() => { setSeccionActual('Casas')
+                  obtenerUsuarios();
+                }}
                 className={`w-full text-left px-4 py-2 rounded-lg ${
                   seccionActual === 'Casas' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
                 }`}
@@ -1112,7 +1121,12 @@ export default function AdminPage() {
             </li>
             <li>
               <button 
-                onClick={() => setSeccionActual('proyectos')}
+                onClick={() => { setSeccionActual('proyectos')
+                  obtenerProyectos();
+
+                }}
+
+
                 className={`w-full text-left px-4 py-2 rounded-lg ${
                   seccionActual === 'proyectos' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
                 }`}
@@ -1122,7 +1136,10 @@ export default function AdminPage() {
             </li>
              <li>
       <button 
-        onClick={() => setSeccionActual('remodelaciones')}
+        onClick={() => { setSeccionActual('remodelaciones')
+          obtenerRemodelaciones();
+
+        }}
         className={`w-full text-left px-4 py-2 rounded-lg ${
           seccionActual === 'remodelaciones' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
         }`}

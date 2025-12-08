@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { casaService } from '@/src/Services/Casa';
@@ -21,31 +20,117 @@ export const ACasa = () => {
 
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
+  const [errores, setErrores] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Validar que no se ingresen números negativos en campos numéricos
+    if (['precio', 'habitaciones', 'banos', 'metrosCuadrados'].includes(name)) {
+      // Permitir campo vacío mientras el usuario escribe
+      if (value === '') {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      } else {
+        const numValue = parseFloat(value);
+        // Solo actualizar si el valor es positivo o cero
+        if (numValue >= 0) {
+          setFormData(prev => ({ ...prev, [name]: value }));
+          // Limpiar error si existe
+          if (errores[name]) {
+            setErrores(prev => ({ ...prev, [name]: '' }));
+          }
+        } else {
+          // Si es negativo, mostrar error y no actualizar
+          setErrores(prev => ({ 
+            ...prev, 
+            [name]:  'Ingrese un número positivo o cero' 
+          }));
+          return; // No actualizar el estado con valor negativo
+        }
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+    
+    // Limpiar error del campo cuando el usuario empieza a escribir (para campos no numéricos)
+    if (errores[name]) {
+      setErrores(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validarFormulario = (): boolean => {
+    const nuevosErrores: Record<string, string> = {};
+
+    // Validar campos obligatorios
+    if (!formData.nombre.trim()) {
+      nuevosErrores.nombre = 'Este campo es requerido';
+    }
+    
+    if (!formData.precio.trim()) {
+      nuevosErrores.precio = 'Este campo es requerido';
+    } else if (parseFloat(formData.precio) < 0) {
+      nuevosErrores.precio = 'Ingrese un número positivo o cero';
+    }
+    
+    if (!formData.ubicacion.trim()) {
+      nuevosErrores.ubicacion = 'Este campo es requerido';
+    }
+    
+    if (!formData.habitaciones.trim()) {
+      nuevosErrores.habitaciones = 'Este campo es requerido';
+    } else if (parseInt(formData.habitaciones) < 0) {
+      nuevosErrores.habitaciones = 'Ingrese un número positivo o cero';
+    }
+    
+    if (!formData.banos.trim()) {
+      nuevosErrores.banos ='Este campo es requerido';
+    } else if (parseFloat(formData.banos) < 0) {
+      nuevosErrores.banos = 'Ingrese un número positivo o cero';
+    }
+    
+    if (!formData.metrosCuadrados.trim()) {
+      nuevosErrores.metrosCuadrados ='Este campo es requerido';
+    } else if (parseFloat(formData.metrosCuadrados) < 0) {
+      nuevosErrores.metrosCuadrados = 'Ingrese un número positivo o cero';
+    }
+    
+    if (!formData.descripcion.trim()) {
+      nuevosErrores.descripcion = 'Este campo es requerido';
+    }
+
+    // Validar imágenes
+    if (imagenFiles.length === 0) {
+      nuevosErrores.imagenes = 'Seleccione al menos una imagen';
+    }
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    
+    // Limpiar error de imágenes cuando el usuario selecciona archivos
+    if (errores.imagenes) {
+      setErrores(prev => ({ ...prev, imagenes: '' }));
+    }
 
     if (files.length > 0) {
       const validFiles: File[] = [];
       const validPreviews: string[] = [];
+      let hasError = false;
 
       for (const file of files) {
         if (!file.type.startsWith('image/')) {
-          setMensaje(t('forms.errors.invalidImage'));
-          return;
+          setMensaje('Solo se permiten imágenes');
+          hasError = true;
+          break;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-          setMensaje(t('forms.errors.imageTooLarge'));
-          return;
+          setMensaje('La imagen no debe superar los 5MB');
+          hasError = true;
+          break;
         }
 
         validFiles.push(file);
@@ -61,8 +146,10 @@ export const ACasa = () => {
         reader.readAsDataURL(file);
       }
 
-      setImagenFiles(prev => [...prev, ...validFiles]);
-      setMensaje('');
+      if (!hasError) {
+        setImagenFiles(prev => [...prev, ...validFiles]);
+        setMensaje('');
+      }
     }
   };
 
@@ -82,19 +169,27 @@ export const ACasa = () => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
 
+    // Limpiar error de imágenes cuando el usuario arrastra archivos
+    if (errores.imagenes) {
+      setErrores(prev => ({ ...prev, imagenes: '' }));
+    }
+
     if (files.length > 0) {
       const validFiles: File[] = [];
       const validPreviews: string[] = [];
+      let hasError = false;
 
       for (const file of files) {
         if (!file.type.startsWith('image/')) {
-          setMensaje(t('forms.errors.invalidImage'));
-          return;
+          setMensaje('Solo se permiten imágenes');
+          hasError = true;
+          break;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-          setMensaje(t('forms.errors.imageTooLarge'));
-          return;
+          setMensaje('La imagen no debe superar los 5MB');
+          hasError = true;
+          break;
         }
 
         validFiles.push(file);
@@ -110,8 +205,10 @@ export const ACasa = () => {
         reader.readAsDataURL(file);
       }
 
-      setImagenFiles(prev => [...prev, ...validFiles]);
-      setMensaje('');
+      if (!hasError) {
+        setImagenFiles(prev => [...prev, ...validFiles]);
+        setMensaje('');
+      }
     }
   };
 
@@ -120,11 +217,14 @@ export const ACasa = () => {
     setCargando(true);
     setMensaje('');
 
-    try {
-      if (imagenFiles.length === 0) {
-        throw new Error(t('forms.errors.atLeastOneImage'));
-      }
+    // Validar formulario antes de enviar
+    if (!validarFormulario()) {
+      setCargando(false);
+      setMensaje( 'Por favor, corrija los errores del formulario');
+      return;
+    }
 
+    try {
       const datos = new FormData();
       datos.append('nombre', formData.nombre);
       datos.append('precio', formData.precio);
@@ -134,12 +234,12 @@ export const ACasa = () => {
       datos.append('metrosCuadrados', formData.metrosCuadrados);
       datos.append('descripcion', formData.descripcion);
 
-      imagenFiles.forEach((file, index) => {//como es mas de una imagen, se usa un forEach
+      imagenFiles.forEach((file, index) => {
         datos.append('imagen', file);
       });
 
       const casaCreada = await casaService.crearCasaConImagen(datos);
-      setMensaje(t('forms.addHouse.success'));
+      setMensaje('Casa creada exitosamente');
 
       // Limpiar formulario
       setFormData({
@@ -153,10 +253,11 @@ export const ACasa = () => {
       });
       setImagenFiles([]);
       setImagenPreviews([]);
+      setErrores({});
 
     } catch (error: any) {
       console.error('Error al crear casa:', error);
-      setMensaje(`${t('forms.errors.errorPrefix')}: ${error.message || t('forms.addHouse.createError')}`);
+      setMensaje(` ${error.message  || 'Error al crear la casa'}`);
     } finally {
       setCargando(false);
     }
@@ -168,10 +269,10 @@ export const ACasa = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            {t('forms.addHouse.title')}
+            {'Agregar Casa'}
           </h1>
           <p className="text-gray-600">
-            {t('forms.addHouse.subtitle')}
+            {'Complete el formulario para agregar una nueva casa'}
           </p>
         </div>
 
@@ -180,7 +281,7 @@ export const ACasa = () => {
 
             <div>
               <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('forms.addHouse.name')} *
+                {'Nombre'} *
               </label>
               <input
                 type="text"
@@ -188,16 +289,20 @@ export const ACasa = () => {
                 name="nombre"
                 value={formData.nombre}
                 onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder={t('forms.addHouse.placeholder.name')}
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errores.nombre ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder={t('forms.addHouse.placeholder.name') || 'Nombre de la casa'}
               />
+              {errores.nombre && (
+                <p className="mt-1 text-sm text-red-600">{errores.nombre}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="precio" className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('forms.addHouse.price')} *
+                  {'Precio'} *
                 </label>
                 <input
                   type="number"
@@ -205,15 +310,21 @@ export const ACasa = () => {
                   name="precio"
                   value={formData.precio}
                   onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={t('forms.addHouse.placeholder.price')}
+                  min="0"
+                  step="0.01"
+                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errores.precio ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder={'0'}
                 />
+                {errores.precio && (
+                  <p className="mt-1 text-sm text-red-600">{errores.precio}</p>
+                )}
               </div>
 
               <div>
                 <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('forms.addHouse.location')} *
+                  {'Ubicación'} *
                 </label>
                 <input
                   type="text"
@@ -221,17 +332,21 @@ export const ACasa = () => {
                   name="ubicacion"
                   value={formData.ubicacion}
                   onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={t('forms.addHouse.placeholder.location')}
+                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errores.ubicacion ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder={'Dirección de la casa'}
                 />
+                {errores.ubicacion && (
+                  <p className="mt-1 text-sm text-red-600">{errores.ubicacion}</p>
+                )}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="habitaciones" className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('forms.addHouse.bedrooms')} *
+                  {'Habitaciones'} *
                 </label>
                 <input
                   type="number"
@@ -239,15 +354,20 @@ export const ACasa = () => {
                   name="habitaciones"
                   value={formData.habitaciones}
                   onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={t('forms.addHouse.placeholder.bedrooms')}
+                  min="0"
+                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errores.habitaciones ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder={'0'}
                 />
+                {errores.habitaciones && (
+                  <p className="mt-1 text-sm text-red-600">{errores.habitaciones}</p>
+                )}
               </div>
 
               <div>
                 <label htmlFor="banos" className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('forms.addHouse.bathrooms')} *
+                  {'Baños'} *
                 </label>
                 <input
                   type="number"
@@ -255,10 +375,16 @@ export const ACasa = () => {
                   name="banos"
                   value={formData.banos}
                   onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={t('forms.addHouse.placeholder.bathrooms')}
+                  min="0"
+                  step="0.5"
+                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errores.banos ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder={'0'}
                 />
+                {errores.banos && (
+                  <p className="mt-1 text-sm text-red-600">{errores.banos}</p>
+                )}
               </div>
 
               <div>
@@ -271,10 +397,16 @@ export const ACasa = () => {
                   name="metrosCuadrados"
                   value={formData.metrosCuadrados}
                   onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="150"
+                  min="0"
+                  step="0.01"
+                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errores.metrosCuadrados ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="0"
                 />
+                {errores.metrosCuadrados && (
+                  <p className="mt-1 text-sm text-red-600">{errores.metrosCuadrados}</p>
+                )}
               </div>
             </div>
 
@@ -284,8 +416,12 @@ export const ACasa = () => {
               </label>
 
               <div
-                className={`border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer transition-colors ${
-                  imagenPreviews.length > 0 ? 'border-blue-300 bg-blue-50' : 'hover:border-blue-400 hover:bg-blue-50'
+                className={`border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition-colors ${
+                  errores.imagenes 
+                    ? 'border-red-500 bg-red-50' 
+                    : imagenPreviews.length > 0 
+                      ? 'border-blue-300 bg-blue-50' 
+                      : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
                 }`}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
@@ -341,6 +477,9 @@ export const ACasa = () => {
                   </div>
                 )}
               </div>
+              {errores.imagenes && (
+                <p className="mt-1 text-sm text-red-600">{errores.imagenes}</p>
+              )}
             </div>
 
             <div>
@@ -352,16 +491,20 @@ export const ACasa = () => {
                 name="descripcion"
                 value={formData.descripcion}
                 onChange={handleChange}
-                required
                 rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errores.descripcion ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Describe las características, comodidades y detalles de la casa..."
               />
+              {errores.descripcion && (
+                <p className="mt-1 text-sm text-red-600">{errores.descripcion}</p>
+              )}
             </div>
 
             {mensaje && (
               <div className={`p-3 rounded-md ${
-                mensaje.includes('exitosamente')
+                mensaje.includes('exitosamente') || mensaje.includes('success')
                   ? 'bg-green-50 text-green-700 border border-green-200'
                   : 'bg-red-50 text-red-700 border border-red-200'
               }`}>
@@ -399,6 +542,8 @@ export const ACasa = () => {
                   });
                   setImagenFiles([]);
                   setImagenPreviews([]);
+                  setErrores({});
+                  setMensaje('');
                   if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                   }

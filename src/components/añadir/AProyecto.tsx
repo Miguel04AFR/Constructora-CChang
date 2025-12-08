@@ -14,6 +14,7 @@ export const AProyecto = () => {
   
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
+  const [errores, setErrores] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -21,10 +22,40 @@ export const AProyecto = () => {
       ...prev,
       [name]: value
     }));
+    // Limpiar error si existe
+    if (errores[name]) {
+      setErrores(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validarFormulario = (): boolean => {
+    const nuevosErrores: Record<string, string> = {};
+
+    // Validar campos obligatorios
+    if (!formData.titulo.trim()) {
+      nuevosErrores.titulo = 'Este campo es requerido';
+    }
+    
+    if (!formData.descripcion.trim()) {
+      nuevosErrores.descripcion = 'Este campo es requerido';
+    }
+    
+    // Validar imagen
+    if (!imagenFile) {
+      nuevosErrores.imagen = 'Por favor, selecciona una imagen';
+    }
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    
+    // Limpiar error de imagen si existe
+    if (errores.imagen) {
+      setErrores(prev => ({ ...prev, imagen: '' }));
+    }
     
     if (file) {
       if (!file.type.startsWith('image/')) {
@@ -42,46 +73,54 @@ export const AProyecto = () => {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;//convierto a Base64 pero es para mostrarle al admin la imagen que subio no para guardarla
+        const imageUrl = e.target?.result as string;
         setImagenPreview(imageUrl);
       };
-      reader.readAsDataURL(file);//lo convierte
+      reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveImage = () => {
     setImagenFile(null);
     setImagenPreview('');
+    // Limpiar error de imagen si se remueve
+    if (errores.imagen) {
+      setErrores(prev => ({ ...prev, imagen: '' }));
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault(); //con esto es que logro que pueda arrastrar archivos
+    e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const files = e.dataTransfer.files;// El archivos arrastrados
+    const files = e.dataTransfer.files;
+    
+    // Limpiar error de imagen si existe
+    if (errores.imagen) {
+      setErrores(prev => ({ ...prev, imagen: '' }));
+    }
+    
     if (files && files[0]) {
       const file = files[0];
       
-
-      //la misma validacion sino me da bateo
       if (!file.type.startsWith('image/')) {
-        setMensaje('selecciona un archivo de imagen válido');
+        setMensaje('Selecciona un archivo de imagen válido');
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje('La imagen es demasiado grande. Maximo 5MB');
+        setMensaje('La imagen es demasiado grande. Máximo 5MB');
         return;
       }
 
       setImagenFile(file);
       setMensaje('');
-      //hace lo mismo convierte a base64
+      
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageUrl = e.target?.result as string;
@@ -96,19 +135,20 @@ export const AProyecto = () => {
     setCargando(true);
     setMensaje('');
 
+    // Validar formulario antes de enviar
+    if (!validarFormulario()) {
+      setCargando(false);
+      setMensaje('Por favor, corrija los errores del formulario');
+      return;
+    }
+
     try {
-      if (!imagenFile) {
-        throw new Error('Por favor, selecciona una imagen');
-      }
-      //como lo que se guara en la bd es la url de la imagen, no puedo usar la entidad proyecto como lo hice con user 
       const datos = new FormData();
       datos.append('titulo', formData.titulo);
       datos.append('descripcion', formData.descripcion);
-      datos.append('imagen', imagenFile);
-
+      datos.append('imagen', imagenFile!);
 
       const proyectoCreado = await proyectoService.crearProyectoConImagen(datos);
-      //sale en oscuro pq no lo utilizo pero es que ya lo guardo en el metodo
       setMensaje('Proyecto creado exitosamente!');
       
       // Limpiar formulario
@@ -117,6 +157,7 @@ export const AProyecto = () => {
         descripcion: '',
       });
       handleRemoveImage();
+      setErrores({});
 
     } catch (error: any) {
       console.error('Error al crear proyecto:', error);
@@ -139,7 +180,6 @@ export const AProyecto = () => {
           </p>
         </div>
 
-
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -153,10 +193,14 @@ export const AProyecto = () => {
                 name="titulo"
                 value={formData.titulo}
                 onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                  errores.titulo ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Ej: Edificio Residencial Moderno"
               />
+              {errores.titulo && (
+                <p className="mt-1 text-sm text-red-600">{errores.titulo}</p>
+              )}
             </div>
 
             <div>
@@ -165,8 +209,12 @@ export const AProyecto = () => {
               </label>
               
               <div 
-                className={`border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer transition-colors ${
-                  imagenPreview ? 'border-green-300 bg-green-50' : 'hover:border-green-400 hover:bg-green-50'
+                className={`border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition-colors ${
+                  errores.imagen 
+                    ? 'border-red-500 bg-red-50' 
+                    : imagenPreview 
+                      ? 'border-green-300 bg-green-50' 
+                      : 'border-gray-300 hover:border-green-400 hover:bg-green-50'
                 }`}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
@@ -196,7 +244,7 @@ export const AProyecto = () => {
                         }}
                         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                       >
-                        × {/* esa x se ve media rarita pero se ve asi pq es la de cerrar*/}
+                        ×
                       </button>
                     </div>
                     <p className="text-sm text-green-600">
@@ -217,8 +265,10 @@ export const AProyecto = () => {
                   </div>
                 )}
               </div>
+              {errores.imagen && (
+                <p className="mt-1 text-sm text-red-600">{errores.imagen}</p>
+              )}
             </div>
-
 
             <div>
               <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
@@ -229,13 +279,16 @@ export const AProyecto = () => {
                 name="descripcion"
                 value={formData.descripcion}
                 onChange={handleChange}
-                required
                 rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-vertical"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-vertical ${
+                  errores.descripcion ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Describe los detalles, características y objetivos del proyecto..."
               />
+              {errores.descripcion && (
+                <p className="mt-1 text-sm text-red-600">{errores.descripcion}</p>
+              )}
             </div>
-
 
             {mensaje && (
               <div className={`p-3 rounded-md ${
@@ -246,7 +299,6 @@ export const AProyecto = () => {
                 {mensaje}
               </div>
             )}
-
 
             <div className="flex gap-4 pt-4">
               <button
@@ -272,6 +324,8 @@ export const AProyecto = () => {
                     descripcion: '',
                   });
                   handleRemoveImage();
+                  setErrores({});
+                  setMensaje('');
                 }}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
               >

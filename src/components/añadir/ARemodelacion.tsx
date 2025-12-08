@@ -1,10 +1,8 @@
- 'use client';
+'use client';
 import React, { useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { remodelacionService } from '@/src/Services/Remodelacion';
 
 export const ARemodelacion = () => {
-  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -20,9 +18,15 @@ export const ARemodelacion = () => {
 
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState('');
+  const [errores, setErrores] = useState<Record<string, string>>({});
 
-   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    // Limpiar error si existe
+    if (errores[name]) {
+      setErrores(prev => ({ ...prev, [name]: '' }));
+    }
     
     // Validacion especial para precio
     if (name === 'precio') {
@@ -48,6 +52,10 @@ export const ARemodelacion = () => {
         accesorios: [...prev.accesorios, currentAccesorios.trim()]
       }));
       setCurrentAccesorios('');
+      // Limpiar error de accesorios si existe
+      if (errores.accesorios) {
+        setErrores(prev => ({ ...prev, accesorios: '' }));
+      }
     }
   };
 
@@ -58,17 +66,66 @@ export const ARemodelacion = () => {
     }));
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddaccesorios();
+    }
+  };
+
+  const validarFormulario = (): boolean => {
+    const nuevosErrores: Record<string, string> = {};
+
+    // Validar campos obligatorios
+    if (!formData.nombre.trim()) {
+      nuevosErrores.nombre = 'Este campo es requerido';
+    }
+    
+    if (!formData.precio.trim()) {
+      nuevosErrores.precio = 'Este campo es requerido';
+    } else {
+      const precioFloat = parseFloat(formData.precio);
+      if (isNaN(precioFloat)) {
+        nuevosErrores.precio = 'Ingrese un número válido';
+      } else if (precioFloat <= 0) {
+        nuevosErrores.precio = 'El precio debe ser mayor a 0';
+      }
+    }
+    
+    if (!formData.descripcion.trim()) {
+      nuevosErrores.descripcion = 'Este campo es requerido';
+    }
+    
+    // Validar imagen
+    if (!imagenFile) {
+      nuevosErrores.imagen = 'Por favor, selecciona una imagen';
+    }
+    
+    // Validar accesorios
+    if (formData.accesorios.length === 0) {
+      nuevosErrores.accesorios = 'Añade al menos un accesorio';
+    }
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-      if (file) {
+    // Limpiar error de imagen si existe
+    if (errores.imagen) {
+      setErrores(prev => ({ ...prev, imagen: '' }));
+    }
+
+    if (file) {
       if (!file.type.startsWith('image/')) {
-        setMensaje(t('forms.errors.invalidImage'));
+        setMensaje('Selecciona un archivo de imagen válido');
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje(t('forms.errors.imageTooLarge'));
+        setMensaje('La imagen es demasiado grande. Máximo 5MB');
         return;
       }
 
@@ -87,6 +144,10 @@ export const ARemodelacion = () => {
   const handleRemoveImage = () => {
     setImagenFile(null);
     setImagenPreview('');
+    // Limpiar error de imagen si existe
+    if (errores.imagen) {
+      setErrores(prev => ({ ...prev, imagen: '' }));
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -99,16 +160,22 @@ export const ARemodelacion = () => {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = e.dataTransfer.files;
-      if (files && files[0]) {
+    
+    // Limpiar error de imagen si existe
+    if (errores.imagen) {
+      setErrores(prev => ({ ...prev, imagen: '' }));
+    }
+    
+    if (files && files[0]) {
       const file = files[0];
 
       if (!file.type.startsWith('image/')) {
-        setMensaje(t('forms.errors.invalidImage'));
+        setMensaje('Selecciona un archivo de imagen válido');
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        setMensaje(t('forms.errors.imageTooLarge'));
+        setMensaje('La imagen es demasiado grande. Máximo 5MB');
         return;
       }
       setImagenFile(file);
@@ -128,32 +195,26 @@ export const ARemodelacion = () => {
     setCargando(true);
     setMensaje('');
 
-    try {
-      if (!imagenFile) {
-        throw new Error(t('forms.errors.atLeastOneImage'));
-      }
-
-      if (formData.accesorios.length === 0) {
-        throw new Error(t('forms.addRemodel.errors.atLeastOneAccessory'));
-      }
-
-     const precioFloat = parseFloat(formData.precio);
-    if (isNaN(precioFloat) || precioFloat <= 0) {
-      throw new Error(t('forms.addRemodel.errors.invalidPrice'));
+    // Validar formulario antes de enviar
+    if (!validarFormulario()) {
+      setCargando(false);
+      setMensaje('Por favor, corrija los errores del formulario');
+      return;
     }
 
+    try {
       const datos = new FormData();
       datos.append('nombre', formData.nombre);
       datos.append('precio', parseFloat(formData.precio).toString());
       datos.append('descripcion', formData.descripcion);
       datos.append('descripcionDetallada', formData.descripcionDetallada);
-      datos.append('imagen', imagenFile);
-      formData.accesorios.forEach((accesorios, index) => {
-        datos.append(`accesorios[${index}]`, accesorios);
+      datos.append('imagen', imagenFile!);
+      formData.accesorios.forEach((accesorio, index) => {
+        datos.append(`accesorios[${index}]`, accesorio);
       });
 
       const remodelacionCreada = await remodelacionService.crearRemodelacionConImagen(datos);
-      setMensaje(t('forms.addRemodel.success'));
+      setMensaje('Remodelación creada exitosamente!');
 
       // Limpiar formulario
       setFormData({
@@ -163,11 +224,13 @@ export const ARemodelacion = () => {
         descripcionDetallada: '',
         accesorios: [],
       });
+      setCurrentAccesorios('');
       handleRemoveImage();
+      setErrores({});
 
     } catch (error: any) {
       console.error('Error al crear remodelación:', error);
-      setMensaje(`${t('forms.errors.errorPrefix')}: ${error.message || t('forms.addRemodel.createError')}`);
+      setMensaje(`Error: ${error.message || 'No se pudo crear la remodelación'}`);
     } finally {
       setCargando(false);
     }
@@ -179,10 +242,10 @@ export const ARemodelacion = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            {t('forms.addRemodel.title')}
+            Añadir Nueva Remodelación
           </h1>
           <p className="text-gray-600">
-            {t('forms.addRemodel.subtitle')}
+            Completa la información para añadir un nuevo servicio de remodelación
           </p>
         </div>
 
@@ -191,7 +254,7 @@ export const ARemodelacion = () => {
 
             <div>
               <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('forms.addRemodel.name')} *
+                Nombre *
               </label>
               <input
                 type="text"
@@ -199,15 +262,19 @@ export const ARemodelacion = () => {
                 name="nombre"
                 value={formData.nombre}
                 onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
+                  errores.nombre ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Ej: Remodelación de Cocina Integral"
               />
+              {errores.nombre && (
+                <p className="mt-1 text-sm text-red-600">{errores.nombre}</p>
+              )}
             </div>
 
             <div>
               <label htmlFor="precio" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('forms.addRemodel.price')} *
+                Precio *
               </label>
               <input
                 type="number"
@@ -215,31 +282,41 @@ export const ARemodelacion = () => {
                 name="precio"
                 value={formData.precio}
                 onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                min="0"
+                step="0.01"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
+                  errores.precio ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Ej: 8500"
               />
+              {errores.precio && (
+                <p className="mt-1 text-sm text-red-600">{errores.precio}</p>
+              )}
             </div>
 
             <div>
               <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('forms.addRemodel.description')} *
+                Descripción *
               </label>
               <textarea
                 id="descripcion"
                 name="descripcion"
                 value={formData.descripcion}
                 onChange={handleChange}
-                required
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 ${
+                  errores.descripcion ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Describe brevemente la remodelación..."
               />
+              {errores.descripcion && (
+                <p className="mt-1 text-sm text-red-600">{errores.descripcion}</p>
+              )}
             </div>
 
             <div>
               <label htmlFor="descripcionDetallada" className="block text-sm font-medium text-gray-700 mb-2">
-                {t('forms.addRemodel.detailedDescription')}
+                Descripción Detallada
               </label>
               <textarea
                 id="descripcionDetallada"
@@ -254,28 +331,34 @@ export const ARemodelacion = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('forms.addRemodel.accessoriesLabel')} *
+                Accesorios *
               </label>
-              <div className="flex gap-2 mb-4">
+              <div className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={currentAccesorios}
                   onChange={(e) => setCurrentAccesorios(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  placeholder="Añade un accesorios..."
+                  placeholder="Añade un accesorio..."
                 />
                 <button
                   type="button"
                   onClick={handleAddaccesorios}
                   className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                 >
-                  {t('forms.addRemodel.addAccessory')}
+                  Añadir
                 </button>
               </div>
+              
+              {errores.accesorios && (
+                <p className="mb-2 text-sm text-red-600">{errores.accesorios}</p>
+              )}
+              
               {formData.accesorios.length > 0 && (
                 <div className="space-y-2">
                   {formData.accesorios.map((accesorio, index) => (
-                    <div key={index} className="flex accesorios-center justify-between bg-gray-100 p-2 rounded-md">
+                    <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
                       <span className="text-sm">{accesorio}</span>
                       <button
                         type="button"
@@ -292,12 +375,16 @@ export const ARemodelacion = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('forms.addRemodel.imageLabel')} *
+                Imagen *
               </label>
 
               <div
-                className={`border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer transition-colors ${
-                  imagenPreview ? 'border-purple-300 bg-purple-50' : 'hover:border-purple-400 hover:bg-purple-50'
+                className={`border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition-colors ${
+                  errores.imagen 
+                    ? 'border-red-500 bg-red-50' 
+                    : imagenPreview 
+                      ? 'border-purple-300 bg-purple-50' 
+                      : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
                 }`}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
@@ -325,13 +412,13 @@ export const ARemodelacion = () => {
                           e.stopPropagation();
                           handleRemoveImage();
                         }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex accesorios-center justify-center text-sm hover:bg-red-600"
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                       >
                         ×
                       </button>
                     </div>
                     <p className="text-sm text-purple-600">
-                      {t('forms.addRemodel.imageSelected')}
+                      Imagen seleccionada. Haz clic para cambiar.
                     </p>
                   </div>
                 ) : (
@@ -348,6 +435,9 @@ export const ARemodelacion = () => {
                   </div>
                 )}
               </div>
+              {errores.imagen && (
+                <p className="mt-1 text-sm text-red-600">{errores.imagen}</p>
+              )}
             </div>
 
             {mensaje && (
@@ -367,7 +457,7 @@ export const ARemodelacion = () => {
                 className="flex-1 bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {cargando ? (
-                  <div className="flex accesorios-center justify-center">
+                  <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                     Creando...
                   </div>
@@ -386,7 +476,10 @@ export const ARemodelacion = () => {
                     descripcionDetallada: '',
                     accesorios: [],
                   });
+                  setCurrentAccesorios('');
                   handleRemoveImage();
+                  setErrores({});
+                  setMensaje('');
                 }}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
               >

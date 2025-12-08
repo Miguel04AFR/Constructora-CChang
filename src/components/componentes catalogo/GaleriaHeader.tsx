@@ -12,7 +12,6 @@ interface GaleriaHeaderProps {
 const Encabezado: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
     const { t } = useTranslation();
 
-
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
@@ -44,40 +43,25 @@ const Encabezado: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
 };
 
 const Galeria: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
-    const imagenesPorCasa: { [key: string]: string[] } = {
-        '1': [
-            '/Casa 1/1761508791-z3qyIA-x.jpeg',
-            '/Casa 1/1761508791-OgjSAzFh.webp', 
-            '/Casa 1/1761508791-Ma7RHO2p.webp',
-            '/Casa 1/1761508791-j-yVp35Y.webp',
-            '/Casa 1/1761508791-GqE9exmP.webp',
-            '/Casa 1/1761508791-gAYIV_Y5.webp',
-        ],
-        '3': [
-            '/Casa 3/1757528002-1nuokhxu.webp',
-            '/Casa 3/1757528053-Ktx-nYJE.jpeg',
-            '/Casa 3/1757528002-1nuokhxu.webp',
-            '/Casa 3/1757527999-iVD-ebeT.webp',
-            '/Casa 3/1757527935-g8uUmTJi.jpeg',
-            '/Casa 3/1757527932-XtkO1al8.jpeg',
-        ],
-        '4': [
-            '/Casa 4/1757361273-nLT7wQnz.webp',
-            '/Casa 4/1757361257-BK1VYemR.webp',
-            '/Casa 4/1757361243-X3xfz4Ae.webp',
-            '/Casa 4/1757361243-J4b6zrBE.webp',
-            '/Casa 4/1757361243-h4OKWl1N.webp',
-            '/Casa 4/1757361242-a3aROEG5.webp',
-        ]
+    // Obtener imágenes de la propiedad (array imagenUrl)
+    const obtenerImagenesPropiedad = (): string[] => {
+        if (!propiedad.imagenUrl) return [];
+        
+        if (Array.isArray(propiedad.imagenUrl)) {
+            // Filtrar URLs válidas y agregar base URL
+            return propiedad.imagenUrl
+                .filter(img => img && img.trim() !== '')
+                .map(img => `${process.env.NEXT_PUBLIC_API_URL}${img}`);
+        }
+        
+        // Si es string, convertirlo a array
+        return [`${process.env.NEXT_PUBLIC_API_URL}${propiedad.imagenUrl}`];
     };
 
-    const numeroCasa = typeof propiedad.id === 'string' ? propiedad.id.slice(-1) : (propiedad.id != null ? String(propiedad.id).slice(-1) : '');
-    const fallbackImagenes: string[] = propiedad.imagenUrl
-        ? (Array.isArray(propiedad.imagenUrl) ? propiedad.imagenUrl : [propiedad.imagenUrl])
-        : [];
-    const imagenes = imagenesPorCasa[numeroCasa] || fallbackImagenes;
-
-    const [imagenPrincipal, setImagenPrincipal] = useState<string>(imagenes[0] || '');
+    const imagenes = obtenerImagenesPropiedad();
+    const [imagenPrincipal, setImagenPrincipal] = useState<string>(
+        imagenes.length > 0 ? imagenes[0] : '/placeholder-image.jpg'
+    );
 
     return (
         <div className="bg-white rounded-lg shadow-sm p-6">
@@ -86,28 +70,49 @@ const Galeria: React.FC<{ propiedad: Casa }> = ({ propiedad }) => {
                     src={imagenPrincipal}
                     alt={propiedad.nombre}
                     className="w-full h-96 object-cover rounded-lg"
+                    onError={(e) => {
+                        e.currentTarget.src = '/placeholder-image.jpg';
+                        e.currentTarget.alt = 'Imagen no disponible';
+                    }}
                 />
             </div>
 
-            <div className="grid grid-cols-4 gap-2">
-                {imagenes.map((imagen, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setImagenPrincipal(imagen)}
-                        className={`border-2 rounded-lg overflow-hidden transition-all ${
-                            imagen === imagenPrincipal 
-                            ? 'border-[#003153] scale-105' 
-                            : 'border-transparent hover:border-gray-300'
-                        }`}
-                    >
-                        <img
-                            src={imagen}
-                            alt={`${propiedad.nombre} - Vista ${index + 1}`}
-                            className="w-full h-20 object-cover"
-                        />
-                    </button>
-                ))}
-            </div>
+            {/* Mostrar miniaturas solo si hay más de una imagen */}
+            {imagenes.length > 1 && (
+                <div className="grid grid-cols-4 gap-2">
+                    {imagenes.map((imagen, index) => (
+                        <button
+                            key={index}
+                            onClick={() => setImagenPrincipal(imagen)}
+                            className={`border-2 rounded-lg overflow-hidden transition-all ${
+                                imagen === imagenPrincipal 
+                                ? 'border-[#003153] scale-105' 
+                                : 'border-transparent hover:border-gray-300'
+                            }`}
+                        >
+                            <img
+                                src={imagen}
+                                alt={`${propiedad.nombre} - Vista ${index + 1}`}
+                                className="w-full h-20 object-cover"
+                                onError={(e) => {
+                                    e.currentTarget.src = '/placeholder-image.jpg';
+                                    e.currentTarget.alt = 'Imagen no disponible';
+                                }}
+                            />
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* Mensaje si no hay imágenes */}
+            {imagenes.length === 0 && (
+                <div className="text-center py-8">
+                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-gray-500">No hay imágenes disponibles para esta propiedad</p>
+                </div>
+            )}
         </div>
     );
 };

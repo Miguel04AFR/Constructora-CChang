@@ -141,7 +141,7 @@ const isLoggingOutRef = useRef(false);
       // Primer paso: hacer login
       const result = await authService.login(credentials);
       
-      console.log('🔍 Resultado de authService.login:', result);
+      console.log('Resultado de authService.login:', result);
       
       if (!result?.success) {
         return { success: false, message: result?.message || 'Login falló' };
@@ -150,7 +150,7 @@ const isLoggingOutRef = useRef(false);
       // Segundo paso: obtener datos completos del usuario
       const validatedUser = await authService.validateSession();
       
-      console.log('🔍 Usuario validado:', validatedUser);
+      console.log('Usuario validado:', validatedUser);
       
       // Usar validatedUser si existe, si no usar result.user
       const userData = validatedUser || result.user;
@@ -159,8 +159,8 @@ const isLoggingOutRef = useRef(false);
         return { success: false, message: 'No se pudo obtener información del usuario' };
       }
       
-      console.log('✅ Usuario final para el contexto:', userData);
-      console.log('✅ Rol del usuario:', userData.role);
+      console.log('Usuario final para el contexto:', userData);
+      console.log('Rol del usuario:', userData.role);
       
       // Actualizar el estado del contexto
       setIsAuthenticated(true);
@@ -172,7 +172,7 @@ const isLoggingOutRef = useRef(false);
       return { success: true, user: userData };
       
     } catch (error: any) {
-      console.error('❌ Error en login del contexto:', error);
+      console.error('Error en login del contexto:', error);
       return { success: false, message: error.message || 'Error en el login' };
     }
   };
