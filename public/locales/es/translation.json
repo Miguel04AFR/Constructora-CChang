@@ -306,7 +306,8 @@
     "createAccount": "Regístrate aquí",
     "showPassword": "Mostrar contraseña",
     "hidePassword": "Ocultar contraseña",
-    "required": "Iniciar sesión"
+    "required": "Iniciar sesión",
+    "signingIn": "Iniciando sesión..."
   },
   "common": {
     "close": "Cerrar",
@@ -532,6 +533,6 @@
         "descriptionMaxLength": "La descripción no puede exceder 1000 caracteres"
       }
     }
-  },
-  "loging.signingIn": "Iniciando sesión..."
+  }
+  
 }

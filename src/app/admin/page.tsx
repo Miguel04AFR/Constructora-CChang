@@ -1110,7 +1110,7 @@ export default function AdminPage() {
             <li>
               <button 
                 onClick={() => { setSeccionActual('Casas')
-                  obtenerUsuarios();
+                  obtenerCasas();
                 }}
                 className={`w-full text-left px-4 py-2 rounded-lg ${
                   seccionActual === 'Casas' ? 'bg-blue-700 text-white' : 'hover:bg-blue-700 text-blue-100'
